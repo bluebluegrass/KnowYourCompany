@@ -60,13 +60,6 @@ A single HTML file that opens in any browser — no login, no internet required 
 2. Open Claude Code
 3. Type `/KnowYourCompany`
 
-### Trigger phrases
-
-- "Do a background check on [company]"
-- "Research this employer before I interview"
-- "Check this startup before I join"
-- "Generate a company risk report"
-
 Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
 
 ---
