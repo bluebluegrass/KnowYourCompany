@@ -45,6 +45,8 @@ A single HTML file that opens in any browser — no login, no internet required 
 - Dark mode
 - Sections auto-sorted so red flags appear first
 
+![KnowYourCompany report sample](sample.png)
+
 ---
 
 ## How to use it
