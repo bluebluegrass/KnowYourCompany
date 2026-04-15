@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sardine — KnowYourCompany Report</title>
+<style>
+/* ============================================================
+   KnowYourCompany — Shared Stylesheet
+   Editorial briefing aesthetic with interactive severity map.
+   ============================================================ */
+
+:root {
+  --bg: #f3efe6;
+  --bg-accent: #e6ddce;
+  --surface: rgba(255, 251, 245, 0.9);
+  --surface-strong: #fffdf8;
+  --surface-muted: rgba(248, 242, 231, 0.82);
+  --border: rgba(87, 70, 50, 0.16);
+  --border-strong: rgba(87, 70, 50, 0.28);
+  --text: #221d18;
+  --muted: #6f655a;
+  --accent: #7d2f24;
+  --accent-soft: #ead7cb;
+  --shadow: 0 22px 60px rgba(57, 41, 27, 0.12);
+  --green: #1d6a43;
+  --green-bg: rgba(29, 106, 67, 0.1);
+  --green-border: rgba(29, 106, 67, 0.25);
+  --yellow: #9a6a00;
+  --yellow-bg: rgba(154, 106, 0, 0.12);
+  --yellow-border: rgba(154, 106, 0, 0.28);
+  --red: #a13324;
+  --red-bg: rgba(161, 51, 36, 0.11);
+  --red-border: rgba(161, 51, 36, 0.3);
+  --grey: #6b6762;
+  --grey-bg: rgba(107, 103, 98, 0.12);
+  --grey-border: rgba(107, 103, 98, 0.24);
+}
+
+[data-theme="dark"] {
+  --bg: #161311;
+  --bg-accent: #201b18;
+  --surface: rgba(35, 29, 25, 0.9);
+  --surface-strong: #2b241f;
+  --surface-muted: rgba(45, 37, 32, 0.84);
+  --border: rgba(225, 210, 192, 0.12);
+  --border-strong: rgba(225, 210, 192, 0.22);
+  --text: #f3ece3;
+  --muted: #b7ab9f;
+  --accent: #d58b72;
+  --accent-soft: rgba(213, 139, 114, 0.18);
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  --green: #72d7a1;
+  --green-bg: rgba(114, 215, 161, 0.13);
+  --green-border: rgba(114, 215, 161, 0.28);
+  --yellow: #efbe55;
+  --yellow-bg: rgba(239, 190, 85, 0.14);
+  --yellow-border: rgba(239, 190, 85, 0.28);
+  --red: #f08d79;
+  --red-bg: rgba(240, 141, 121, 0.14);
+  --red-border: rgba(240, 141, 121, 0.3);
+  --grey: #beb5ae;
+  --grey-bg: rgba(190, 181, 174, 0.12);
+  --grey-border: rgba(190, 181, 174, 0.2);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(125, 47, 36, 0.08), transparent 28rem),
+    radial-gradient(circle at top right, rgba(154, 106, 0, 0.08), transparent 22rem),
+    linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 82%, var(--bg-accent)) 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-underline-offset: 0.18em; }
+a:hover { text-decoration-color: currentColor; }
+
+.container { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(1.2rem, 2vw, 2rem) 0 4rem; }
+
+.header {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem); margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--surface-strong) 76%, var(--accent-soft)) 0%, var(--surface) 100%);
+  border: 1px solid var(--border-strong); border-radius: 28px; box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+}
+.header::after {
+  content: ""; position: absolute; inset: auto -8% -45% auto;
+  width: 18rem; height: 18rem; border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 68%);
+  pointer-events: none;
+}
+.header-copy { position: relative; z-index: 1; max-width: 52rem; }
+.eyebrow { margin-bottom: 0.8rem; color: var(--accent); font-size: 0.76rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; }
+.header-title h1 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(2.3rem, 5vw, 4.8rem); line-height: 0.95; font-weight: 700; letter-spacing: -0.04em; max-width: 10ch; }
+.header-dek { margin-top: 0.9rem; max-width: 44rem; color: color-mix(in srgb, var(--text) 82%, var(--muted)); font-size: clamp(1rem, 1.8vw, 1.1rem); }
+.header-meta { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 1rem; }
+.meta-chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.48rem 0.72rem; background: var(--surface-muted); border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: 0.78rem; }
+.meta-chip strong { color: var(--text); font-weight: 700; }
+.header-lede { margin-top: 1rem; max-width: 40rem; color: var(--muted); font-size: 0.94rem; }
+.header-actions { position: relative; z-index: 1; }
+.theme-btn { appearance: none; border: 1px solid var(--border-strong); background: color-mix(in srgb, var(--surface-strong) 88%, transparent); color: var(--text); border-radius: 999px; padding: 0.8rem 1rem; cursor: pointer; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease; }
+.theme-btn:hover { transform: translateY(-1px); border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 65%, var(--surface-strong)); }
+
+.summary-shell { margin-bottom: 1.5rem; }
+.summary-intro { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 0.8rem; }
+.summary-intro h2 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.25rem, 2.2vw, 1.7rem); letter-spacing: -0.03em; }
+.summary-intro p { max-width: 36rem; color: var(--muted); font-size: 0.88rem; }
+.summary { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0.8rem; }
+.summary-item { grid-column: span 3; min-height: 7.25rem; background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 78%, transparent), var(--surface)); border: 1px solid var(--border); border-radius: 22px; padding: 1.2rem 1rem 0.95rem; box-shadow: 0 10px 24px rgba(57, 41, 27, 0.06); position: relative; overflow: hidden; }
+.summary-item::before { content: ""; position: absolute; inset: 0.55rem 0.85rem auto; height: 5px; border-radius: 999px; background: var(--border-strong); }
+.summary-item.is-clickable { cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+.summary-item.is-clickable:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(57, 41, 27, 0.12); border-color: var(--border-strong); }
+.summary-item.is-clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.summary-item:has(.badge-red)::before { background: linear-gradient(90deg, var(--red), color-mix(in srgb, var(--red) 45%, transparent)); }
+.summary-item:has(.badge-yellow)::before { background: linear-gradient(90deg, var(--yellow), color-mix(in srgb, var(--yellow) 45%, transparent)); }
+.summary-item:has(.badge-green)::before { background: linear-gradient(90deg, var(--green), color-mix(in srgb, var(--green) 45%, transparent)); }
+.summary-item:has(.badge-grey)::before { background: linear-gradient(90deg, var(--grey), color-mix(in srgb, var(--grey) 45%, transparent)); }
+.summary-item .label { max-width: 10ch; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.summary-item .badge { display: inline-block; margin-top: 1rem; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: 1.1rem; font-weight: 700; line-height: 1.1; }
+.badge-green { color: var(--green); }
+.badge-yellow { color: var(--yellow); }
+.badge-red { color: var(--red); }
+.badge-grey { color: var(--grey); }
+
+.section { margin-bottom: 1rem; background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 74%, transparent), var(--surface)); border: 1px solid var(--border); border-radius: 26px; overflow: hidden; box-shadow: 0 18px 44px rgba(57, 41, 27, 0.08); }
+.section-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.15rem 1.35rem; cursor: pointer; user-select: none; background: linear-gradient(180deg, color-mix(in srgb, var(--surface-muted) 72%, transparent), transparent); }
+.section-header:hover { background: color-mix(in srgb, var(--accent-soft) 26%, var(--surface-muted)); }
+.section-title { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-size: 1rem; }
+.section-title span:first-child { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 700; letter-spacing: -0.03em; }
+.section-badge { display: inline-flex; align-items: center; padding: 0.32rem 0.7rem; border-radius: 999px; font-size: 0.73rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.badge-green-pill { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.badge-yellow-pill { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+.badge-red-pill { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.badge-grey-pill { background: var(--grey-bg); color: var(--grey); border: 1px solid var(--grey-border); }
+.chevron { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 999px; background: var(--surface-muted); border: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; transition: transform 0.22s ease, background 0.22s ease, color 0.22s ease; }
+.section-header:hover .chevron { color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 72%, var(--surface-muted)); }
+.chevron.open { transform: rotate(180deg); }
+.section-body { padding: 0 1.35rem 1.35rem; border-top: 1px solid var(--border); }
+.section-body.hidden { display: none; }
+.section-body h3 { margin: 1.2rem 0 0.55rem; color: var(--muted); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+.section-body p, .section-body li { font-size: 0.98rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul { padding-left: 1.15rem; }
+.section-body ul li + li { margin-top: 0.45rem; }
+.plain-english { margin: 1rem 0; padding: 1rem 1.05rem; background: linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 78%, var(--surface-strong)), color-mix(in srgb, var(--surface-strong) 80%, transparent)); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 20px; color: color-mix(in srgb, var(--text) 88%, var(--accent)); }
+[data-theme="dark"] .plain-english { color: color-mix(in srgb, var(--text) 92%, var(--accent)); }
+.plain-english strong { display: block; margin-bottom: 0.45rem; color: var(--accent); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+.disclaimer { margin: 1rem 0; padding: 0.9rem 1rem; border: 1px solid var(--yellow-border); border-radius: 18px; background: var(--yellow-bg); color: color-mix(in srgb, var(--yellow) 78%, var(--text)); font-size: 0.86rem; }
+.rating-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; margin: 0.5rem 0; padding: 0.8rem 0.95rem; border-radius: 16px; background: var(--surface-muted); border: 1px solid var(--border); }
+.stars { color: #c78d19; letter-spacing: -0.08em; }
+.rating-label { color: var(--muted); font-size: 0.83rem; }
+.timeline { position: relative; margin: 0.8rem 0 0.2rem; padding-left: 1.4rem; }
+.timeline::before { content: ""; position: absolute; left: 0.35rem; top: 0.2rem; bottom: 0.2rem; width: 2px; background: linear-gradient(180deg, var(--accent-soft), color-mix(in srgb, var(--accent) 28%, transparent)); }
+.timeline-item { position: relative; margin-bottom: 1rem; padding: 0.1rem 0 0.1rem 0.35rem; }
+.timeline-item::before { content: ""; position: absolute; left: -1.18rem; top: 0.42rem; width: 0.72rem; height: 0.72rem; border-radius: 999px; background: var(--surface-strong); border: 2px solid var(--accent); }
+.timeline-item .round { display: block; font-weight: 700; }
+.timeline-item .round-meta { color: var(--muted); font-size: 0.84rem; }
+.sources { margin-top: 1rem; padding-top: 0.95rem; border-top: 1px dashed var(--border-strong); }
+.sources p { margin-bottom: 0.5rem; color: var(--muted); font-size: 0.73rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; }
+.sources ul { padding-left: 1rem; }
+.sources li { font-size: 0.86rem; }
+.footer { margin-top: 2rem; padding: 1.25rem 1.35rem; border: 1px solid var(--border); border-radius: 24px; background: linear-gradient(180deg, var(--surface), var(--surface-muted)); color: var(--muted); font-size: 0.83rem; line-height: 1.75; box-shadow: 0 16px 36px rgba(57, 41, 27, 0.08); }
+
+@media print { .theme-btn { display: none; } .section-body.hidden { display: block !important; } .section-header { cursor: default; } body { background: white; color: black; } }
+@media (max-width: 900px) { .summary-item { grid-column: span 4; } }
+@media (max-width: 680px) {
+  .container { width: min(100% - 1rem, 100%); }
+  .header { grid-template-columns: 1fr; border-radius: 22px; }
+  .header-title h1 { max-width: none; }
+  .summary-intro { flex-direction: column; align-items: start; }
+  .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-item { grid-column: span 1; min-height: 6.5rem; }
+  .section-header, .section-body, .footer { padding-left: 1rem; padding-right: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-copy">
+      <p class="eyebrow">KnowYourCompany</p>
+      <div class="header-title">
+        <h1>Sardine</h1>
+      </div>
+      <p class="header-dek">A public-signal briefing across operations, leadership, legal exposure, compensation, and market health.</p>
+      <div class="header-meta">
+        <span class="meta-chip"><strong>Generated</strong> 2026-04-15</span>
+        <span class="meta-chip"><strong>Office</strong> California, United States</span>
+        <span class="meta-chip"><strong>Role</strong> Analytics Engineer</span>
+      </div>
+      <p class="header-lede">Use the severity map to jump straight to the highest-risk areas. Red items surface material concerns first, followed by mixed signals and lower-risk findings.</p>
+    </div>
+    <div class="header-actions">
+      <button class="theme-btn" onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
+  </div>
+
+  <div class="summary-shell">
+    <div class="summary-intro">
+      <h2>Severity Map</h2>
+      <p>Each card is clickable. The report automatically reorders itself by severity so the most urgent issues rise to the top.</p>
+    </div>
+    <div class="summary">
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-1"><div class="label">Layoffs</div><div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-2"><div class="label">Financial Health</div><div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-3"><div class="label">Leadership</div><div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-4"><div class="label">Legal</div><div class="badge badge-grey">No data</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-5"><div class="label">Culture</div><div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-6"><div class="label">RTO Policy</div><div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-7"><div class="label">Compensation</div><div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-8"><div class="label">Interview</div><div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-9"><div class="label">Visa Sponsorship</div><div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-10"><div class="label">Product Health</div><div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-11"><div class="label">Company Profile</div><div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-12"><div class="label">Founder</div><div class="badge badge-green">No concerns</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 — LAYOFFS -->
+  <div class="section" id="section-1">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>1. Recent Layoffs</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <p>No layoffs were found at Sardine in the past 24 months. The company has been on a consistent growth trajectory, expanding its headcount rather than reducing it.</p>
+      <ul>
+        <li>Team grew from approximately 98 employees (as of the Contrary Research report in early 2023) to over 200 employees across 15+ countries by early 2026.</li>
+        <li>Sardine does not appear in the layoffs.fyi database.</li>
+        <li>The February 2025 Series C press release explicitly mentions active hiring across engineering, data science, sales, and customer success as a strategic priority.</li>
+        <li>No California-office-specific layoff notices or WARN Act filings were identified in public searches.</li>
+      </ul>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://layoffs.fyi" target="_blank">Layoffs.fyi — no Sardine entry found</a></li>
+        <li><a href="https://www.sardine.ai/blog/series-c-announcement" target="_blank">Sardine Series C announcement — sardine.ai</a></li>
+        <li><a href="https://research.contrary.com/company/sardine" target="_blank">Sardine Business Breakdown — Contrary Research</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 — FINANCIAL HEALTH -->
+  <div class="section" id="section-2">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>2. Financial Health</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>Funding History</h3>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="round">Series A — $19.5M</span>
+          <div class="round-meta">February 2022 · Lead: Andreessen Horowitz (a16z)</div>
+        </div>
+        <div class="timeline-item">
+          <span class="round">Series B — $51.5M</span>
+          <div class="round-meta">September 2022 · Lead: Andreessen Horowitz (a16z) · Also: XYZ Venture Capital, Visa, Nyca Partners, Activant Capital, Google Ventures</div>
+        </div>
+        <div class="timeline-item">
+          <span class="round">Series C — $70M</span>
+          <div class="round-meta">February 2025 · Lead: Activant Capital · Total raised to date: $145M · Implied valuation: ~$660M</div>
+        </div>
+      </div>
+
+      <h3>Financial Signals</h3>
+      <ul>
+        <li><strong>ARR growth:</strong> 130% year-over-year increase in 2024 — a strong signal for a B2B SaaS business at this scale.</li>
+        <li><strong>Customer base:</strong> Doubled in the year leading up to the Series C; now serving 300+ enterprises across 70 countries. Clients include Brex, Ramp, Mattel, Moov, and multiple Fortune 500 companies.</li>
+        <li><strong>Revenue model:</strong> SaaS platform fees + per-transaction charges for fraud protection + per-user for AML solutions. Multiple revenue streams reduce concentration risk.</li>
+        <li><strong>Tier-1 investor backing:</strong> a16z led both Series A and B. Activant led Series C with co-investment from Google Ventures, Visa, and Nyca Partners — a credible syndicate for a fintech risk platform.</li>
+        <li><strong>No disclosed profitability:</strong> Sardine is a venture-backed growth company and has not publicly disclosed revenue figures or burn rate. Assume it is pre-profitability and runway is tied to the $70M Series C.</li>
+        <li><strong>Device profiling scale:</strong> Over 2.2 billion devices profiled — a defensible data moat that grows with usage.</li>
+      </ul>
+      <div class="plain-english">
+        <strong>Plain English</strong>
+        Sardine has raised $145 million from well-known investors, most recently a $70M round in February 2025 that valued the company at around $660 million. Its revenue grew 130% in 2024, which is very fast — roughly doubling every year. The main thing to be aware of is that like most venture-backed startups, it is probably not yet profitable and is spending its raised capital to grow. The $70M round means there's likely at least 18–24 months of runway, but it is not indefinite. Worth asking in interviews about the path to profitability.
+      </div>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.sardine.ai/blog/series-c-announcement" target="_blank">Sardine $70M Series C announcement — sardine.ai</a></li>
+        <li><a href="https://www.bloomberg.com/news/articles/2025-02-11/sardine-raises-70-million-to-build-fraud-fighting-ai-agents" target="_blank">Sardine Raises $70M to Build Fraud-Fighting AI Agents — Bloomberg</a></li>
+        <li><a href="https://news.crunchbase.com/cybersecurity/fraud-detection-startup-sardine-ai-fundraise/" target="_blank">Fraud Detection Startup Sardine AI Wraps Up $70M Series C — Crunchbase News</a></li>
+        <li><a href="https://www.crunchbase.com/organization/sardine" target="_blank">Sardine — Crunchbase Company Profile</a></li>
+        <li><a href="https://research.contrary.com/company/sardine" target="_blank">Sardine Business Breakdown — Contrary Research</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 — LEADERSHIP STABILITY -->
+  <div class="section" id="section-3">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>3. Leadership Stability</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>Current Leadership</h3>
+      <ul>
+        <li><strong>Soups Ranjan</strong> — Co-Founder &amp; CEO (active since founding, 2020)</li>
+        <li><strong>Aditya Goel</strong> — Co-Founder &amp; COO (listed on official About page as of April 2026)</li>
+        <li><strong>Zahid Shaikh</strong> — Co-Founder &amp; Chief Product Officer</li>
+        <li><strong>Kazuki Nishiura</strong> — Chief Technology Officer</li>
+        <li><strong>Ben Cook</strong> — Chief Financial Officer</li>
+        <li><strong>Matt Vega</strong> — Chief Fraud Strategist</li>
+      </ul>
+      <p>All three co-founders remain active in the business. Soups Ranjan gave interviews and represented the company publicly through the February 2025 Series C and beyond, indicating strong day-to-day founder involvement.</p>
+
+      <h3>Recent Departures</h3>
+      <p>One notable personnel note: a LinkedIn post from late 2023 indicated that Aditya Goel had stepped away to start a new company. However, as of the current company About page (April 2026), he is listed as COO, suggesting he either returned or the report was unconfirmed. No other C-suite departures were identified in public searches for 2023–2026.</p>
+      <p>No abrupt CEO, CTO, or CFO departures were found. The leadership team appears stable through the Series C period.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.sardine.ai/about" target="_blank">Sardine About page — sardine.ai</a></li>
+        <li><a href="https://www.businesswire.com/news/home/20250211169372/en/Sardine-AI-Raises-$70M-to-Make-Fraud-and-Compliance-Teams-More-Productive" target="_blank">Sardine Series C press release — BusinessWire</a></li>
+        <li><a href="https://www.cbinsights.com/company/sardine/people" target="_blank">Sardine CEO and executive team — CB Insights</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 — LEGAL & REGULATORY -->
+  <div class="section" id="section-4">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>4. Legal &amp; Regulatory Exposure</span>
+        <span class="section-badge badge-grey-pill">No data</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ The following is sourced from public records and news. It is not legal advice. Always verify via official sources.</div>
+      <p>No lawsuits, class actions, SEC enforcement actions, EEOC complaints, OSHA violations, or fraud investigations were found involving Sardine (Sardineai Corp) in the 2023–2026 period.</p>
+      <p>As a compliance and fraud-prevention platform serving regulated financial institutions, Sardine itself operates in a heavily regulated space but in a facilitator role rather than as a regulated entity directly. No enforcement actions by FinCEN, CFPB, or state financial regulators were identified.</p>
+      <p>The absence of findings is consistent with the company's small headcount and private status — smaller companies generate less public legal record. The grey badge reflects insufficient data rather than confirmed absence of risk.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><li>No specific legal sources found — general SEC, FTC, and California court searches returned no Sardine-specific results.</li></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 — CULTURE -->
+  <div class="section" id="section-5">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>5. Company Culture</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ All culture data below is sourced from public community posts and is unverified. Individual experiences may vary significantly.</div>
+
+      <h3>Glassdoor Snapshot</h3>
+      <div class="rating-row"><span class="stars">★★★★☆</span><strong>4.2</strong><span class="rating-label">Overall (15 reviews)</span></div>
+      <div class="rating-row"><span class="stars">★★★★★</span><strong>4.6–4.7</strong><span class="rating-label">Compensation &amp; Benefits — highest-rated category</span></div>
+      <div class="rating-row"><span class="stars">★★★★☆</span><strong>4.2</strong><span class="rating-label">Career Opportunities &amp; Diversity/Inclusion</span></div>
+      <div class="rating-row"><span class="stars">★★★★☆</span><strong>3.9</strong><span class="rating-label">Culture &amp; Values</span></div>
+      <div class="rating-row"><span class="stars">★★★☆☆</span><strong>3.7</strong><span class="rating-label">Work / Life Balance — lowest-rated category</span></div>
+      <div class="rating-row"><span class="stars">★★★☆☆</span><strong>3.3–3.9</strong><span class="rating-label">Senior Management</span></div>
+      <div class="rating-row"><span class="stars">★★★★☆</span><strong>84%</strong><span class="rating-label">Recommend to a Friend</span></div>
+      <div class="rating-row"><span class="stars">★★★★☆</span><strong>69%</strong><span class="rating-label">Positive Business Outlook</span></div>
+
+      <h3>Recurring Themes</h3>
+      <p><strong>Positive:</strong></p>
+      <ul>
+        <li>Highly competitive salary and benefits (consistently rated highest)</li>
+        <li>Intellectually stimulating, complex product domain</li>
+        <li>Smart, talented colleagues with genuine industry expertise</li>
+        <li>Strong innovation culture; encouraged to take ownership</li>
+        <li>Remote-first flexibility appreciated widely</li>
+      </ul>
+      <p><strong>Concerns:</strong></p>
+      <ul>
+        <li><strong>Work hours:</strong> The most cited concern across reviews. One Glassdoor review states: <em>"There's no work life balance whatsoever. If the CEO is working until 2–3am you better be too or you can expect getting yelled at the next day. This isn't one off — the whole company across all departments is consistently working 12 hour days every day."</em></li>
+        <li>Work/life balance is the lowest-rated dimension at 3.7/5 — notably lower than compensation (4.7).</li>
+        <li>Management rating (3.3) is the second-lowest, suggesting some friction between leadership style and employee experience.</li>
+        <li>Conflicting signals: a separate September 2025 review describes "good work life balance, remote, easy place to coast." The disparity may reflect department or seniority differences.</li>
+      </ul>
+
+      <h3>Community Posts</h3>
+      <p>No Reddit threads or TeamBlind posts specifically discussing Sardine's internal culture were found. The company's small size limits public online discourse. The Glassdoor data, while based on only 15 reviews, is the primary signal available.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.glassdoor.com/Overview/Working-at-Sardine-EI_IE7044956.11,18.htm" target="_blank">Working at Sardine — Glassdoor overview</a></li>
+        <li><a href="https://www.glassdoor.com/Reviews/Sardine-Reviews-E7044956.htm" target="_blank">Sardine employee reviews — Glassdoor (15 reviews)</a></li>
+        <li><a href="https://www.teamblind.com/company/Sardine/reviews" target="_blank">Sardine company reviews — Blind</a></li>
+        <li><a href="https://www.indeed.com/cmp/Sardine/reviews" target="_blank">Sardine employee reviews — Indeed</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 — RTO POLICY -->
+  <div class="section" id="section-6">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>6. Remote / Hybrid / RTO Policy</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ Official policy statements may differ from actual practice. Community reports are unverified.</div>
+
+      <h3>Official Policy</h3>
+      <p>Sardine operates a <strong>remote-first</strong> culture with no mandatory in-office requirement. The careers page states: <em>"Work from anywhere that suits you."</em> The company emphasises performance and impact over fixed schedules or location.</p>
+      <ul>
+        <li>200+ employees distributed across 15+ countries</li>
+        <li>Roles span Argentina, Brazil, Canada, Europe, France, India, UK, and the US</li>
+        <li>Home office setup provided (MacBook + stipend)</li>
+        <li>No specific California office was listed as a required on-site location</li>
+      </ul>
+
+      <h3>Recent Changes</h3>
+      <p>No RTO mandate or shift toward in-office requirements was found in any news, press release, or employee review from 2024–2026. The remote-first posture appears stable.</p>
+
+      <h3>Employee Sentiment</h3>
+      <p>Glassdoor reviews confirm remote flexibility as a genuine benefit. One review described "good work life balance remote easy place to coast." No negative commentary about surprise RTO policies was found. The FlexJobs platform lists Sardine as an active remote-friendly employer.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.sardine.ai/careers" target="_blank">Sardine Careers page — sardine.ai</a></li>
+        <li><a href="https://www.flexjobs.com/remote-jobs/company/sardine_ai" target="_blank">Sardine AI remote jobs — FlexJobs</a></li>
+        <li><a href="https://www.glassdoor.com/Reviews/Sardine-Reviews-E7044956.htm" target="_blank">Glassdoor employee reviews — Sardine</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 — COMPENSATION -->
+  <div class="section" id="section-7">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>7. Compensation &amp; Benefits</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ Salary and equity data from community sources is self-reported and unverified. Use as a benchmark only.</div>
+
+      <h3>Salary Ranges</h3>
+      <p>No Analytics Engineer-specific salary data was found for Sardine on Levels.fyi, Glassdoor, or Himalayas. General Sardine compensation data from available sources:</p>
+      <ul>
+        <li>Company-wide total compensation reported in the range of $169,498–$184,196 (based on limited self-reported data covering Sales and Data Scientist roles)</li>
+        <li>Glassdoor rates Sardine's compensation and benefits at 4.6–4.7 out of 5 — the highest-rated dimension across all employee reviews</li>
+        <li>No salary ranges were published on the public careers page for open roles</li>
+      </ul>
+      <p>For market reference, Analytics Engineer roles in California fintech companies typically range from $140,000 to $200,000 total compensation depending on seniority, with equity adding 10–30% on top for Series C-stage companies.</p>
+
+      <h3>Equity</h3>
+      <ul>
+        <li><strong>Vesting schedule:</strong> Standard 4-year vesting with 25% annual cliff (confirmed via Levels.fyi data — Year 1: 25% upfront, then 2.08% monthly for years 2–4)</li>
+        <li><strong>Exercise window:</strong> Extended 4-year post-separation window — a notably employee-friendly term that preserves options value if you leave before an exit</li>
+        <li><strong>Type:</strong> Likely stock options (ISOs) at this stage; RSUs are more common post-IPO</li>
+        <li><strong>Valuation context:</strong> $660M implied valuation at Series C (Feb 2025); equity upside depends on future exit value</li>
+      </ul>
+
+      <h3>Benefits Highlights</h3>
+      <ul>
+        <li>100% employer-paid health, dental, and vision for employees</li>
+        <li>Uncapped PTO plus company-wide year-end break</li>
+        <li>401(k) with 4% company match — above average for a startup of this size</li>
+        <li>Home office equipment budget (MacBook + stipend)</li>
+        <li>Monthly meal and fitness stipends</li>
+      </ul>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.levels.fyi/companies/sardine/salaries" target="_blank">Sardine salaries — Levels.fyi</a></li>
+        <li><a href="https://www.glassdoor.com/Salary/Sardine-Salaries-E7044956.htm" target="_blank">Sardine salaries — Glassdoor</a></li>
+        <li><a href="https://www.sardine.ai/careers" target="_blank">Benefits — Sardine Careers page</a></li>
+        <li><a href="https://himalayas.app/companies/sardine/salaries" target="_blank">Sardine remote salaries — Himalayas</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 8 — INTERVIEW EXPERIENCE -->
+  <div class="section" id="section-8">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>8. Interview Experience</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ All interview reports are self-reported by candidates and unverified.</div>
+      <p>Limited public data is available on Sardine's interview process. The following reflects what was found across Glassdoor, TeamBlind, and Sardine's own engineering blog:</p>
+      <h3>Process Structure (General Roles)</h3>
+      <ul>
+        <li><strong>Round 1:</strong> Recruiter screen (video call, company overview and background)</li>
+        <li><strong>Round 2:</strong> Hiring manager interview</li>
+        <li><strong>Round 3:</strong> Team panel interviews</li>
+        <li><strong>Round 4:</strong> Take-home assignment followed by a Zoom review session</li>
+        <li><strong>Round 5:</strong> Final round with Head of Talent and/or a C-suite executive</li>
+      </ul>
+      <h3>Technical Interview Approach (Engineering Roles)</h3>
+      <p>Sardine published a blog post in 2025 about their updated interview philosophy. Key points:</p>
+      <ul>
+        <li>Use of AI assistants and search engines is explicitly <strong>encouraged</strong> during technical interviews — a deliberate departure from traditional closed-book formats</li>
+        <li>Problems are real-world, not algorithmic puzzles (e.g., given an API accepting payment transactions, implement a risk-scoring model)</li>
+        <li>Evaluates practical judgment and domain thinking over whiteboard-style coding performance</li>
+      </ul>
+      <p>For an Analytics Engineer role, expect SQL proficiency tests, data modeling scenarios, and likely a take-home case study involving fraud or payments data.</p>
+      <h3>Red Flags Reported</h3>
+      <p>No reports of ghosting, offer rescissions, or bait-and-switch behaviour were found across any platform. One Glassdoor review described the process positively, noting the company "takes time to explain company direction" during interviews.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.glassdoor.com/Interview/Sardine-Interview-Questions-E7044956.htm" target="_blank">Sardine interview questions — Glassdoor</a></li>
+        <li><a href="https://www.sardine.ai/engineering-blogs/reimagining-technical-interviews-in-the-age-of-ai" target="_blank">Reimagining Technical Interviews in the Age of AI — Sardine engineering blog</a></li>
+        <li><a href="https://www.teamblind.com/company/Sardine" target="_blank">Sardine — TeamBlind company page</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 9 — VISA SPONSORSHIP -->
+  <div class="section" id="section-9">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>9. Visa &amp; Immigration Sponsorship</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <p><strong>Sardine (Sardineai Corp) does sponsor H-1B visas.</strong> The company has an active track record of filing labor condition applications for foreign workers.</p>
+      <ul>
+        <li><strong>H-1B LCAs filed:</strong> 14 Labor Condition Applications during fiscal years 2022–2024</li>
+        <li><strong>Green card LCs filed:</strong> 2 Labor Certifications during the same period (1 was denied or withdrawn)</li>
+        <li><strong>Employer rank:</strong> #12,294 among all US visa sponsors — consistent with a company of ~200 employees</li>
+        <li><strong>Sponsorship path:</strong> H-1B specialty occupation visa is the primary route for analytics and engineering roles in California. Sardine's remote-first model means candidates are not tied to a specific office location.</li>
+        <li><strong>Green card sponsorship:</strong> The 2 LC filings suggest Sardine has supported at least some employees through the PERM green card process, though volume is low at this company size.</li>
+      </ul>
+      <p>If you require H-1B sponsorship, confirm with the recruiter early in the process. Given the current US H-1B lottery system, timing and cap availability are important variables beyond the employer's control.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.myvisajobs.com/Visa-Sponsor/Sardineai-Corp/1437419.htm" target="_blank">Sardineai Corp H-1B sponsorship data — MyVisaJobs</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 10 — PRODUCT HEALTH -->
+  <div class="section" id="section-10">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>10. Product &amp; Market Health</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <p>Sardine is a B2B SaaS platform; its product health is assessed through enterprise customer reviews, client outcomes, and market position — not consumer app stores.</p>
+      <h3>G2 Reviews</h3>
+      <p>Sardine has a dedicated G2 profile with positive enterprise customer reviews. Key themes from verified customers:</p>
+      <ul>
+        <li><strong>Strengths:</strong> Highly customizable; provides granular data on customer behavior; exceptional customer support; measurably reduces fraud losses and manual review time</li>
+        <li><strong>Critiques:</strong> Complex initial setup can be overwhelming for non-technical teams; learning curve for new users without fraud domain expertise</li>
+      </ul>
+      <h3>Customer Outcomes (Verified via Series C press release)</h3>
+      <ul>
+        <li>A tier-1 bank prevented 42% of wire fraud using Sardine's Sonar network</li>
+        <li>A commercial neobank reduced chargeback losses by 70%</li>
+        <li>A global marketplace saved 15,000 hours annually in manual review</li>
+        <li>A cross-border remittance provider cut manual reviews by over 85%</li>
+      </ul>
+      <h3>Market Position</h3>
+      <ul>
+        <li>300+ enterprise customers across 70 countries; customer base doubled in 2024</li>
+        <li>Named to Forbes' Next Billion Dollar Companies list and LinkedIn's Top 20 Startups (2023)</li>
+        <li>Nacha Preferred Partner (a meaningful endorsement in the ACH payments industry)</li>
+        <li>Sonar Consortium: Sardine runs a shared fraud intelligence network across its customer base — a network-effect moat that strengthens with scale</li>
+        <li>Competitors include Socure ($744M funded), Sift ($156M), SentiLink ($84M), and Unit21 ($92M) — Sardine is outgunned on total funding but differentiates on crypto-native and instant payment use cases</li>
+      </ul>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.g2.com/products/sardine/reviews" target="_blank">Sardine reviews — G2</a></li>
+        <li><a href="https://www.sardine.ai/blog/series-c-announcement" target="_blank">Series C customer outcome data — sardine.ai</a></li>
+        <li><a href="https://www.nacha.org/content/sardine" target="_blank">Sardine — Nacha Preferred Partner</a></li>
+        <li><a href="https://research.contrary.com/company/sardine" target="_blank">Competitive landscape — Contrary Research</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 11 — COMPANY PROFILE -->
+  <div class="section" id="section-11">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>11. Company Profile &amp; History</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>What They Do</h3>
+      <p>Sardine is an AI-powered risk platform for fraud, compliance, and credit — purpose-built for fintechs, banks, crypto platforms, and marketplaces. The platform consolidates fragmented data signals (device intelligence, behavioral biometrics, transaction patterns, identity data) into a unified risk-scoring engine to detect and prevent fraud, money laundering, and account abuse in real time.</p>
+      <p>Products include: instant ACH payment protection, account-opening fraud detection, AML transaction monitoring, case management, and the Sonar Consortium (a shared fraud intelligence network). The company's name is a reference to Suspicious Activity Reports (SARs) — the regulatory filings used in financial crime compliance.</p>
+
+      <h3>Key Milestones</h3>
+      <ul>
+        <li><strong>February 2020:</strong> Founded by Soups Ranjan, Aditya Goel, and Zahid Shaikh — all former Revolut colleagues</li>
+        <li><strong>February 2022:</strong> Series A ($19.5M, a16z). Team at approximately 50 clients by this point.</li>
+        <li><strong>September 2022:</strong> Series B ($51.5M, a16z). Grew from 50 to 135+ clients in 7 months.</li>
+        <li><strong>2023:</strong> Named Forbes Next Billion Dollar Companies and LinkedIn Top 20 Startups. Became Nacha Preferred Partner.</li>
+        <li><strong>2024:</strong> 130% ARR growth; customer base doubled; 2.2 billion devices profiled</li>
+        <li><strong>February 2025:</strong> Series C ($70M, Activant Capital). Total raised: $145M. Valuation ~$660M. 300+ enterprise customers across 70 countries.</li>
+        <li><strong>2025–2026:</strong> Team reaches 200+ employees across 15+ countries; Experian UK partnership announced</li>
+      </ul>
+      <p><strong>Headquarters:</strong> Miami, FL (US). Additional offices: North York, ON (Canada); Vilnius, Lithuania (Europe). Engineers and analysts are distributed globally.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.sardine.ai/about" target="_blank">Sardine About — sardine.ai</a></li>
+        <li><a href="https://www.sardine.ai/blog/series-c-announcement" target="_blank">Series C announcement — sardine.ai</a></li>
+        <li><a href="https://research.contrary.com/company/sardine" target="_blank">Sardine Business Breakdown — Contrary Research</a></li>
+        <li><a href="https://www.businesswire.com/news/home/20250211169372/en/Sardine-AI-Raises-$70M-to-Make-Fraud-and-Compliance-Teams-More-Productive" target="_blank">Series C press release — BusinessWire</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- SECTION 12 — FOUNDER BACKGROUND -->
+  <div class="section" id="section-12">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>12. Founder Background</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>Soups Ranjan — Co-Founder &amp; CEO</h3>
+      <ul>
+        <li><strong>Education:</strong> PhD in Electrical and Computer Engineering, Rice University (research focus: scaling web services to withstand denial-of-service attacks)</li>
+        <li><strong>Prior roles:</strong> Head of Risk at Coinbase (designed and scaled fraud, compliance, and identity systems through 1,000x customer growth during the 2020–2021 crypto boom); Head of Financial Crime at Revolut</li>
+        <li><strong>Public profile:</strong> Regularly featured in fintech media, McKinsey interviews, Visa founder spotlight, and AML Intelligence speaking engagements. Considered a recognised voice in financial crime prevention.</li>
+        <li><strong>Controversies:</strong> None found.</li>
+      </ul>
+      <h3>Aditya Goel — Co-Founder &amp; COO</h3>
+      <ul>
+        <li><strong>Background:</strong> Former Revolut colleague of Soups Ranjan; led payment products at Sardine from founding</li>
+        <li><strong>Controversies:</strong> None found.</li>
+      </ul>
+      <h3>Zahid Shaikh — Co-Founder &amp; CPO</h3>
+      <ul>
+        <li><strong>Background:</strong> Former Revolut colleague; led risk products at Sardine from founding</li>
+        <li><strong>Controversies:</strong> None found.</li>
+      </ul>
+      <p>All three founders have deep, directly relevant domain expertise from tier-1 fintech companies. The founding team is unusually well-matched to Sardine's product category — not career entrepreneurs pivoting into fraud, but practitioners who built the infrastructure they are now commercialising.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.rblt.com/fintech-summit-biography/soups-ranjan" target="_blank">Soups Ranjan biography — RBLT Fintech Summit</a></li>
+        <li><a href="https://regulationinnovation.org/podcast/fighting-financial-crime-sardine-ceo-soups-ranjan/" target="_blank">Fighting Financial Crime podcast — Alliance for Innovative Regulation</a></li>
+        <li><a href="https://corporate.visa.com/en/sites/visa-perspectives/trends-insights/fintech-founder-soups-ranjan-sardine.html" target="_blank">Ask a fintech founder: Soups Ranjan — Visa</a></li>
+        <li><a href="https://www.mckinsey.com/industries/financial-services/our-insights/talking-with-soups-ranjan-cofounder-and-ceo-of-sardineai" target="_blank">Talking with Soups Ranjan, CEO of SardineAI — McKinsey</a></li>
+        <li><a href="https://research.contrary.com/company/sardine" target="_blank">Sardine founding story — Contrary Research</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>Disclaimer</strong><br>
+    This report is for informational purposes only. It is not financial, legal, or career advice.
+    Culture and interview data is sourced from unverified community posts. Financial data may be
+    incomplete or outdated. Legal summaries are not a substitute for consulting a qualified attorney.
+    Always conduct your own due diligence.<br><br>
+    Generated by Claude Code &nbsp;·&nbsp; 2026-04-15
+  </div>
+
+</div>
+
+<script>
+  function toggle(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.chevron');
+    body.classList.toggle('hidden');
+    chevron.classList.toggle('open');
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.dataset.theme = html.dataset.theme === 'dark' ? '' : 'dark';
+    localStorage.setItem('theme', html.dataset.theme);
+  }
+
+  function openSection(section) {
+    if (!section) return;
+    const header = section.querySelector('.section-header');
+    const body = header ? header.nextElementSibling : null;
+    const chevron = header ? header.querySelector('.chevron') : null;
+    if (body && body.classList.contains('hidden')) body.classList.remove('hidden');
+    if (chevron) chevron.classList.add('open');
+  }
+
+  function jumpToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    openSection(section);
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function getSeverityRank(element) {
+    if (!element) return 99;
+    if (element.querySelector('.badge-red, .badge-red-pill')) return 0;
+    if (element.querySelector('.badge-yellow, .badge-yellow-pill')) return 1;
+    if (element.querySelector('.badge-green, .badge-green-pill')) return 2;
+    if (element.querySelector('.badge-grey, .badge-grey-pill')) return 3;
+    return 99;
+  }
+
+  function renumberSections() {
+    document.querySelectorAll('.section').forEach((section, index) => {
+      const titleText = section.querySelector('.section-title span:first-child');
+      if (!titleText) return;
+      const cleanTitle = titleText.textContent.replace(/^\d+\.\s*/, '');
+      titleText.textContent = `${index + 1}. ${cleanTitle}`;
+    });
+  }
+
+  function sortBySeverity() {
+    const summary = document.querySelector('.summary');
+    const sections = Array.from(document.querySelectorAll('.section'));
+    const footer = document.querySelector('.footer');
+    if (summary) {
+      Array.from(summary.children)
+        .sort((a, b) => getSeverityRank(a) - getSeverityRank(b))
+        .forEach(item => summary.appendChild(item));
+    }
+    sections
+      .sort((a, b) => getSeverityRank(a) - getSeverityRank(b))
+      .forEach(section => {
+        if (footer) { footer.before(section); } else { section.parentNode.appendChild(section); }
+      });
+    renumberSections();
+  }
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+  sortBySeverity();
+
+  document.querySelectorAll('.badge-red-pill').forEach(badge => {
+    const header = badge.closest('.section-header');
+    if (header) {
+      header.nextElementSibling.classList.remove('hidden');
+      header.querySelector('.chevron').classList.add('open');
+    }
+  });
+
+  document.querySelectorAll('.summary-item[data-target]').forEach(item => {
+    item.addEventListener('click', () => jumpToSection(item.dataset.target));
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        jumpToSection(item.dataset.target);
+      }
+    });
+  });
+</script>
+</body>
+</html>

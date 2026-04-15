@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/simona/.claude/**)",
+      "WebSearch",
+      "WebFetch(domain:www.glassdoor.com)",
+      "WebFetch(domain:www.sardine.ai)",
+      "WebFetch(domain:research.contrary.com)",
+      "WebFetch(domain:www.levels.fyi)",
+      "WebFetch(domain:www.myvisajobs.com)",
+      "WebFetch(domain:www.g2.com)",
+      "WebFetch(domain:www.teamblind.com)",
+      "Bash(cp \"/Users/simona/.claude/commands/bg-check.md\" \"/Users/simona/.claude/commands/KnowYourCompany.md\")",
+      "Bash(rm \"/Users/simona/.claude/commands/bg-check.md\")"
+    ],
+    "additionalDirectories": [
+      "/Users/simona/.claude/commands"
+    ]
+  }
+}
