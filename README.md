@@ -1,77 +1,96 @@
 # KnowYourCompany
 
-A Claude Code skill that researches a company and generates a polished, self-contained HTML background check report.
+**Stop wasting interviews on companies that are quietly falling apart.**
 
-Point it at a company name. Get back a single offline HTML report covering layoffs, financial health, leadership stability, legal risk, culture, compensation, interview experience, visa sponsorship, product health, company history, and founder background.
+KnowYourCompany is a Claude Code skill that researches a company and generates a structured, offline HTML report — in about 2 minutes — so you know what you're walking into before you spend weeks in a hiring process.
 
-## Who Is This For?
+---
 
-People doing practical diligence before:
+## Why this exists
 
-- joining a company
-- entering an interview process
-- accepting an offer
-- investing in or partnering with a startup
+Job searches are exhausting. You apply, you prep, you interview — and then you find out the company had layoffs last month, is drowning in lawsuits, or has a culture that burns people out in six months.
 
-The report is designed for someone who wants signal quickly, not a pile of scattered tabs.
+This tool is built for candidates who want **signal before they commit their time**.
 
-## What The Output Looks Like
+---
 
-The output is a single HTML file with:
+## What it covers
 
-- a top-level risk summary grid
-- collapsible sections with severity badges
-- inline citations to public sources
-- a plain-English finance interpretation
-- dark mode support
-- responsive layout and print-friendly styling
+Each report analyzes 12 areas, automatically ranked by severity:
 
-## How To Use
+| Area | What it looks for |
+|---|---|
+| Layoffs | Recent cuts, headcount reductions, affected teams |
+| Financial health | Funding rounds, runway signals, revenue trajectory |
+| Leadership | C-suite turnover, founder involvement, recent exits |
+| Legal & regulatory | Lawsuits, class actions, regulatory enforcement |
+| Culture | Glassdoor, Blind, Reddit — recurring themes |
+| Remote / hybrid policy | Official policy and recent RTO changes |
+| Compensation | Salary ranges, equity type, benefits signals |
+| Interview experience | Number of rounds, ghosting reports, offer rescissions |
+| Visa sponsorship | Country-specific sponsorship programs and status |
+| Product & market health | Ratings, growth signals, major incidents |
+| Company history | Founding, milestones, business model, headcount |
+| Founder background | Prior companies, notable achievements, controversies |
 
-### As a Claude Code skill
+---
 
-1. Copy this folder into `~/.claude/skills/`
+## What you get
+
+A single HTML file that opens in any browser — no login, no internet required after download.
+
+- Severity map at the top so the biggest concerns are immediately visible
+- Red / yellow / green / grey badges per section
+- Collapsible sections with cited sources
+- Dark mode
+- Sections auto-sorted so red flags appear first
+
+---
+
+## How to use it
+
+### Requirements
+
+- [Claude Code](https://claude.ai/code)
+- Web search enabled
+
+### Setup
+
+1. Copy this folder into `~/.claude/commands/`
 2. Open Claude Code
-3. Ask for a company background check
+3. Type `/KnowYourCompany`
 
 ### Trigger phrases
 
-- "Do a background check on this company"
+- "Do a background check on [company]"
 - "Research this employer before I interview"
-- "Make a company diligence report"
 - "Check this startup before I join"
 - "Generate a company risk report"
 
-## Skill Structure
+Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
+
+---
+
+## What it is NOT
+
+- Not a stock screener or investment tool
+- Not for financial modeling or valuation
+- Not a substitute for legal or financial advice
+
+This is built for one thing: **helping you decide where to spend your time**.
+
+---
+
+## Repo structure
 
 ```text
 KnowYourCompany/
-├── SKILL.md
+├── SKILL.md              — skill definition and research logic
 ├── README.md
-├── PRD.md
-├── examples/
-│   └── Poki_bg_check_2026-04-15.html
-└── references/
-    ├── styles.css
-    └── template.html
+├── references/
+│   ├── template.html     — report HTML skeleton
+│   └── styles.css        — visual source of truth
+└── examples/
+    ├── Sardine_bg_check_2026-04-15.html
+    └── Poki_bg_check_2026-04-15.html
 ```
-
-## Repo Notes
-
-- `SKILL.md` is the canonical skill entrypoint.
-- `references/template.html` defines the report structure.
-- `references/styles.css` is the visual source of truth for the generated report.
-- `examples/` contains sample output, not source logic.
-- `PRD.md` contains the longer product and scope spec.
-
-## Requirements
-
-- Claude Code
-- Web search capability
-- Permission to fetch source pages during research
-
-## Publish Checklist
-
-- Add a `LICENSE`
-- Test the skill once from a clean `~/.claude/skills/` install
-- Decide whether to keep or remove the sample report before publishing
