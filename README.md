@@ -16,7 +16,7 @@ The old version delegated almost everything to one Claude prompt. The refactor m
 6. Compact evidence packet creation per section
 7. Claude section analysis on structured packets only
 8. Small final-summary Claude call
-9. Late translation and deterministic HTML rendering in code
+9. Late translation of final user-facing prose and deterministic HTML rendering in code
 
 Claude no longer fills HTML templates, inlines CSS, or reviews full raw pages by default.
 
@@ -26,7 +26,7 @@ Claude no longer fills HTML templates, inlines CSS, or reviews full raw pages by
 - One monolithic prompt is replaced by short section-specific prompts
 - Search, recency filtering, dedupe, and rendering happen outside Claude
 - Cached fetches, packets, and section analyses prevent repeated model work
-- Translation happens late on user-facing prose instead of repeatedly inside retrieval and analysis
+- Translation happens late on final user-facing prose instead of repeatedly inside retrieval and analysis
 
 ## Quality safeguards
 
@@ -36,6 +36,7 @@ Claude no longer fills HTML templates, inlines CSS, or reviews full raw pages by
 - Legal retains an informational disclaimer
 - Finance still includes a plain-English explanation
 - The final report stays self-contained and offline-safe
+- Final summary and section prose can now be translated late when `outputLanguage` differs from the canonical working language
 
 ## Caching
 
@@ -66,6 +67,8 @@ Prompts are split under `src/prompts/`:
 - one final-summary prompt
 
 Each prompt consumes structured evidence only and returns structured JSON.
+
+Late-stage translation is handled after section analysis and final-summary synthesis. Fixed UI labels are localized through a built-in dictionary for supported languages.
 
 ## Usage
 

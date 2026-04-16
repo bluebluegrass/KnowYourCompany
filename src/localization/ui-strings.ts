@@ -8,7 +8,7 @@ export interface UiStrings {
 
 export function createUiStrings(outputLanguage: string): UiStrings {
   const lang = languageToHtmlLang(outputLanguage);
-  const dictionary = FIXED_LABELS.en;
+  const dictionary = FIXED_LABELS[lang as keyof typeof FIXED_LABELS] || FIXED_LABELS.en;
   return {
     badgeLabel(key) {
       return dictionary[key];

@@ -23,4 +23,4 @@ Expected token savings:
 Tradeoffs:
 - more code and configuration surface
 - retrieval quality now depends on the code-managed search/fetch layer
-- multilingual quality is strongest when compact snippet translation is available for non-English evidence
+- current multilingual support translates the final summary and section prose late, plus fixed UI labels; evidence normalization across languages is still a follow-up area rather than a finished claim of full multilingual parity

@@ -8,7 +8,7 @@ import { RunLogger } from "../logging/run-logger.js";
 import { AnthropicClient, type ModelClient } from "../model/anthropic-client.js";
 import { SectionAnalyzer } from "../model/section-analyzer.js";
 import { normalizeEvidenceToCanonicalLanguage } from "../localization/canonicalizer.js";
-import { PassthroughTranslator, type Translator } from "../localization/translator.js";
+import { ModelTranslator, PassthroughTranslator, type Translator } from "../localization/translator.js";
 import { loadTemplate } from "../render/template-loader.js";
 import { renderReport } from "../render/report-renderer.js";
 import { Fetcher } from "../retrieval/fetcher.js";
@@ -29,7 +29,7 @@ export async function runReport(
   const logger = dependencies.logger || new RunLogger();
   const cache = new FileCache(path.join(process.cwd(), ".cache"), logger);
   const model = dependencies.model || new AnthropicClient(logger);
-  const translator = dependencies.translator || new PassthroughTranslator();
+  const translator = dependencies.translator || new ModelTranslator(model, cache);
   const analyzer = new SectionAnalyzer(model, cache);
   const searchClient = new SearchClient();
   const fetcher = new Fetcher(cache);
@@ -76,14 +76,24 @@ export async function runReport(
   }
 
   const verdict = await analyzer.summarize(context.company, sections);
+  const localizedBundle = await translator.translateTextBundle(
+    {
+      summary: verdict,
+      sections
+    },
+    {
+      canonicalLanguage: context.canonicalLanguage,
+      outputLanguage: context.outputLanguage
+    }
+  );
   const report: ReportModel = {
     company: context.company,
     date: context.now.slice(0, 10),
     outputLanguage: context.outputLanguage,
     ...(context.location ? { location: context.location } : {}),
     ...(context.role ? { role: context.role } : {}),
-    verdict,
-    sections: sections.sort((left, right) => severityOrder(left.severity) - severityOrder(right.severity)),
+    verdict: localizedBundle.summary,
+    sections: localizedBundle.sections.sort((left, right) => severityOrder(left.severity) - severityOrder(right.severity)),
     sources: sourceRegistry
   };
 
