@@ -97,7 +97,7 @@ This is built for one thing: **helping you decide where to spend your time**.
 
 ```text
 KnowYourCompany/
-├── SKILL.md              — skill definition and research logic
+├── KnowYourCompany.md    — the skill (copy this folder to ~/.claude/commands/)
 ├── README.md
 ├── .env.example
 ├── package.json

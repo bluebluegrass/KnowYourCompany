@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一舟一课 — KnowYourCompany 调研报告</title>
+<style>
+/* ============================================================
+   KnowYourCompany — Shared Stylesheet
+   ============================================================ */
+:root {
+  --bg: #f3efe6;
+  --bg-accent: #e6ddce;
+  --surface: rgba(255, 251, 245, 0.9);
+  --surface-strong: #fffdf8;
+  --surface-muted: rgba(248, 242, 231, 0.82);
+  --border: rgba(87, 70, 50, 0.16);
+  --border-strong: rgba(87, 70, 50, 0.28);
+  --text: #221d18;
+  --muted: #6f655a;
+  --accent: #7d2f24;
+  --accent-soft: #ead7cb;
+  --shadow: 0 22px 60px rgba(57, 41, 27, 0.12);
+  --green: #1d6a43;
+  --green-bg: rgba(29, 106, 67, 0.1);
+  --green-border: rgba(29, 106, 67, 0.25);
+  --yellow: #9a6a00;
+  --yellow-bg: rgba(154, 106, 0, 0.12);
+  --yellow-border: rgba(154, 106, 0, 0.28);
+  --red: #a13324;
+  --red-bg: rgba(161, 51, 36, 0.11);
+  --red-border: rgba(161, 51, 36, 0.3);
+  --grey: #6b6762;
+  --grey-bg: rgba(107, 103, 98, 0.12);
+  --grey-border: rgba(107, 103, 98, 0.24);
+}
+[data-theme="dark"] {
+  --bg: #161311;
+  --bg-accent: #201b18;
+  --surface: rgba(35, 29, 25, 0.9);
+  --surface-strong: #2b241f;
+  --surface-muted: rgba(45, 37, 32, 0.84);
+  --border: rgba(225, 210, 192, 0.12);
+  --border-strong: rgba(225, 210, 192, 0.22);
+  --text: #f3ece3;
+  --muted: #b7ab9f;
+  --accent: #d58b72;
+  --accent-soft: rgba(213, 139, 114, 0.18);
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  --green: #72d7a1;
+  --green-bg: rgba(114, 215, 161, 0.13);
+  --green-border: rgba(114, 215, 161, 0.28);
+  --yellow: #efbe55;
+  --yellow-bg: rgba(239, 190, 85, 0.14);
+  --yellow-border: rgba(239, 190, 85, 0.28);
+  --red: #f08d79;
+  --red-bg: rgba(240, 141, 121, 0.14);
+  --red-border: rgba(240, 141, 121, 0.3);
+  --grey: #beb5ae;
+  --grey-bg: rgba(190, 181, 174, 0.12);
+  --grey-border: rgba(190, 181, 174, 0.2);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(125, 47, 36, 0.08), transparent 28rem),
+    radial-gradient(circle at top right, rgba(154, 106, 0, 0.08), transparent 22rem),
+    linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 82%, var(--bg-accent)) 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-underline-offset: 0.18em; }
+a:hover { text-decoration-color: currentColor; }
+.container { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(1.2rem, 2vw, 2rem) 0 4rem; }
+.header {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem); margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--surface-strong) 76%, var(--accent-soft)) 0%, var(--surface) 100%);
+  border: 1px solid var(--border-strong); border-radius: 28px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.header::after {
+  content: ""; position: absolute; inset: auto -8% -45% auto; width: 18rem; height: 18rem; border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 68%); pointer-events: none;
+}
+.header-copy { position: relative; z-index: 1; max-width: 52rem; }
+.eyebrow { margin-bottom: 0.8rem; color: var(--accent); font-size: 0.76rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; }
+.header-title h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.3rem, 5vw, 4.8rem); line-height: 0.95; font-weight: 700; letter-spacing: -0.02em; max-width: 10ch; }
+.header-dek { margin-top: 0.9rem; max-width: 44rem; color: color-mix(in srgb, var(--text) 82%, var(--muted)); font-size: clamp(1rem, 1.8vw, 1.1rem); }
+.header-meta { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 1rem; }
+.meta-chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.48rem 0.72rem; background: var(--surface-muted); border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: 0.78rem; }
+.meta-chip strong { color: var(--text); font-weight: 700; }
+.header-lede { margin-top: 1rem; max-width: 40rem; color: var(--muted); font-size: 0.94rem; }
+.header-actions { position: relative; z-index: 1; }
+.theme-btn { appearance: none; border: 1px solid var(--border-strong); background: color-mix(in srgb, var(--surface-strong) 88%, transparent); color: var(--text); border-radius: 999px; padding: 0.8rem 1rem; cursor: pointer; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em; transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease; }
+.theme-btn:hover { transform: translateY(-1px); border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 65%, var(--surface-strong)); }
+.summary-shell { margin-bottom: 1.5rem; }
+.summary-intro { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 0.8rem; }
+.summary-intro h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.25rem, 2.2vw, 1.7rem); letter-spacing: -0.02em; }
+.summary-intro p { max-width: 36rem; color: var(--muted); font-size: 0.88rem; }
+.summary { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0.8rem; }
+.summary-item { grid-column: span 3; min-height: 7.25rem; background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 78%, transparent), var(--surface)); border: 1px solid var(--border); border-radius: 22px; padding: 1.2rem 1rem 0.95rem; box-shadow: 0 10px 24px rgba(57, 41, 27, 0.06); position: relative; overflow: hidden; }
+.summary-item::before { content: ""; position: absolute; inset: 0.55rem 0.85rem auto; height: 5px; border-radius: 999px; background: var(--border-strong); }
+.summary-item.is-clickable { cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+.summary-item.is-clickable:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(57, 41, 27, 0.12); border-color: var(--border-strong); }
+.summary-item.is-clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.summary-item:has(.badge-red)::before { background: linear-gradient(90deg, var(--red), color-mix(in srgb, var(--red) 45%, transparent)); }
+.summary-item:has(.badge-yellow)::before { background: linear-gradient(90deg, var(--yellow), color-mix(in srgb, var(--yellow) 45%, transparent)); }
+.summary-item:has(.badge-green)::before { background: linear-gradient(90deg, var(--green), color-mix(in srgb, var(--green) 45%, transparent)); }
+.summary-item:has(.badge-grey)::before { background: linear-gradient(90deg, var(--grey), color-mix(in srgb, var(--grey) 45%, transparent)); }
+.summary-item .label { max-width: 10ch; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.02em; }
+.summary-item .badge { display: inline-block; margin-top: 1rem; font-family: Georgia, "Times New Roman", serif; font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+.badge-green { color: var(--green); }
+.badge-yellow { color: var(--yellow); }
+.badge-red { color: var(--red); }
+.badge-grey { color: var(--grey); }
+.section { margin-bottom: 1rem; background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 74%, transparent), var(--surface)); border: 1px solid var(--border); border-radius: 26px; overflow: hidden; box-shadow: 0 18px 44px rgba(57, 41, 27, 0.08); }
+.section-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.15rem 1.35rem; cursor: pointer; user-select: none; background: linear-gradient(180deg, color-mix(in srgb, var(--surface-muted) 72%, transparent), transparent); }
+.section-header:hover { background: color-mix(in srgb, var(--accent-soft) 26%, var(--surface-muted)); }
+.section-title { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-size: 1rem; }
+.section-title span:first-child { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 700; letter-spacing: -0.01em; }
+.section-badge { display: inline-flex; align-items: center; padding: 0.32rem 0.7rem; border-radius: 999px; font-size: 0.73rem; font-weight: 700; letter-spacing: 0.04em; }
+.badge-green-pill { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.badge-yellow-pill { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+.badge-red-pill { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.badge-grey-pill { background: var(--grey-bg); color: var(--grey); border: 1px solid var(--grey-border); }
+.chevron { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 999px; background: var(--surface-muted); border: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; transition: transform 0.22s ease, background 0.22s ease, color 0.22s ease; }
+.section-header:hover .chevron { color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 72%, var(--surface-muted)); }
+.chevron.open { transform: rotate(180deg); }
+.section-body { padding: 0 1.35rem 1.35rem; border-top: 1px solid var(--border); }
+.section-body.hidden { display: none; }
+.section-body h3 { margin: 1.2rem 0 0.55rem; color: var(--muted); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.section-body p, .section-body li { font-size: 0.98rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul { padding-left: 1.15rem; }
+.section-body ul li + li { margin-top: 0.45rem; }
+.plain-english { margin: 1rem 0; padding: 1rem 1.05rem; background: linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 78%, var(--surface-strong)), color-mix(in srgb, var(--surface-strong) 80%, transparent)); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 20px; color: color-mix(in srgb, var(--text) 88%, var(--accent)); }
+[data-theme="dark"] .plain-english { color: color-mix(in srgb, var(--text) 92%, var(--accent)); }
+.plain-english strong { display: block; margin-bottom: 0.45rem; color: var(--accent); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.disclaimer { margin: 1rem 0; padding: 0.9rem 1rem; border: 1px solid var(--yellow-border); border-radius: 18px; background: var(--yellow-bg); color: color-mix(in srgb, var(--yellow) 78%, var(--text)); font-size: 0.86rem; }
+.alert-box { margin: 1rem 0; padding: 0.9rem 1rem; border: 1px solid var(--red-border); border-radius: 18px; background: var(--red-bg); color: color-mix(in srgb, var(--red) 78%, var(--text)); font-size: 0.86rem; }
+.rating-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; margin: 0.5rem 0; padding: 0.8rem 0.95rem; border-radius: 16px; background: var(--surface-muted); border: 1px solid var(--border); }
+.stars { color: #c78d19; letter-spacing: -0.08em; }
+.rating-label { color: var(--muted); font-size: 0.83rem; }
+.timeline { position: relative; margin: 0.8rem 0 0.2rem; padding-left: 1.4rem; }
+.timeline::before { content: ""; position: absolute; left: 0.35rem; top: 0.2rem; bottom: 0.2rem; width: 2px; background: linear-gradient(180deg, var(--accent-soft), color-mix(in srgb, var(--accent) 28%, transparent)); }
+.timeline-item { position: relative; margin-bottom: 1rem; padding: 0.1rem 0 0.1rem 0.35rem; }
+.timeline-item::before { content: ""; position: absolute; left: -1.18rem; top: 0.42rem; width: 0.72rem; height: 0.72rem; border-radius: 999px; background: var(--surface-strong); border: 2px solid var(--accent); }
+.timeline-item .round { display: block; font-weight: 700; }
+.timeline-item .round-meta { color: var(--muted); font-size: 0.84rem; }
+.sources { margin-top: 1rem; padding-top: 0.95rem; border-top: 1px dashed var(--border-strong); }
+.sources p { margin-bottom: 0.5rem; color: var(--muted); font-size: 0.73rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.sources ul { padding-left: 1rem; }
+.sources li { font-size: 0.86rem; }
+.verdict { margin-bottom: 1.5rem; padding: clamp(1.1rem, 2vw, 1.5rem) clamp(1.2rem, 2vw, 1.75rem); background: linear-gradient(135deg, color-mix(in srgb, var(--surface-strong) 80%, var(--accent-soft)) 0%, var(--surface) 100%); border: 1px solid var(--border-strong); border-radius: 26px; box-shadow: 0 14px 36px rgba(57, 41, 27, 0.09); }
+.verdict-label { margin-bottom: 0.6rem; color: var(--accent); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+.verdict-text { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1rem, 1.6vw, 1.15rem); line-height: 1.8; color: color-mix(in srgb, var(--text) 90%, var(--muted)); max-width: 72ch; }
+.verdict-flags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.verdict-flag { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.38rem 0.72rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+.verdict-flag.red    { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-border); }
+.verdict-flag.yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+.verdict-flag.green  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
+.footer { margin-top: 2rem; padding: 1.25rem 1.35rem; border: 1px solid var(--border); border-radius: 24px; background: linear-gradient(180deg, var(--surface), var(--surface-muted)); color: var(--muted); font-size: 0.83rem; line-height: 1.75; box-shadow: 0 16px 36px rgba(57, 41, 27, 0.08); }
+@media print { .theme-btn { display: none; } .section-body.hidden { display: block !important; } .section-header { cursor: default; } body { background: white; color: black; } }
+@media (max-width: 900px) { .summary-item { grid-column: span 4; } }
+@media (max-width: 680px) { .container { width: min(100% - 1rem, 100%); } .header { grid-template-columns: 1fr; border-radius: 22px; } .header-title h1 { max-width: none; } .summary-intro { flex-direction: column; align-items: start; } .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } .summary-item { grid-column: span 1; min-height: 6.5rem; } .section-header, .section-body, .footer { padding-left: 1rem; padding-right: 1rem; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── 页头 ── -->
+  <div class="header">
+    <div class="header-copy">
+      <p class="eyebrow">KnowYourCompany</p>
+      <div class="header-title">
+        <h1>一舟一课</h1>
+      </div>
+      <p class="header-dek">一舟一课是由网红李一舟创建的微信小程序（现已被暂停），用于销售AI课程。它不是一家传统意义上的企业——没有正式的员工岗位。</p>
+      <div class="header-meta">
+        <span class="meta-chip"><strong>生成日期</strong> 2026年4月16日</span>
+        <span class="meta-chip"><strong>地点</strong> 中国</span>
+        <span class="meta-chip"><strong>平台状态</strong> 已于2024年2月被暂停</span>
+      </div>
+      <p class="header-lede">红色板块标示实质性风险。在考虑与该主体产生任何关联之前，请优先阅读"法律风险"和"创始人背景"两个章节。</p>
+    </div>
+    <div class="header-actions">
+      <button class="theme-btn" onclick="toggleTheme()">切换深色模式</button>
+    </div>
+  </div>
+
+  <!-- ── 核心结论 ── -->
+  <div class="verdict">
+    <p class="verdict-label">核心结论</p>
+    <p class="verdict-text">一舟一课并非一家可以入职的公司——它是由单一网红运营的微信小程序，不是具有正式员工和岗位的注册雇主。该平台于2024年2月被监管机构强制下线，遭到法律专家的消费欺诈指控，用户评价也以差评为主。创始人李一舟持有清华大学工业设计博士学位（非AI方向），在营销中主动夸大了自己的技术资质，且有多次中途放弃创业项目的前车之鉴。这一主体根本不存在可供评估的雇主属性。</p>
+    <div class="verdict-flags">
+      <span class="verdict-flag red">🚨 平台被微信强制下线（2024年2月）</span>
+      <span class="verdict-flag red">🚨 违反《即时通信工具公众信息服务管理规定》</span>
+      <span class="verdict-flag red">🚨 涉嫌违反广告法与消费者权益保护法</span>
+      <span class="verdict-flag red">🚨 创始人夸大AI资质</span>
+      <span class="verdict-flag yellow">⚠️ 涉嫌侵犯约100个AI模型的知识产权</span>
+      <span class="verdict-flag yellow">⚠️ 创始人有中途放弃前公司（12Sleep）的前例</span>
+      <span class="verdict-flag yellow">⚠️ 非注册雇主，不存在任何招聘岗位</span>
+    </div>
+  </div>
+
+  <!-- ── 风险概览 ── -->
+  <div class="summary-shell">
+    <div class="summary-intro">
+      <h2>风险概览</h2>
+      <p>点击卡片可跳转至对应章节。页面加载时各板块按风险等级自动排序。</p>
+    </div>
+    <div class="summary">
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-1"><div class="label">裁员情况</div><div class="badge badge-grey">无数据</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-2"><div class="label">财务状况</div><div class="badge badge-yellow">信号混杂</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-3"><div class="label">领导层</div><div class="badge badge-yellow">信号混杂</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-4"><div class="label">法律风险</div><div class="badge badge-red">存在问题</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-5"><div class="label">企业文化</div><div class="badge badge-grey">无数据</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-6"><div class="label">办公政策</div><div class="badge badge-grey">无数据</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-7"><div class="label">薪酬福利</div><div class="badge badge-grey">无数据</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-8"><div class="label">面试体验</div><div class="badge badge-grey">无数据</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-9"><div class="label">签证担保</div><div class="badge badge-grey">无数据</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-10"><div class="label">产品健康度</div><div class="badge badge-red">存在问题</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-11"><div class="label">公司简介</div><div class="badge badge-red">存在问题</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-12"><div class="label">创始人背景</div><div class="badge badge-red">存在问题</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第1节 — 裁员情况 ═══ -->
+  <div class="section" id="section-1">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>1. 裁员情况</span>
+        <span class="section-badge badge-grey-pill">无数据</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ 一舟一课不是传统雇主，是个人网红内容业务，"裁员"概念不适用。</div>
+      <p>未发现任何裁员数据。一舟一课没有常规意义上的员工编制，以个人创作者身份运营微信小程序。在中文及英文来源中均未发现任何人员缩减事件。</p>
+      <div class="sources"><p>来源</p><ul>
+        <li>未找到来源</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第2节 — 财务状况 ═══ -->
+  <div class="section" id="section-2">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>2. 财务状况</span>
+        <span class="section-badge badge-yellow-pill">信号混杂</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>一舟一课平台收入记录</h3>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="round">AI课程上线 — 销售额约5000万元</span>
+          <div class="round-meta">2023年 · 《每个人的人工智能课》，定价199元 · 累计销售约25万套</div>
+        </div>
+        <div class="timeline-item">
+          <span class="round">高价位课程 — 999元至2980元</span>
+          <div class="round-meta">2023—2024年 · 从199元入门课逐步向上销售，阶梯定价分别为999元、1980元、2980元</div>
+        </div>
+        <div class="timeline-item">
+          <span class="round">平台被强制下线</span>
+          <div class="round-meta">2024年2月22日 · 微信小程序"一舟一课"因违规被暂停服务 · 视频号橱窗全部课程同步下架</div>
+        </div>
+      </div>
+
+      <h3>关联主体：北京匙悟科技（12Sleep）</h3>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="round">天使轮</span>
+          <div class="round-meta">2014年 · 数百万元人民币 · 智能家居/睡眠科技（12Sleep产品）</div>
+        </div>
+        <div class="timeline-item">
+          <span class="round">Pre-A轮</span>
+          <div class="round-meta">2015年 · 数百万美元</div>
+        </div>
+        <div class="timeline-item">
+          <span class="round">A轮</span>
+          <div class="round-meta">2016年 · 领投方：启迪之星、智珠资本、夏鼎资本 · 公司随后转型，李一舟离开</div>
+        </div>
+      </div>
+
+      <h3>财务信号</h3>
+      <p>各来源对AI课程平台收入的估算存在出入。飞瓜数据显示，199元课程累计销售约25万套，毛收入约5000万元。但据报道其77%的流量来自付费广告投放，扣除广告成本后净收入可能远低于此数字。高价位课程（最高2980元）增加了部分收入，但具体数据未经核实。</p>
+      <p>该平台并非具有公开财务申报义务的注册法人主体，没有风险投资背书，无公开账目，亦无审计记录。关联的匙悟科技于2016年完成A轮融资，此后再无公开进展。</p>
+      <p>据报道，该课程77%的流量来自广告费用投入，表明尽管账面收入数字可观，实际利润空间十分有限。</p>
+
+      <div class="plain-english">
+        <strong>简明解读</strong>
+        <p>这不是一家有融资背景的初创公司或上市企业，而是一个网红通过微信小程序卖课的个人项目，且该小程序已经被关停。账面收入数字看起来不小（约5000万元以上），但其中大部分可能花在了广告投放上，现在平台已不再运营。没有资产负债表，没有机构投资方，也没有任何常规财务结构可供评估。</p>
+      </div>
+
+      <div class="sources"><p>来源</p><ul>
+        <li><a href="https://www.nbd.com.cn/articles/2024-02-22/3252143.html" target="_blank">每经网 — 卖AI课年入千万？李一舟回应，旗下课程小程序暂停服务</a></li>
+        <li><a href="https://www.nbd.com.cn/articles/2024-02-22/3252689.html" target="_blank">每经网 — 争议李一舟：到底卖了多少课，学员眼中的他是什么样的？</a></li>
+        <li><a href="https://www.itjuzi.com/person/5410" target="_blank">IT桔子 — 李一舟 / 匙悟科技融资历史</a></li>
+        <li><a href="https://www.jiemian.com/article/10834658.html" target="_blank">界面新闻 — 李一舟，被包装的"AI巨头"</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第3节 — 领导层稳定性 ═══ -->
+  <div class="section" id="section-3">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>3. 领导层稳定性</span>
+        <span class="section-badge badge-yellow-pill">信号混杂</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>现任领导层</h3>
+      <ul>
+        <li><strong>李一舟</strong> — 一舟一课创始人及唯一运营者。清华大学博士（美术学院，非AI或工程专业）。北京匙悟科技（12Sleep）联合创始人。截至2024年2月，抖音账号拥有约331万粉丝。</li>
+      </ul>
+
+      <h3>历史创业记录</h3>
+      <p>李一舟有在压力下放弃公司的明确记录。在其前公司12Sleep（北京匙悟科技），行业媒体公开将其描述为一个"玩'消失'的CEO"——意指其在公司运营和投资者关系方面长期缺席。（来源：速途网）</p>
+      <p>此前的创业项目包括：语音控制镜子App（2012年，因制造和供应链问题失败）；女性皮肤检测App"微蜜"（2013年）；3D打印定制珠宝品牌Design4Her；以及智能家居睡眠平台12Sleep（2014—2016年，完成A轮融资后停滞）。</p>
+
+      <h3>当前动态</h3>
+      <p>2024年2月平台被迫下线后，李一舟基本沉寂。至2024年5月，其抖音账号已无法被搜索到。2024年8月，他以"李一舟AI"的新账号重新出现在视频号，销售一款名为《一人公司流量变现课》的课程，定价99元。2025年3月，他重新开始在视频号进行直播。</p>
+
+      <div class="sources"><p>来源</p><ul>
+        <li><a href="https://baike.baidu.com/item/%E6%9D%8E%E4%B8%80%E8%88%9F/519153" target="_blank">百度百科 — 李一舟</a></li>
+        <li><a href="https://www.sootoo.com/content/648075.shtml" target="_blank">速途网 — 匙悟科技李一舟：一个玩"消失"的CEO</a></li>
+        <li><a href="https://finance.sina.com.cn/wm/2024-08-21/doc-inckkzhe7749367.shtml" target="_blank">新浪财经 — 清华网红博士李一舟"复活"，不敢再卖AI课</a></li>
+        <li><a href="https://zhuanlan.zhihu.com/p/1890423311000916460" target="_blank">知乎 — 曾被全网封杀的"AI教父"李一舟，又开始卖课了！</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第4节 — 法律与监管风险 ═══ -->
+  <div class="section" id="section-4">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>4. 法律与监管风险</span>
+        <span class="section-badge badge-red-pill">存在问题</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ 以下内容来源于公开记录和新闻报道，不构成法律建议。请通过官方渠道核实相关信息。</div>
+
+      <h3>平台监管处罚</h3>
+      <p><strong>2024年2月22日：</strong>微信小程序"一舟一课"因违反《即时通信工具公众信息服务发展管理暂行规定》，被腾讯/微信强制暂停服务。这是正式的平台级监管执法行动，而非普通的违反服务条款处理。（来源：澎湃新闻、每经网）</p>
+      <p>与此同时，李一舟个人视频号被禁止关注，其在微信视频号橱窗中的所有课程均已下架。截至2024年5月，其抖音账号也无法被搜索到。</p>
+
+      <h3>消费者投诉 — 潜在广告法违规</h3>
+      <p>多家媒体援引法律专家观点，认为李一舟的销售话术可能违反以下法律法规：</p>
+      <ul>
+        <li>《广告法》——营销宣传存在误导性夸大表述</li>
+        <li>《反不正当竞争法》——虚假广告构成不正当竞争行为</li>
+        <li>《消费者权益保护法》——退款流程不透明，产品描述存在误导</li>
+      </ul>
+      <p>来源：华东政法大学竞争法研究中心执行主任接受证券时报采访时的陈述。</p>
+
+      <h3>消费者投诉（黑猫投诉平台）</h3>
+      <p>截至2024年2月，黑猫投诉平台上针对李一舟的投诉至少有6条，其中3条集中在2024年2月20日之后。投诉内容主要集中在虚拟产品拒绝退款和虚假宣传两方面。至少一条投诉在新浪黑猫平台明确写明"一舟一课存在虚假宣传且不予退款"。（来源：新浪黑猫投诉）</p>
+
+      <h3>知识产权侵权指控</h3>
+      <p>李一舟旗下的"亦舟智能"平台被指控在未获授权、未支付报酬的情况下，使用了包括LiblibAI在内的约100个第三方AI图像生成模型。相关模型在创作者发出法律警告后被下架。（来源：界面新闻）</p>
+
+      <div class="sources"><p>来源</p><ul>
+        <li><a href="https://www.thepaper.cn/newsDetail_forward_26426233" target="_blank">澎湃新闻 — 李一舟AI课程小程序因违规被暂停服务，个人视频号被禁止关注</a></li>
+        <li><a href="https://www.nbd.com.cn/articles/2024-02-22/3252143.html" target="_blank">每经网 — 卖AI课年入千万？李一舟回应，旗下课程小程序暂停服务</a></li>
+        <li><a href="https://www.gamersky.com/tech/202402/1712363.shtml" target="_blank">游民星空 — 清华博士李一舟AI课爆火 律师称其卖课话术或涉违法</a></li>
+        <li><a href="https://www.workercn.cn/c/2024-02-27/8162760.shtml" target="_blank">中工网 — 律师称李一舟卖课话术或涉违法</a></li>
+        <li><a href="https://tousu.sina.com.cn/complaint/view/17371636694" target="_blank">新浪黑猫投诉 — 一舟一课存在虚假宣传且不予退款</a></li>
+        <li><a href="https://www.jiemian.com/article/10834658.html" target="_blank">界面新闻 — 李一舟，被包装的"AI巨头"（知识产权侵权详情）</a></li>
+        <li><a href="https://www.21jingji.com/article/20240222/herald/5ab8fa9fa51131a670ae87ef8fb03183.html" target="_blank">21财经 — 知识变现还是"割韭菜"？AI课程讲师李一舟视频内容遭下架</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第5节 — 企业文化 ═══ -->
+  <div class="section" id="section-5">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>5. 企业文化</span>
+        <span class="section-badge badge-grey-pill">无数据</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ 一舟一课不是传统雇主，没有员工、没有Glassdoor主页，也没有可供评估的职场文化。</div>
+      <h3>Glassdoor 数据</h3>
+      <p>未找到任何Glassdoor数据。一舟一课在Glassdoor、看准网、脉脉等任何职场评价平台均无雇主主页，因为它不是注册雇主。</p>
+      <h3>消费者产品口碑</h3>
+      <p>职场文化数据不适用，但该<em>产品</em>（即课程本身）的用户评价以差评为主。详见第10节"产品与市场健康度"。</p>
+      <div class="sources"><p>来源</p><ul>
+        <li>未找到来源</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第6节 — 远程/混合/返岗政策 ═══ -->
+  <div class="section" id="section-6">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>6. 远程/混合/返岗政策</span>
+        <span class="section-badge badge-grey-pill">无数据</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ 不适用。一舟一课是个人创作者业务，没有办公室，也不存在远程办公政策。</div>
+      <h3>官方政策</h3>
+      <p>未找到任何数据。没有办公地点，没有团队，也没有任何办公政策可供评估。</p>
+      <div class="sources"><p>来源</p><ul>
+        <li>未找到来源</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第7节 — 薪酬与福利 ═══ -->
+  <div class="section" id="section-7">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>7. 薪酬与福利</span>
+        <span class="section-badge badge-grey-pill">无数据</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ 不适用。一舟一课不以常规方式雇用员工，不存在薪资、股权或福利数据。</div>
+      <h3>薪资区间</h3>
+      <p>未找到任何数据。一舟一课不是招聘雇主，在Glassdoor、看准网、脉脉、Levels.fyi等任何平台均无薪资数据。</p>
+      <h3>股权</h3>
+      <p>未找到任何数据。</p>
+      <h3>福利亮点</h3>
+      <p>未找到任何数据。</p>
+      <div class="sources"><p>来源</p><ul>
+        <li>未找到来源</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第8节 — 面试体验 ═══ -->
+  <div class="section" id="section-8">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>8. 面试体验</span>
+        <span class="section-badge badge-grey-pill">无数据</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ 不适用。一舟一课不进行招聘面试，不存在任何招聘流程数据。</div>
+      <p>未找到任何面试数据。一舟一课没有已知的招聘流程、公开职位发布，也没有任何平台上的候选人面试记录。</p>
+      <div class="sources"><p>来源</p><ul>
+        <li>未找到来源</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第9节 — 签证与移民担保 ═══ -->
+  <div class="section" id="section-9">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>9. 签证与移民担保</span>
+        <span class="section-badge badge-grey-pill">无数据</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <p>不适用。一舟一课是中国境内的个人内容业务，不是注册雇主，不提供任何类型的工作签证担保。未发现任何相关移民信息。</p>
+      <div class="sources"><p>来源</p><ul>
+        <li>未找到来源</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第10节 — 产品与市场健康度 ═══ -->
+  <div class="section" id="section-10">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>10. 产品与市场健康度</span>
+        <span class="section-badge badge-red-pill">存在问题</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="alert-box">🚨 "一舟一课"微信小程序已于2024年2月22日被永久暂停，该产品已不再以原有形式存在。</div>
+
+      <h3>用户评价</h3>
+      <p>知乎、微博及各新闻评论区的用户评价以负面为主，常见投诉包括：</p>
+      <ul>
+        <li><strong>内容质量低：</strong>"看了十几节课，纯粹是浪费时间。课程内容太水"（来源：知乎）</li>
+        <li><strong>内容重复：</strong>"讲的和直播间的内容差不多，放大焦虑"——内容与直播内容高度重合，以贩卖焦虑为主，缺乏实质技能传授（来源：每经网）</li>
+        <li><strong>结构具有误导性：</strong>共39节课，其中24节时长不足10分钟。多节课程中嵌入了引导购买高价课的推销话术。</li>
+        <li><strong>退款困难：</strong>宣传称观看时长低于10分钟可申请全额退款，但多名购买者反映退款申请失败。（来源：新浪黑猫投诉）</li>
+        <li><strong>内容门槛极低：</strong>有AI基础的用户普遍反映，课程内容在网上可免费获取。</li>
+      </ul>
+
+      <h3>知识产权侵权</h3>
+      <p>关联平台"亦舟智能"被指控在未获授权的情况下使用了包括LiblibAI在内的约100个第三方AI图像模型。相关模型在创作者发出法律警告后被下架。（来源：界面新闻）</p>
+
+      <h3>市场定位</h3>
+      <p>一舟一课定位为面向大众的AI扫盲课程，在2023年ChatGPT热潮期间主要面向无技术背景的用户，独家在微信生态内运营。2024年2月被暂停后，产品未再重新上线。李一舟随后转向销售定价99元的"一人公司流量变现课"。</p>
+
+      <div class="sources"><p>来源</p><ul>
+        <li><a href="https://www.zhihu.com/question/527820693" target="_blank">知乎 — 买了李一舟的一舟一课，你们后悔了么？</a></li>
+        <li><a href="https://www.nbd.com.cn/articles/2024-02-22/3252689.html" target="_blank">每经网 — 争议李一舟：到底卖了多少课，学员眼中的他是什么样的？</a></li>
+        <li><a href="https://news.qq.com/rain/a/20240220A08PZB00" target="_blank">腾讯新闻 — 李一舟的AI课到底怎么样？我们花199元"学习"了一下</a></li>
+        <li><a href="https://tousu.sina.com.cn/complaint/view/17371636694" target="_blank">新浪黑猫投诉 — 一舟一课存在虚假宣传且不予退款</a></li>
+        <li><a href="https://www.digitaling.com/articles/1041984.html" target="_blank">数英 — 李一舟AI课怒赚1.5亿元，AI圈的"韭菜"这么好割？</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第11节 — 公司简介与历史 ═══ -->
+  <div class="section" id="section-11">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>11. 公司简介与历史</span>
+        <span class="section-badge badge-red-pill">存在问题</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="alert-box">🚨 重要提示：一舟一课不是公司，而是由单一网红创建的已被暂停的微信小程序。没有员工，没有公司架构，没有办公地点。若您正在考虑在此入职，任何常规意义上的岗位均不存在。</div>
+
+      <h3>它是什么</h3>
+      <p>一舟一课（大意为"一条船，一堂课"）是网络红人李一舟于2023年创建的微信小程序（微信小程序）的名称。它是其AI课程产品的销售渠道，主要面向在ChatGPT热潮期间希望了解AI、却没有技术背景的普通用户。</p>
+      <p>它不是注册公司，不是初创企业，也不是常规意义上的雇主。它（或者说，曾经）作为李一舟个人内容业务的一部分运营，与他的抖音账号和微信视频号并行。</p>
+
+      <h3>重要节点</h3>
+      <ul>
+        <li><strong>2023年：</strong>李一舟通过微信小程序"一舟一课"以199元上线《每个人的人工智能课》，并陆续推出999元、1980元、2980元的进阶课程。</li>
+        <li><strong>2023—2024年：</strong>课程累计售出约25万套，李一舟抖音粉丝增至331万。一张将其与OpenAI创始人Sam Altman并列的营销图片在网络爆红，随即引发大规模舆论质疑。</li>
+        <li><strong>2024年2月22日：</strong>微信小程序因违规被暂停服务。个人视频号被禁止关注。各平台课程全部下架。</li>
+        <li><strong>2024年5月：</strong>抖音账号无法被搜索。</li>
+        <li><strong>2024年8月：</strong>以"李一舟AI"新账号重新出现在视频号，销售定价99元的"一人公司"课程。</li>
+        <li><strong>2025年3月：</strong>重新开始在视频号进行直播。</li>
+      </ul>
+
+      <div class="sources"><p>来源</p><ul>
+        <li><a href="https://www.thepaper.cn/newsDetail_forward_26406707" target="_blank">澎湃新闻 — "比肩"ChatGPT之父奥特曼，中国"AI教父"李一舟靠卖课年入5000万</a></li>
+        <li><a href="https://finance.sina.com.cn/tech/roll/2024-02-21/doc-inaivewz0203862.shtml" target="_blank">新浪科技 — 199元的AI课卖了5000万！起底清华博士李一舟</a></li>
+        <li><a href="https://36kr.com/p/3225837703986307" target="_blank">36氪 — 被封杀的"AI教父"李一舟又出来卖课了，视频号能容忍他多久？</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══ 第12节 — 创始人背景 ═══ -->
+  <div class="section" id="section-12">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>12. 创始人背景</span>
+        <span class="section-badge badge-red-pill">存在问题</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <p><strong>李一舟</strong>，男，湖南长沙人。</p>
+
+      <h3>学历背景</h3>
+      <ul>
+        <li>本科、硕士：湖南大学设计艺术学院（2002年、2006年）</li>
+        <li>博士：清华大学美术学院</li>
+        <li>研究方向：工业设计与设计创新——<strong>非计算机科学、工程或人工智能</strong>。其2012—2013年间发表的三篇学术论文均为设计领域内容，无任何AI相关学术成果。</li>
+      </ul>
+
+      <h3>资质虚报</h3>
+      <p>一舟一课的营销材料大量暗示李一舟具备AI技术背景，以清华博士学历作为AI专业能力的背书。多篇深度报道证实，其博士学位方向为设计而非AI，也不具备任何AI研究资历。法律界人士认为，这种包装方式可能构成虚假广告。（来源：界面新闻、证券时报）</p>
+
+      <h3>历史创业项目</h3>
+      <ul>
+        <li><strong>MagicMirror App（2012年）：</strong>语音控制镜子技术，因制造和供应链问题失败。</li>
+        <li><strong>微蜜（2013年）：</strong>面向女性的皮肤检测App，联合创始。现状不明。</li>
+        <li><strong>Design4Her：</strong>3D打印定制珠宝品牌，早期阶段。</li>
+        <li><strong>12Sleep / 北京匙悟科技（2014年起）：</strong>智能家居/睡眠科技。完成天使轮、Pre-A轮（数百万美元）和A轮（2016年，启迪之星等多家机构参投）。李一舟任联合创始人兼CEO，但行业媒体将其形容为"玩'消失'的CEO"——意指其在任期间长期缺席公司管理。（来源：速途网）</li>
+        <li><strong>知识星球（2020—2023年）：</strong>付费知识社群，鼎盛时期月收入达数百万元。</li>
+        <li><strong>一舟一课（2023—2024年）：</strong>AI课程平台，2024年2月被暂停。</li>
+      </ul>
+
+      <h3>争议事件</h3>
+      <ul>
+        <li><strong>资质虚报：</strong>尽管毫无AI研究或工程背景，仍以"中国AI教父"形象对外营销。一张病毒式营销图将其与Sam Altman并列，暗示可与之媲美。（来源：澎湃新闻）</li>
+        <li><strong>平台封禁：</strong>微信小程序于2024年2月因违规被关停。抖音、微信视频号、小红书等平台账号均受到不同程度的限制。</li>
+        <li><strong>知识产权侵权：</strong>平台被指控未经授权、未付报酬地使用约100个第三方AI图像模型。（来源：界面新闻）</li>
+        <li><strong>消费欺诈指控：</strong>法律专家认为其销售话术可能违反《广告法》《反不正当竞争法》《消费者权益保护法》。（来源：华东政法大学竞争法研究中心、证券时报）</li>
+        <li><strong>2022年早期争议：</strong>与博主"小罐"发生冲突，导致课程销售量大幅下滑，大量购买者要求退款并指控欺诈。（来源：界面新闻）</li>
+      </ul>
+
+      <div class="sources"><p>来源</p><ul>
+        <li><a href="https://baike.baidu.com/item/%E6%9D%8E%E4%B8%80%E8%88%9F/519153" target="_blank">百度百科 — 李一舟</a></li>
+        <li><a href="https://www.jiemian.com/article/10834658.html" target="_blank">界面新闻 — 李一舟，被包装的"AI巨头"</a></li>
+        <li><a href="https://www.sootoo.com/content/648075.shtml" target="_blank">速途网 — 匙悟科技李一舟：一个玩"消失"的CEO</a></li>
+        <li><a href="https://www.lanjinger.com/d/227556" target="_blank">蓝鲸财经 — "AI教父"李一舟：卖课年入5000万，不一定懂AI但很懂营销</a></li>
+        <li><a href="https://www.21jingji.com/article/20240223/herald/392d606b7f900eac2238aa9839da84ed.html" target="_blank">21经济网 — 争议"AI网红"李一舟：是知识付费还是韭菜开会？</a></li>
+        <li><a href="https://www.workercn.cn/c/2024-02-27/8162760.shtml" target="_blank">中工网 — 律师称李一舟卖课话术或涉违法</a></li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ── 页脚 ── -->
+  <div class="footer">
+    <strong>免责声明</strong><br>
+    本报告仅供参考，不构成财务、法律或职业建议。所有数据均来源于公开新闻报道和消费者投诉平台。法律内容摘要不能替代专业律师的法律意见。请在做出任何决策前自行进行尽职调查。<br><br>
+    由 Claude Code（KnowYourCompany）生成 &nbsp;·&nbsp; 2026年4月16日
+  </div>
+
+</div>
+
+<script>
+  function toggle(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.chevron');
+    body.classList.toggle('hidden');
+    chevron.classList.toggle('open');
+  }
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.dataset.theme = html.dataset.theme === 'dark' ? '' : 'dark';
+    localStorage.setItem('theme', html.dataset.theme);
+  }
+  function openSection(section) {
+    if (!section) return;
+    const header = section.querySelector('.section-header');
+    const body = header ? header.nextElementSibling : null;
+    const chevron = header ? header.querySelector('.chevron') : null;
+    if (body && body.classList.contains('hidden')) body.classList.remove('hidden');
+    if (chevron) chevron.classList.add('open');
+  }
+  function jumpToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    openSection(section);
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function getSeverityRank(element) {
+    if (!element) return 99;
+    if (element.querySelector('.badge-red, .badge-red-pill')) return 0;
+    if (element.querySelector('.badge-yellow, .badge-yellow-pill')) return 1;
+    if (element.querySelector('.badge-green, .badge-green-pill')) return 2;
+    if (element.querySelector('.badge-grey, .badge-grey-pill')) return 3;
+    return 99;
+  }
+  function renumberSections() {
+    document.querySelectorAll('.section').forEach((section, index) => {
+      const titleText = section.querySelector('.section-title span:first-child');
+      if (!titleText) return;
+      const cleanTitle = titleText.textContent.replace(/^\d+\.\s*/, '');
+      titleText.textContent = `${index + 1}. ${cleanTitle}`;
+    });
+  }
+  function sortBySeverity() {
+    const summary = document.querySelector('.summary');
+    const sections = Array.from(document.querySelectorAll('.section'));
+    const footer = document.querySelector('.footer');
+    if (summary) {
+      Array.from(summary.children)
+        .sort((a, b) => getSeverityRank(a) - getSeverityRank(b))
+        .forEach(item => summary.appendChild(item));
+    }
+    sections
+      .sort((a, b) => getSeverityRank(a) - getSeverityRank(b))
+      .forEach(section => {
+        if (footer) { footer.before(section); }
+        else { section.parentNode.appendChild(section); }
+      });
+    renumberSections();
+  }
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+  sortBySeverity();
+  document.querySelectorAll('.badge-red-pill').forEach(badge => {
+    const header = badge.closest('.section-header');
+    if (header) {
+      header.nextElementSibling.classList.remove('hidden');
+      header.querySelector('.chevron').classList.add('open');
+    }
+  });
+  document.querySelectorAll('.summary-item[data-target]').forEach(item => {
+    item.addEventListener('click', () => jumpToSection(item.dataset.target));
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        jumpToSection(item.dataset.target);
+      }
+    });
+  });
+</script>
+</body>
+</html>
