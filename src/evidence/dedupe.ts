@@ -1,7 +1,6 @@
-import { MAX_COMMUNITY_ITEMS_PER_SECTION } from "../config/constants.js";
 import type { EvidenceSnippet } from "../types/index.js";
 
-export function dedupeEvidence(snippets: EvidenceSnippet[]): EvidenceSnippet[] {
+export function dedupeEvidence(snippets: EvidenceSnippet[], maxCommunityItems: number): EvidenceSnippet[] {
   const seen = new Set<string>();
   const communityThemes = new Set<string>();
   const deduped: EvidenceSnippet[] = [];
@@ -17,7 +16,7 @@ export function dedupeEvidence(snippets: EvidenceSnippet[]): EvidenceSnippet[] {
         continue;
       }
       const existingCommunity = deduped.filter((item) => item.sourceType === "community").length;
-      if (existingCommunity >= MAX_COMMUNITY_ITEMS_PER_SECTION) {
+      if (existingCommunity >= maxCommunityItems) {
         continue;
       }
       communityThemes.add(theme);

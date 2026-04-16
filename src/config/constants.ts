@@ -16,5 +16,3 @@ export const PROMPT_VERSIONS = {
 export const DEFAULT_MODEL = process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-latest";
 export const DEFAULT_CANONICAL_LANGUAGE = "English";
 export const DEFAULT_OUTPUT_LANGUAGE = "English";
-export const DEFAULT_MAX_EVIDENCE_PER_SECTION = 8;
-export const MAX_COMMUNITY_ITEMS_PER_SECTION = 3;

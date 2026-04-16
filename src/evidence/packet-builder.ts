@@ -1,6 +1,5 @@
 import { createHash } from "node:crypto";
 import type { EvidencePacket, EvidenceSnippet, InputContext, SectionId, SourceDocument } from "../types/index.js";
-import { DEFAULT_MAX_EVIDENCE_PER_SECTION } from "../config/constants.js";
 import { getSectionDefinition } from "../config/sections.js";
 import { dedupeEvidence } from "./dedupe.js";
 import { scoreSnippet } from "./scorer.js";
@@ -44,7 +43,7 @@ export function buildEvidencePacket(
     }))
     .sort((left, right) => right.relevanceScore - left.relevanceScore);
 
-  const deduped = dedupeEvidence(scored).slice(0, DEFAULT_MAX_EVIDENCE_PER_SECTION);
+  const deduped = dedupeEvidence(scored, definition.maxCommunityItems).slice(0, definition.maxEvidenceItems);
   return {
     sectionId,
     company: input.company,

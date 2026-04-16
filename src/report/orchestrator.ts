@@ -45,10 +45,15 @@ export async function runReport(
   const documentsBySection = new Map<string, SourceDocument[]>();
 
   for (const section of SECTION_DEFINITIONS) {
-    const sectionQueries = queries.filter((query) => query.sectionId === section.id);
+    const sectionQueries = queries
+      .filter((query) => query.sectionId === section.id)
+      .sort((left, right) => left.priority - right.priority)
+      .slice(0, section.maxQueries);
     logger.recordSearchCount(section.id, sectionQueries.length);
     const searchResults = (await Promise.all(sectionQueries.map((query) => searchClient.search(query).catch(() => [])))).flat();
-    const documents = await Promise.all(searchResults.slice(0, 6).map((result) => fetcher.fetch(result).catch(() => undefined)));
+    const documents = await Promise.all(
+      searchResults.slice(0, section.maxFetchedPages).map((result) => fetcher.fetch(result).catch(() => undefined))
+    );
     const resolved = documents.filter((item): item is SourceDocument => Boolean(item));
     logger.recordRetrievedCount(section.id, resolved.length);
     documentsBySection.set(section.id, resolved);
@@ -58,11 +63,15 @@ export async function runReport(
   const sourceRegistry: Record<string, SourceDocument> = {};
   for (const section of SECTION_DEFINITIONS) {
     const started = Date.now();
+    const queryCount = queries
+      .filter((query) => query.sectionId === section.id)
+      .sort((left, right) => left.priority - right.priority)
+      .slice(0, section.maxQueries).length;
     const packet = buildEvidencePacket(
       section.id,
       context,
       documentsBySection.get(section.id) || [],
-      queries.filter((query) => query.sectionId === section.id).length
+      queryCount
     );
     logger.recordDedupedCount(section.id, packet.evidence.length);
     logger.recordSectionEvidence(section.id, packet.evidence.length);
