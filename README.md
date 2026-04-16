@@ -2,90 +2,121 @@
 
 **Stop wasting interviews on companies that are quietly falling apart.**
 
-KnowYourCompany is a Claude Code skill that researches a company and generates a structured, offline HTML report — in about 2 minutes — so you know what you're walking into before you spend weeks in a hiring process.
+KnowYourCompany is now a **token-efficient Node/TypeScript pipeline** for researching a company and generating a polished, self-contained HTML due diligence report while keeping Claude focused on the nuanced writing and judgment work.
 
----
+## Architecture overview
 
-## Why this exists
+The old version delegated almost everything to one Claude prompt. The refactor moves deterministic work into code:
 
-Job searches are exhausting. You apply, you prep, you interview — and then you find out the company had layoffs last month, is drowning in lawsuits, or has a culture that burns people out in six months.
+1. Input normalization
+2. Query planning with section-aware recency budgets
+3. Retrieval and fetch in code
+4. Page cleaning and snippet extraction in code
+5. Evidence dedupe and ranking in code
+6. Compact evidence packet creation per section
+7. Claude section analysis on structured packets only
+8. Small final-summary Claude call
+9. Late translation and deterministic HTML rendering in code
 
-This tool is built for candidates who want **signal before they commit their time**.
+Claude no longer fills HTML templates, inlines CSS, or reviews full raw pages by default.
 
----
+## Where token savings come from
 
-## What it covers
+- Large raw pages are replaced with compact evidence packets
+- One monolithic prompt is replaced by short section-specific prompts
+- Search, recency filtering, dedupe, and rendering happen outside Claude
+- Cached fetches, packets, and section analyses prevent repeated model work
+- Translation happens late on user-facing prose instead of repeatedly inside retrieval and analysis
 
-Each report analyzes 12 areas, automatically ranked by severity:
+## Quality safeguards
 
-| Area | What it looks for |
-|---|---|
-| Layoffs | Recent cuts, headcount reductions, affected teams |
-| Financial health | Funding rounds, runway signals, revenue trajectory |
-| Leadership | C-suite turnover, founder involvement, recent exits |
-| Legal & regulatory | Lawsuits, class actions, regulatory enforcement |
-| Culture | Glassdoor, Blind, Reddit — recurring themes |
-| Remote / hybrid policy | Official policy and recent RTO changes |
-| Compensation | Salary ranges, equity type, benefits signals |
-| Interview experience | Number of rounds, ghosting reports, offer rescissions |
-| Visa sponsorship | Country-specific sponsorship programs and status |
-| Product & market health | Ratings, growth signals, major incidents |
-| Company history | Founding, milestones, business model, headcount |
-| Founder background | Prior companies, notable achievements, controversies |
+- Every rendered source URL comes from the canonical fetched source registry
+- Sections with insufficient evidence automatically render as grey
+- Community-sourced sections retain explicit disclaimers
+- Legal retains an informational disclaimer
+- Finance still includes a plain-English explanation
+- The final report stays self-contained and offline-safe
 
----
+## Caching
 
-## What you get
+Cache layers live in `.cache/`:
 
-A single HTML file that opens in any browser — no login, no internet required after download.
+- fetched pages by normalized URL hash
+- section evidence packets by company + section + source hashes
+- section analyses by company + section + evidence hash + prompt version
+- final summary by analyzed section outputs
 
-- Severity map at the top so the biggest concerns are immediately visible
-- Red / yellow / green / grey badges per section
-- Collapsible sections with cited sources
-- Dark mode
-- Sections auto-sorted so red flags appear first
+Invalidation is versioned in code via `CACHE_VERSIONS`.
 
-![KnowYourCompany report sample](sample.png)
+## Quality vs cost tuning
 
----
+Main levers:
 
-## How to use it
+- evidence cap per section
+- search result cap per query
+- selective local-language search only for high-value sections
+- recency window defaults to the past 24 months for time-sensitive sections
+- reuse via cache instead of re-running analysis
+
+## Prompts
+
+Prompts are split under `src/prompts/`:
+
+- one prompt module per report section
+- one final-summary prompt
+
+Each prompt consumes structured evidence only and returns structured JSON.
+
+## Usage
 
 ### Requirements
 
-- [Claude Code](https://claude.ai/code)
-- Web search enabled
+- Node.js 20+
+- `ANTHROPIC_API_KEY`
 
-### Setup
+### Install
 
-1. Copy this folder into `~/.claude/commands/`
-2. Open Claude Code
-3. Type `/KnowYourCompany`
+```bash
+npm install
+```
 
-Claude will ask for the company name, office location (optional), your target role (optional), and the report language (optional, English by default), then run the research and produce the report.
+### Run tests
 
----
+```bash
+npm test
+```
 
-## What it is NOT
+### Generate a report
 
-- Not a stock screener or investment tool
-- Not for financial modeling or valuation
-- Not a substitute for legal or financial advice
+```bash
+npm run report -- --company "Stripe" --location "Amsterdam, Netherlands" --role "Product Designer" --language "English"
+```
 
-This is built for one thing: **helping you decide where to spend your time**.
-
----
+If you omit arguments, the CLI will prompt interactively.
 
 ## Repo structure
 
 ```text
 KnowYourCompany/
-├── KnowYourCompany.md    — the skill (copy this folder to ~/.claude/commands/)
+├── KnowYourCompany.md
 ├── README.md
+├── docs/
+│   └── refactor-note.md
 ├── references/
-│   ├── template.html     — report HTML skeleton
-│   └── styles.css        — visual source of truth
-└── examples/
-    ├── Sardine_bg_check_2026-04-15.html
-    └── Poki_bg_check_2026-04-15.html
+│   ├── template.html
+│   └── styles.css
+├── src/
+│   ├── cli.ts
+│   ├── cache/
+│   ├── config/
+│   ├── evidence/
+│   ├── localization/
+│   ├── logging/
+│   ├── model/
+│   ├── prompts/
+│   ├── render/
+│   ├── report/
+│   ├── retrieval/
+│   └── types/
+└── tests/
 ```
