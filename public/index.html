@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KnowYourCompany Web App</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <main class="container">
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">KnowYourCompany</p>
+          <h1>See the company clearly before you apply or interview.</h1>
+          <p class="hero-dek">KnowYourCompany helps job seekers generate a fast company diligence report, focused on what candidates care about most: whether the company looks stable, whether it is worth your time, and whether there are any red flags you should know before moving forward.</p>
+          <div class="hero-meta">
+            <span class="meta-chip"><strong>Fast signal</strong> Spot obvious risks quickly</span>
+            <span class="meta-chip"><strong>Candidate lens</strong> Focus on what job seekers care about</span>
+            <span class="meta-chip"><strong>Instant report</strong> Preview and download the full briefing</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <div class="panel form-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Research Input</p>
+              <h2>Run a report</h2>
+            </div>
+            <button class="theme-btn" id="theme-toggle" type="button">Toggle Dark Mode</button>
+          </div>
+
+          <form id="research-form" class="research-form">
+            <label class="field">
+              <span>Company name</span>
+              <input id="company" name="company" type="text" placeholder="Stripe" required>
+            </label>
+
+            <label class="field">
+              <span>Office location</span>
+              <input id="location" name="location" type="text" placeholder="Amsterdam, Netherlands">
+            </label>
+
+            <label class="field">
+              <span>Target role</span>
+              <input id="role" name="role" type="text" placeholder="Senior product designer">
+            </label>
+
+            <label class="field">
+              <span>Report language</span>
+              <input id="output-language" name="outputLanguage" type="text" placeholder="English">
+            </label>
+
+            <div class="form-actions">
+              <button id="submit-button" class="primary-btn" type="submit">Start research</button>
+              <button id="download-button" class="secondary-btn" type="button" disabled>Download HTML</button>
+            </div>
+          </form>
+
+          <div class="hero-callout inline-callout">
+            <p class="callout-label">Workflow</p>
+            <ol class="workflow-list">
+              <li>Enter the company name, plus optional office, role, and report language.</li>
+              <li>The system gathers public information and turns it into a candidate-focused report.</li>
+              <li>Red flags are surfaced first so you can decide faster whether the company is worth pursuing.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="panel status-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Status</p>
+              <h2>Current run</h2>
+            </div>
+          </div>
+
+          <div id="status-box" class="status-box idle">
+            Fill in the form and start a run. The preview updates when the report is ready.
+          </div>
+
+          <div id="snapshot" class="snapshot hidden">
+            <p class="snapshot-label">Report snapshot</p>
+            <div id="snapshot-grid" class="snapshot-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-shell">
+        <div class="preview-header">
+          <div>
+            <p class="panel-kicker">Preview</p>
+            <h2>Generated report</h2>
+          </div>
+        </div>
+        <div class="preview-frame-wrap">
+          <iframe id="report-frame" title="Generated report preview"></iframe>
+          <div id="empty-preview" class="empty-preview">
+            Your report preview will appear here after the research request completes.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

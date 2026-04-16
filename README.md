@@ -55,6 +55,7 @@ A single HTML file that opens in any browser — no login, no internet required 
 
 - [Claude Code](https://claude.ai/code)
 - Web search enabled
+- Node.js 20+ for the local web app
 
 ### Setup
 
@@ -62,7 +63,23 @@ A single HTML file that opens in any browser — no login, no internet required 
 2. Open Claude Code
 3. Type `/KnowYourCompany`
 
-Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
+Claude will ask for the company name, office location (optional), your target role (optional), and also the report language (optional, English by default)then run the research and produce the report.
+
+### Local web app
+
+The repo also includes a lightweight web app that uses your own OpenAI API key to run the same research flow from a browser.
+
+1. Set `OPENAI_API_KEY` in your shell or copy `.env.example` into your own environment setup
+2. Optionally set `OPENAI_MODEL` (defaults to `gpt-5`) and `PORT`
+3. Run `npm start`
+4. Open `http://127.0.0.1:3000`
+
+The app:
+
+- Collects the same inputs as the skill: company, office location, target role, and report language
+- Calls the OpenAI Responses API with web search enabled
+- Renders the result as a self-contained HTML report in the same KnowYourCompany style
+- Lets you download the generated HTML directly from the browser
 
 ---
 
@@ -82,6 +99,15 @@ This is built for one thing: **helping you decide where to spend your time**.
 KnowYourCompany/
 ├── SKILL.md              — skill definition and research logic
 ├── README.md
+├── .env.example
+├── package.json
+├── server.js             — local app server + OpenAI endpoint
+├── lib/
+│   └── report-template.js — shared report normalization + HTML renderer
+├── public/
+│   ├── index.html        — app shell
+│   ├── styles.css        — web app styling
+│   └── app.js            — browser logic
 ├── references/
 │   ├── template.html     — report HTML skeleton
 │   └── styles.css        — visual source of truth
