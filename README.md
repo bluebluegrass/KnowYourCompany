@@ -62,7 +62,7 @@ A single HTML file that opens in any browser — no login, no internet required 
 2. Open Claude Code
 3. Type `/KnowYourCompany`
 
-Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
+Claude will ask for the company name, office location (optional), your target role (optional), and the report language (optional, English by default), then run the research and produce the report.
 
 ---
 
@@ -80,7 +80,7 @@ This is built for one thing: **helping you decide where to spend your time**.
 
 ```text
 KnowYourCompany/
-├── SKILL.md              — skill definition and research logic
+├── KnowYourCompany.md    — the skill (copy this folder to ~/.claude/commands/)
 ├── README.md
 ├── references/
 │   ├── template.html     — report HTML skeleton
