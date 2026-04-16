@@ -54,8 +54,9 @@ Store:
 - `COMPANY`
 - `LOCATION`
 - `ROLE`
+- `OUTPUT_LANG` — language for all report text (default: English). Independent of `LOCAL_LANG`, which controls search language. Examples: English (`en`), Dutch (`nl`), German (`de`), French (`fr`), Japanese (`ja`), Chinese Simplified (`zh`), Spanish (`es`), Portuguese (`pt`).
 
-If `LOCATION` or `ROLE` is blank, proceed without it.
+If `LOCATION`, `ROLE`, or `OUTPUT_LANG` is blank, proceed without it (default output language: English).
 
 ### Phase 2: Research
 

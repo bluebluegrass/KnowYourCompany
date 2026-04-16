@@ -11,10 +11,16 @@
       "WebFetch(domain:www.g2.com)",
       "WebFetch(domain:www.teamblind.com)",
       "Bash(cp \"/Users/simona/.claude/commands/bg-check.md\" \"/Users/simona/.claude/commands/KnowYourCompany.md\")",
-      "Bash(rm \"/Users/simona/.claude/commands/bg-check.md\")"
+      "Bash(rm \"/Users/simona/.claude/commands/bg-check.md\")",
+      "Read(//Users/simona/**)",
+      "WebFetch(domain:baike.baidu.com)",
+      "WebFetch(domain:www.nbd.com.cn)",
+      "WebFetch(domain:www.jiemian.com)",
+      "WebFetch(domain:zhuanlan.zhihu.com)"
     ],
     "additionalDirectories": [
-      "/Users/simona/.claude/commands"
+      "/Users/simona/.claude/commands",
+      "/Users/simona/Desktop"
     ]
   }
 }

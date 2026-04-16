@@ -731,6 +731,25 @@ a:hover {
     </div>
   </div>
 
+  <!-- ── Verdict / narrative summary ─────────────────────────── -->
+  <!--
+    {{ VERDICT_TEXT }}: 3–5 sentence plain-language summary of the overall picture.
+      Answer: "Is this a safe company to join right now?" Lead with the most important
+      finding. Be direct — do not hedge every sentence.
+    {{ VERDICT_FLAGS }}: one .verdict-flag per notable finding (red/yellow/green).
+      Pattern: <span class="verdict-flag red">🚨 Platform shut down</span>
+               <span class="verdict-flag yellow">⚠️ Culture: mixed reviews</span>
+               <span class="verdict-flag green">✓ Strong financials</span>
+      List red flags first, then yellow, then green highlights.
+  -->
+  <div class="verdict">
+    <p class="verdict-label">Bottom Line</p>
+    <p class="verdict-text">{{ VERDICT_TEXT }}</p>
+    <div class="verdict-flags">
+      {{ VERDICT_FLAGS }}
+    </div>
+  </div>
+
   <!-- ── Summary snapshot grid ─────────────────────────────── -->
   <!--
     Replace badge-{{ X }} with one of: badge-green / badge-yellow / badge-red / badge-grey
