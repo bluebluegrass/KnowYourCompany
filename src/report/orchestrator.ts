@@ -1,54 +1,56 @@
 import path from "node:path";
 import { writeFile } from "node:fs/promises";
 import { FileCache } from "../cache/file-cache.js";
-import { DEFAULT_CANONICAL_LANGUAGE, DEFAULT_OUTPUT_LANGUAGE } from "../config/constants.js";
 import { SECTION_DEFINITIONS } from "../config/sections.js";
-import { buildEvidencePacket } from "../evidence/packet-builder.js";
+import { buildEvidencePacket } from "../evidence/evidence-pipeline.js";
 import { RunLogger } from "../logging/run-logger.js";
-import { AnthropicClient, type ModelClient } from "../model/anthropic-client.js";
+import { ClaudeCodeModelClient } from "../model/claude-code-client.js";
+import { type ModelClient } from "../model/anthropic-client.js";
 import { SectionAnalyzer } from "../model/section-analyzer.js";
-import { normalizeEvidenceToCanonicalLanguage } from "../localization/canonicalizer.js";
-import { ModelTranslator, PassthroughTranslator, type Translator } from "../localization/translator.js";
-import { loadTemplate } from "../render/template-loader.js";
-import { renderReport } from "../render/report-renderer.js";
-import { Fetcher } from "../retrieval/fetcher.js";
+import { ClaudeCodeFetcher, ClaudeCodeSearchClient } from "../retrieval/claude-code-web.js";
 import { buildQueryPlan } from "../retrieval/query-planner.js";
-import { SearchClient } from "../retrieval/search-client.js";
-import type { InputContext, ReportModel, SourceDocument } from "../types/index.js";
+import type { InputContext, QueryPlan, ReportModel, SearchResult, SourceDocument } from "../types/index.js";
+import { buildJsonPath } from "./artifact-paths.js";
+
+export interface SearchService {
+  search(query: QueryPlan): Promise<SearchResult[]>;
+}
+
+export interface FetchService {
+  fetch(result: SearchResult): Promise<SourceDocument>;
+}
 
 export interface Dependencies {
   logger?: RunLogger;
   model?: ModelClient;
-  translator?: Translator;
+  searchClient?: SearchService;
+  fetcher?: FetchService;
 }
 
 export async function runReport(
-  input: Omit<InputContext, "canonicalLanguage" | "now"> & { canonicalLanguage?: string; now?: string },
+  input: Omit<InputContext, "now"> & { now?: string },
   dependencies: Dependencies = {}
-): Promise<{ report: ReportModel; html: string; outputPath: string; logger: RunLogger }> {
+): Promise<{ report: ReportModel; jsonPath: string; logger: RunLogger }> {
   const logger = dependencies.logger || new RunLogger();
   const cache = new FileCache(path.join(process.cwd(), ".cache"), logger);
-  const model = dependencies.model || new AnthropicClient(logger);
-  const translator = dependencies.translator || new ModelTranslator(model, cache);
+  const model = dependencies.model || new ClaudeCodeModelClient(logger);
   const analyzer = new SectionAnalyzer(model, cache);
-  const searchClient = new SearchClient();
-  const fetcher = new Fetcher(cache);
+  const searchClient = dependencies.searchClient || new ClaudeCodeSearchClient();
+  const fetcher = dependencies.fetcher || new ClaudeCodeFetcher(cache);
 
   const context: InputContext = {
     ...input,
-    outputLanguage: input.outputLanguage || DEFAULT_OUTPUT_LANGUAGE,
-    canonicalLanguage: input.canonicalLanguage || DEFAULT_CANONICAL_LANGUAGE,
     now: input.now || new Date().toISOString()
   };
 
   const queries = buildQueryPlan(context);
   const documentsBySection = new Map<string, SourceDocument[]>();
+  const queriesBySection = new Map(
+    SECTION_DEFINITIONS.map((section) => [section.id, selectSectionQueries(queries, section.id, section.maxQueries)])
+  );
 
   for (const section of SECTION_DEFINITIONS) {
-    const sectionQueries = queries
-      .filter((query) => query.sectionId === section.id)
-      .sort((left, right) => left.priority - right.priority)
-      .slice(0, section.maxQueries);
+    const sectionQueries = queriesBySection.get(section.id) || [];
     logger.recordSearchCount(section.id, sectionQueries.length);
     const searchResults = (await Promise.all(sectionQueries.map((query) => searchClient.search(query).catch(() => [])))).flat();
     const documents = await Promise.all(
@@ -63,10 +65,7 @@ export async function runReport(
   const sourceRegistry: Record<string, SourceDocument> = {};
   for (const section of SECTION_DEFINITIONS) {
     const started = Date.now();
-    const queryCount = queries
-      .filter((query) => query.sectionId === section.id)
-      .sort((left, right) => left.priority - right.priority)
-      .slice(0, section.maxQueries).length;
+    const queryCount = (queriesBySection.get(section.id) || []).length;
     const packet = buildEvidencePacket(
       section.id,
       context,
@@ -75,46 +74,26 @@ export async function runReport(
     );
     logger.recordDedupedCount(section.id, packet.evidence.length);
     logger.recordSectionEvidence(section.id, packet.evidence.length);
-    const normalizedPacket = await normalizeEvidenceToCanonicalLanguage(packet, context.canonicalLanguage, translator);
-    const analysis = await analyzer.analyze(normalizedPacket);
+    const analysis = await analyzer.analyze(packet);
     sections.push(analysis);
     logger.recordSectionLatency(section.id, Date.now() - started);
-    for (const source of documentsBySection.get(section.id) || []) {
-      sourceRegistry[source.normalizedUrl] = source;
-    }
+    registerSources(sourceRegistry, documentsBySection.get(section.id) || []);
   }
 
   const verdict = await analyzer.summarize(context.company, sections);
-  const localizedBundle = await translator.translateTextBundle(
-    {
-      summary: verdict,
-      sections
-    },
-    {
-      canonicalLanguage: context.canonicalLanguage,
-      outputLanguage: context.outputLanguage
-    }
-  );
   const report: ReportModel = {
     company: context.company,
     date: context.now.slice(0, 10),
-    outputLanguage: context.outputLanguage,
     ...(context.location ? { location: context.location } : {}),
     ...(context.role ? { role: context.role } : {}),
-    verdict: localizedBundle.summary,
-    sections: localizedBundle.sections.sort((left, right) => severityOrder(left.severity) - severityOrder(right.severity)),
+    verdict,
+    sections: sections.sort((left, right) => severityOrder(left.severity) - severityOrder(right.severity)),
     sources: sourceRegistry
   };
 
-  const { template, styles } = await loadTemplate(
-    path.join(process.cwd(), "references", "template.html"),
-    path.join(process.cwd(), "references", "styles.css")
-  );
-  const html = renderReport(template, styles, report);
-  const fileName = `${context.company.replace(/\s+/g, "_")}_KnowYourCompany_${report.date}.html`;
-  const outputPath = path.join(context.outputDir, fileName);
-  await writeFile(outputPath, html, "utf8");
-  return { report, html, outputPath, logger };
+  const jsonPath = buildJsonPath(context.outputDir, report.company, report.date);
+  await writeFile(jsonPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  return { report, jsonPath, logger };
 }
 
 function severityOrder(severity: string): number {
@@ -127,5 +106,18 @@ function severityOrder(severity: string): number {
       return 2;
     default:
       return 3;
+  }
+}
+
+function selectSectionQueries(queries: QueryPlan[], sectionId: string, maxQueries: number): QueryPlan[] {
+  return queries
+    .filter((query) => query.sectionId === sectionId)
+    .sort((left, right) => left.priority - right.priority)
+    .slice(0, maxQueries);
+}
+
+function registerSources(registry: Record<string, SourceDocument>, sources: SourceDocument[]): void {
+  for (const source of sources) {
+    registry[source.normalizedUrl] = source;
   }
 }

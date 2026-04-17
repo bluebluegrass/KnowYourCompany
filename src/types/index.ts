@@ -18,9 +18,7 @@ export interface InputContext {
   company: string;
   location?: string;
   role?: string;
-  outputLanguage: string;
   localLanguage: string;
-  canonicalLanguage: string;
   outputDir: string;
   now: string;
 }
@@ -89,7 +87,6 @@ export interface EvidencePacket {
   company: string;
   role?: string;
   location?: string;
-  canonicalLanguage: string;
   evidenceHash: string;
   evidence: EvidenceSnippet[];
   stats: {
@@ -128,7 +125,6 @@ export interface SectionAnalysis {
   ratings: RatingRow[];
   timelineItems: TimelineItem[];
   sourceRefs: string[];
-  translatedSourceLabels: string[];
 }
 
 export interface VerdictFlag {
@@ -144,7 +140,6 @@ export interface FinalSummary {
 export interface ReportModel {
   company: string;
   date: string;
-  outputLanguage: string;
   location?: string;
   role?: string;
   verdict: FinalSummary;
@@ -163,6 +158,7 @@ export interface RunMetrics {
   cacheMisses: Record<string, number>;
   tokensIn: number;
   tokensOut: number;
+  perStepTokens: Record<string, { in: number; out: number }>;
   perSectionLatencyMs: Record<string, number>;
   perSectionEvidenceSent: Record<string, number>;
   searchCount: Record<string, number>;

@@ -23,7 +23,6 @@ export function validateSectionAnalysis(value: unknown): asserts value is Sectio
   assertRatingArray(section.ratings);
   assertTimelineArray(section.timelineItems);
   assertStringArray(section.sourceRefs, "sourceRefs");
-  assertStringArray(section.translatedSourceLabels, "translatedSourceLabels");
 }
 
 export function validateFinalSummary(value: unknown): asserts value is FinalSummary {

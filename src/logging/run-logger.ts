@@ -6,6 +6,7 @@ export class RunLogger {
     cacheMisses: {},
     tokensIn: 0,
     tokensOut: 0,
+    perStepTokens: {},
     perSectionLatencyMs: {},
     perSectionEvidenceSent: {},
     searchCount: {},
@@ -23,9 +24,16 @@ export class RunLogger {
     target[layer] = (target[layer] || 0) + 1;
   }
 
-  recordTokens(input: number, output: number): void {
+  recordTokens(input: number, output: number, label?: string): void {
     this.metrics.tokensIn += input;
     this.metrics.tokensOut += output;
+    if (label) {
+      const step = this.metrics.perStepTokens[label] ?? { in: 0, out: 0 };
+      step.in += input;
+      step.out += output;
+      this.metrics.perStepTokens[label] = step;
+      this.info(`tokens [${label}]`, { in: input, out: output, totalIn: step.in, totalOut: step.out });
+    }
   }
 
   recordSectionLatency(sectionId: SectionId, latencyMs: number): void {

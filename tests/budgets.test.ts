@@ -1,8 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { SECTION_DEFINITIONS } from "../src/config/sections.js";
-import { dedupeEvidence } from "../src/evidence/dedupe.js";
-import { buildEvidencePacket } from "../src/evidence/packet-builder.js";
+import { buildEvidencePacket, dedupeEvidence } from "../src/evidence/evidence-pipeline.js";
 
 test("section definitions include explicit per-section budgets", () => {
   for (const section of SECTION_DEFINITIONS) {
@@ -43,9 +42,7 @@ test("dedupeEvidence enforces maxCommunityItems budget", () => {
 test("buildEvidencePacket enforces maxEvidenceItems budget", () => {
   const input = {
     company: "Acme",
-    outputLanguage: "English",
     localLanguage: "en",
-    canonicalLanguage: "English",
     outputDir: ".",
     now: "2026-04-16T00:00:00.000Z"
   };

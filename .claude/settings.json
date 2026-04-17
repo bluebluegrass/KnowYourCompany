@@ -16,7 +16,13 @@
       "WebFetch(domain:baike.baidu.com)",
       "WebFetch(domain:www.nbd.com.cn)",
       "WebFetch(domain:www.jiemian.com)",
-      "WebFetch(domain:zhuanlan.zhihu.com)"
+      "WebFetch(domain:zhuanlan.zhihu.com)",
+      "Bash(npm run *)",
+      "WebFetch(domain:news.crunchbase.com)",
+      "WebFetch(domain:jobs.ashbyhq.com)",
+      "Bash(ls \"/Users/simona/Documents/Vibe Projects/bg_check\"/.env*)",
+      "Bash(npm test *)",
+      "Bash(grep -l \"translator\\\\|ui-strings\\\\|localization\\\\|translateText\\\\|UiStrings\" \"/Users/simona/Documents/Vibe Projects/bg_check/tests/\"*.test.ts)"
     ],
     "additionalDirectories": [
       "/Users/simona/.claude/commands",

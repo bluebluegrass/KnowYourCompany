@@ -2,124 +2,131 @@
 
 **Stop wasting interviews on companies that are quietly falling apart.**
 
-KnowYourCompany is now a **token-efficient Node/TypeScript pipeline** for researching a company and generating a polished, self-contained HTML due diligence report while keeping Claude focused on the nuanced writing and judgment work.
+KnowYourCompany is a Claude Code skill that researches a company and generates a structured, offline HTML report — in about 2 minutes — so you know what you're walking into before you spend weeks in a hiring process.
 
-## Architecture overview
+---
 
-The old version delegated almost everything to one Claude prompt. The refactor moves deterministic work into code:
+## Why this exists
 
-1. Input normalization
-2. Query planning with section-aware recency budgets
-3. Retrieval and fetch in code
-4. Page cleaning and snippet extraction in code
-5. Evidence dedupe and ranking in code
-6. Compact evidence packet creation per section
-7. Claude section analysis on structured packets only
-8. Small final-summary Claude call
-9. Late translation of final user-facing prose and deterministic HTML rendering in code
+Job searches are exhausting. You apply, you prep, you interview — and then you find out the company had layoffs last month, is drowning in lawsuits, or has a culture that burns people out in six months.
 
-Claude no longer fills HTML templates, inlines CSS, or reviews full raw pages by default.
+This tool is built for candidates who want **signal before they commit their time**.
 
-## Where token savings come from
+---
 
-- Large raw pages are replaced with compact evidence packets
-- One monolithic prompt is replaced by short section-specific prompts
-- Search, recency filtering, dedupe, and rendering happen outside Claude
-- Cached fetches, packets, and section analyses prevent repeated model work
-- Translation happens late on final user-facing prose instead of repeatedly inside retrieval and analysis
+## What it is NOT
 
-## Quality safeguards
+- Not a stock screener or investment tool
+- Not for financial modeling or valuation
+- Not a substitute for legal or financial advice
 
-- Every rendered source URL comes from the canonical fetched source registry
-- Sections with insufficient evidence automatically render as grey
-- Community-sourced sections retain explicit disclaimers
-- Legal retains an informational disclaimer
-- Finance still includes a plain-English explanation
-- The final report stays self-contained and offline-safe
-- Final summary and section prose can now be translated late when `outputLanguage` differs from the canonical working language
+This is built for one thing: **helping you decide where to spend your time**.
 
-## Caching
+---
 
-Cache layers live in `.cache/`:
+## What it covers
 
-- fetched pages by normalized URL hash
-- section evidence packets by company + section + source hashes
-- section analyses by company + section + evidence hash + prompt version
-- final summary by analyzed section outputs
+Each report analyzes 12 areas, automatically ranked by severity:
 
-Invalidation is versioned in code via `CACHE_VERSIONS`.
+| Area | What it looks for |
+|---|---|
+| Layoffs | Recent cuts, headcount reductions, affected teams |
+| Financial health | Funding rounds, runway signals, revenue trajectory |
+| Leadership | C-suite turnover, founder involvement, recent exits |
+| Legal & regulatory | Lawsuits, class actions, regulatory enforcement |
+| Culture | Glassdoor, Blind, Reddit — recurring themes |
+| Remote / hybrid policy | Official policy and recent RTO changes |
+| Compensation | Salary ranges, equity type, benefits signals |
+| Interview experience | Number of rounds, ghosting reports, offer rescissions |
+| Visa sponsorship | Country-specific sponsorship programs and status |
+| Product & market health | Ratings, growth signals, major incidents |
+| Company history | Founding, milestones, business model, headcount |
+| Founder background | Prior companies, notable achievements, controversies |
 
-## Quality vs cost tuning
+---
 
-Main levers:
+## What you get
 
-- evidence cap per section
-- search result cap per query
-- selective local-language search only for high-value sections
-- recency window defaults to the past 24 months for time-sensitive sections
-- reuse via cache instead of re-running analysis
+A single HTML file that opens in any browser — no login, no internet required after download.
 
-## Prompts
+- Severity map at the top so the biggest concerns are immediately visible
+- Red / yellow / green / grey badges per section
+- Collapsible sections with cited sources
+- Dark mode
+- Sections auto-sorted so red flags appear first
 
-Prompts are split under `src/prompts/`:
+![KnowYourCompany report sample](sample.png)
 
-- one prompt module per report section
-- one final-summary prompt
+---
 
-Each prompt consumes structured evidence only and returns structured JSON.
-
-Late-stage translation is handled after section analysis and final-summary synthesis. Fixed UI labels are localized through a built-in dictionary for supported languages.
-
-## Usage
+## How to use it
 
 ### Requirements
 
-- Node.js 20+
-- `ANTHROPIC_API_KEY`
+- [Claude Code](https://claude.ai/code)
+- Claude Code authenticated via `claude auth login`
 
-### Install
+No `ANTHROPIC_API_KEY` is required for the local runtime path in this repo.
 
-```bash
-npm install
-```
+### Setup
 
-### Run tests
+1. Copy this folder into `~/.claude/commands/`
+2. Open Claude Code
+3. Type `/KnowYourCompany`
 
-```bash
-npm test
-```
+Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
 
-### Generate a report
+---
 
-```bash
-npm run report -- --company "Stripe" --location "Amsterdam, Netherlands" --role "Product Designer" --language "English"
-```
+## How the pipeline reduces token usage
 
-If you omit arguments, the CLI will prompt interactively.
+The original [KnowYourCompany skill](https://github.com/bluebluegrass/KnowYourCompany) runs entirely inside a single Claude Code session — Claude does everything: searches the web, reads pages, writes findings, and produces the HTML. That works well interactively, but sends a large and growing context to the model on every run.
+
+This repo adds a Node.js pipeline that restructures the work around one principle: **use the model only for judgment, use code for everything else**.
+
+| Task | Original skill | This pipeline |
+|---|---|---|
+| Web search | Claude tool call | Code (search client) |
+| Page fetching | Claude tool call | Code (fetcher + cache) |
+| Deduplication | Claude (implicit) | Scored and deduped before the model sees anything |
+| Evidence selection | Claude sees all raw results | Per-section caps — only top-N snippets sent |
+| Section analysis | One large prompt per section | Compact structured packet; cached by evidence hash |
+| HTML rendering | Claude writes the HTML | Template + string replacement, no model call |
+| Re-render | Full re-run required | Load `.report.json`, render locally — zero token cost |
+
+### Specific mechanisms
+
+**Per-section evidence budgets** — Each of the 12 sections has explicit caps (`maxQueries`, `maxFetchedPages`, `maxEvidenceItems`, `maxCommunityItems`) in `src/config/sections.ts`. The model never sees raw search results; it receives a trimmed, scored packet.
+
+**Evidence scoring and deduplication** — Snippets are scored by recency, source trust, and relevance. Near-duplicate content from the same domain is dropped before the prompt is built.
+
+**Cache by evidence hash** — Each section analysis is cached keyed on a SHA-256 of the evidence sent. Re-running on the same data costs nothing.
+
+**Output is always English** — No translation pass. The model writes English directly.
+
+**HTML rendering is code, not AI** — The model produces a `ReportModel` JSON saved to disk. A template-and-string-replacement renderer converts it to HTML. Re-rendering after a design change costs zero tokens.
+
+---
 
 ## Repo structure
 
 ```text
 KnowYourCompany/
-├── KnowYourCompany.md
+├── KnowYourCompany.md            — the skill (copy to ~/.claude/commands/)
 ├── README.md
-├── docs/
-│   └── refactor-note.md
 ├── references/
-│   ├── template.html
-│   └── styles.css
+│   ├── template.html             — HTML skeleton for the report
+│   └── styles.css                — visual source of truth
 ├── src/
-│   ├── cli.ts
-│   ├── cache/
-│   ├── config/
-│   ├── evidence/
-│   ├── localization/
-│   ├── logging/
-│   ├── model/
-│   ├── prompts/
-│   ├── render/
-│   ├── report/
-│   ├── retrieval/
-│   └── types/
-└── tests/
+│   ├── cli.ts                    — entry point: --render, --full, or interactive
+│   ├── report/orchestrator.ts    — research pipeline, writes .report.json
+│   ├── render/report-renderer.ts — JSON → HTML, no AI calls
+│   ├── evidence/                 — scoring, deduplication, packet builder
+│   ├── retrieval/                — search client, fetcher, recency filters
+│   ├── model/                    — model client, section analyzer, schema validation
+│   ├── prompts/                  — per-section and summary prompt builders
+│   └── config/                   — section definitions and per-section budgets
+└── examples/
+    ├── Sardine_KnowYourCompany_2026-04-16.html
+    └── Poki_bg_check_2026-04-15.html
 ```

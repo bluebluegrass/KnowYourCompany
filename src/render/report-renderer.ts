@@ -1,10 +1,20 @@
+import path from "node:path";
+import { readFile, writeFile } from "node:fs/promises";
 import { SECTION_DEFINITIONS } from "../config/sections.js";
-import { createUiStrings } from "../localization/ui-strings.js";
+import { validateFinalSummary, validateSectionAnalysis } from "../model/schema.js";
+import { buildHtmlPath } from "../report/artifact-paths.js";
 import type { ReportModel, SectionAnalysis } from "../types/index.js";
 import { disclaimersBlock, escapeHtml, findingsList, paragraphsFromText, ratingsBlock, sourcesList, timelineBlock } from "./html-fragments.js";
+import { loadTemplate } from "./template-loader.js";
+
+const BADGE_LABELS: Record<string, string> = {
+  no_concerns: "No concerns",
+  mixed_signals: "Mixed signals",
+  concern_found: "Concern found",
+  no_data: "No data"
+};
 
 export function renderReport(template: string, styles: string, report: ReportModel): string {
-  const ui = createUiStrings(report.outputLanguage);
   const sectionsById = new Map(report.sections.map((section) => [section.sectionId, section]));
   let html = template.replace(
     /\/\* ── PASTE references\/styles\.css HERE ───────────────────────── \*\//,
@@ -29,7 +39,7 @@ export function renderReport(template: string, styles: string, report: ReportMod
     const section = sectionsById.get(sectionDef.id) || createEmptySection(sectionDef.id, sectionDef.title);
     const slot = sectionDef.order;
     replacements[`B${slot}`] = section.severity;
-    replacements[`B${slot}_LABEL`] = ui.badgeLabel(section.badgeLabelKey);
+    replacements[`B${slot}_LABEL`] = BADGE_LABELS[section.badgeLabelKey] ?? section.badgeLabelKey;
   }
 
   const section = (id: SectionAnalysis["sectionId"]) => sectionsById.get(id) || createEmptySection(id, "");
@@ -39,7 +49,7 @@ export function renderReport(template: string, styles: string, report: ReportMod
 
   replacements.FUNDING_TIMELINE = timelineBlock(section("financial_health").timelineItems);
   replacements.FINANCIAL_SIGNALS = renderGenericSection(section("financial_health"));
-  replacements.FINANCIAL_PLAIN_ENGLISH = escapeHtml(section("financial_health").plainEnglishFinanceText || ui.label("no_data_section"));
+  replacements.FINANCIAL_PLAIN_ENGLISH = escapeHtml(section("financial_health").plainEnglishFinanceText || "No data available.");
   replacements.FINANCIAL_SOURCES = sourcesList(section("financial_health").sourceRefs, report.sources);
 
   replacements.LEADERSHIP_CURRENT = paragraphsFromText(section("leadership_stability").summaryText);
@@ -80,14 +90,27 @@ export function renderReport(template: string, styles: string, report: ReportMod
   replacements.FOUNDER_CONTENT = renderGenericSection(section("founder_background"));
   replacements.FOUNDER_SOURCES = sourcesList(section("founder_background").sourceRefs, report.sources);
 
-  html = html.replace(/<html lang="en">/, `<html lang="${ui.htmlLang}">`);
-
   for (const [key, value] of Object.entries(replacements)) {
     html = html.replaceAll(`{{ ${key} }}`, value);
   }
 
   validateNoPlaceholdersRemain(html);
   return html;
+}
+
+export async function renderFromJson(jsonPath: string, outputDir?: string): Promise<{ report: ReportModel; html: string; outputPath: string }> {
+  const raw = await readFile(jsonPath, "utf8");
+  const report = parseReportModel(raw, jsonPath);
+  const templateDir = path.resolve(process.cwd(), "references");
+  const { template, styles } = await loadTemplate(
+    path.join(templateDir, "template.html"),
+    path.join(templateDir, "styles.css")
+  );
+  const html = renderReport(template, styles, report);
+  const destinationDir = outputDir || path.dirname(jsonPath);
+  const outputPath = buildHtmlPath(destinationDir, report.company, report.date);
+  await writeFile(outputPath, html, "utf8");
+  return { report, html, outputPath };
 }
 
 export function validateNoPlaceholdersRemain(html: string): void {
@@ -108,8 +131,7 @@ function createEmptySection(sectionId: SectionAnalysis["sectionId"], title: stri
     disclaimers: [],
     ratings: [],
     timelineItems: [],
-    sourceRefs: [],
-    translatedSourceLabels: []
+    sourceRefs: []
   };
 }
 
@@ -118,4 +140,45 @@ function renderGenericSection(section: SectionAnalysis): string {
   const list = findingsList(section.keyFindings);
   const disclaimers = disclaimersBlock(section.disclaimers);
   return [disclaimers, paragraphs, list].filter(Boolean).join("\n");
+}
+
+function parseReportModel(raw: string, jsonPath: string): ReportModel {
+  let value: unknown;
+  try {
+    value = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`Failed to parse report JSON at ${jsonPath}: ${(error as Error).message}`);
+  }
+
+  if (!value || typeof value !== "object") {
+    throw new Error(`Report JSON at ${jsonPath} must contain an object.`);
+  }
+
+  const report = value as Record<string, unknown>;
+  assertString(report.company, "company");
+  assertString(report.date, "date");
+  if (report.location !== undefined) {
+    assertString(report.location, "location");
+  }
+  if (report.role !== undefined) {
+    assertString(report.role, "role");
+  }
+  validateFinalSummary(report.verdict);
+  if (!Array.isArray(report.sections)) {
+    throw new Error("sections must be an array.");
+  }
+  for (const section of report.sections) {
+    validateSectionAnalysis(section);
+  }
+  if (!report.sources || typeof report.sources !== "object" || Array.isArray(report.sources)) {
+    throw new Error("sources must be an object.");
+  }
+
+  return report as unknown as ReportModel;
+}
+
+function assertString(value: unknown, field: string): void {
+  if (typeof value !== "string") {
+    throw new Error(`${field} must be a string.`);
+  }
 }

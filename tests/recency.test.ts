@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { recencyReason, shouldIncludeByRecency } from "../src/retrieval/recency.js";
+import { recencyReason, shouldIncludeByRecency } from "../src/evidence/evidence-pipeline.js";
 
 test("time-sensitive sections default to 24 month window", () => {
   assert.equal(shouldIncludeByRecency("layoffs", "2025-01-01T00:00:00.000Z", "2026-04-16T00:00:00.000Z"), true);
