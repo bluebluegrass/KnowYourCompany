@@ -16,7 +16,15 @@
       "WebFetch(domain:baike.baidu.com)",
       "WebFetch(domain:www.nbd.com.cn)",
       "WebFetch(domain:www.jiemian.com)",
-      "WebFetch(domain:zhuanlan.zhihu.com)"
+      "WebFetch(domain:zhuanlan.zhihu.com)",
+      "Bash(node -e ' *)",
+      "Bash(node references/render.js /tmp/TestCo_KnowYourCompany_2026-04-17.report.json)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:www.darktrace.com)",
+      "WebFetch(domain:ind.nl)",
+      "WebFetch(domain:careers.darktrace.com)",
+      "WebFetch(domain:darktrace.com)",
+      "Bash(node \"/Users/simona/Documents/Vibe Projects/bg_check/references/render.js\" \"/Users/simona/Documents/Vibe Projects/bg_check/Darktrace_KnowYourCompany_2026-04-17.report.json\")"
     ],
     "additionalDirectories": [
       "/Users/simona/.claude/commands",

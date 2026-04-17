@@ -14,6 +14,16 @@ This tool is built for candidates who want **signal before they commit their tim
 
 ---
 
+## What it is NOT
+
+- Not a stock screener or investment tool
+- Not for financial modeling or valuation
+- Not a substitute for legal or financial advice
+
+This is built for one thing: **helping you decide where to spend your time**.
+
+---
+
 ## What it covers
 
 Each report analyzes 12 areas, automatically ranked by severity:
@@ -54,7 +64,9 @@ A single HTML file that opens in any browser — no login, no internet required 
 ### Requirements
 
 - [Claude Code](https://claude.ai/code)
-- Web search enabled
+- Claude Code authenticated via `claude auth login`
+
+No `ANTHROPIC_API_KEY` is required for the local runtime path in this repo.
 
 ### Setup
 
@@ -62,30 +74,43 @@ A single HTML file that opens in any browser — no login, no internet required 
 2. Open Claude Code
 3. Type `/KnowYourCompany`
 
-Claude will ask for the company name, office location (optional), your target role (optional), and the report language (optional, English by default), then run the research and produce the report.
+Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
 
 ---
 
-## What it is NOT
+## How HTML rendering reduces token usage
 
-- Not a stock screener or investment tool
-- Not for financial modeling or valuation
-- Not a substitute for legal or financial advice
+In the [original skill](https://github.com/bluebluegrass/KnowYourCompany), Claude writes the final HTML file directly — reading `template.html`, inlining the CSS, and filling every placeholder itself. That means the full HTML template and all its content pass through the model context on every run.
 
-This is built for one thing: **helping you decide where to spend your time**.
+This repo separates that step:
+
+1. **Claude writes a `.report.json`** — a flat JSON object with one key per template placeholder. The values are the researched content (prose, badge colours, source links). This is compact and structured.
+2. **A script renders the HTML** — `references/render.js` reads the JSON and `template.html`, substitutes every `{{ PLACEHOLDER }}`, inlines the CSS, and writes the `.html` file. No model call. No tokens.
+
+| Step | Original skill | This repo |
+|---|---|---|
+| Research + analysis | Claude | Claude (unchanged) |
+| Write findings | Claude fills HTML template | Claude writes `.report.json` |
+| HTML rendering | Claude (reads template, writes file) | `node references/render.js` — zero tokens |
+| Re-render after design change | Full re-run | Re-run script only — zero tokens |
+
+The research and judgment are still entirely Claude's work. The only thing removed from the model's responsibility is mechanical string substitution into a template.
 
 ---
 
 ## Repo structure
-
 ```text
 KnowYourCompany/
-├── KnowYourCompany.md    — the skill (copy this folder to ~/.claude/commands/)
+├── KnowYourCompany.md        — the skill (copy this folder to ~/.claude/commands/)
 ├── README.md
 ├── references/
-│   ├── template.html     — report HTML skeleton
-│   └── styles.css        — visual source of truth
+│   ├── template.html         — HTML skeleton with {{ PLACEHOLDER }} slots
+│   ├── styles.css            — visual source of truth (inlined at render time)
+│   └── render.js             — script: reads .report.json → writes .html (no AI)
 └── examples/
-    ├── Sardine_bg_check_2026-04-15.html
-    └── Poki_bg_check_2026-04-15.html
+    ├──  Sardine_KnowYourCompany_2026-04-16.html           - Built with V0, everything done by AI.
+    ├── Darktrace_KnowYourCompany_2026-04-17.report.json   - Built with V1, AI produces the report.
+    └── Darktrace_KnowYourCompany_2026-04-17.html          - Built with V1, html built with script, no AI. saves 50% of tokens.
+    
+
 ```

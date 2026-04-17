@@ -173,52 +173,99 @@ For each of the 12 sections, assign a badge:
 
 ---
 
-## Step 4 — Generate HTML Report
+## Step 4 — Write the report JSON
 
-Write a file named `{COMPANY}_KnowYourCompany_{YYYY-MM-DD}.html` (use today's date, replace spaces in company name with underscores) in the current working directory.
+Write a file named `{COMPANY}_KnowYourCompany_{YYYY-MM-DD}.report.json` (use today's date, replace spaces in company name with underscores) in the current working directory.
 
-The file must be **fully self-contained** — no external CSS, JS, or font CDN links. Everything inline.
+The file is a flat JSON object. Every key maps directly to one `{{ PLACEHOLDER }}` in `references/template.html`. Write all prose values in `OUTPUT_LANG`.
 
-**Use `references/template.html` as the canonical starting structure.** Before writing the output file:
-1. Read `references/template.html` to get the exact HTML skeleton and placeholder list.
-2. Read `references/styles.css` and paste its full contents into the `<style>` block of the output file (replacing the placeholder comment).
-3. Set the `<html lang="...">` attribute to the BCP 47 code for `OUTPUT_LANG` (e.g. `en`, `nl`, `de`, `fr`, `ja`, `zh`, `pt`, `es`).
-4. Replace every `{{ }}` placeholder with your researched content in `OUTPUT_LANG`. Never leave a placeholder unfilled.
+**Required keys and what to write for each:**
+
+```
+COMPANY          — company name (plain text)
+DATE             — today's date as YYYY-MM-DD
+LOCATION         — office location, or empty string
+ROLE             — role, or empty string
+VERDICT_TEXT     — 3–5 sentences directly answering "Is this a safe company to join right now?"
+                   Lead with the most important finding. Be specific, no hedging.
+VERDICT_FLAGS    — one <span class="verdict-flag {color}">{icon} {label}</span> per notable finding.
+                   Use red/yellow/green. List red first.
+                   e.g. "<span class=\"verdict-flag green\">✓ Series C funded</span>"
+
+B1 … B12         — badge color for each section: green | yellow | red | grey
+B1_LABEL … B12_LABEL — badge label in OUTPUT_LANG:
+                   English: No concerns / Mixed signals / Concern found / No data
+
+LAYOFFS_CONTENT      — HTML (<p>, <ul><li>) summarising layoff findings
+LAYOFFS_SOURCES      — <li><a href="URL" target="_blank">Title</a></li> for each source
+
+FUNDING_TIMELINE     — one <div class="timeline-item"><strong>Round</strong><span>Date · Amount · Investors</span></div> per round, oldest first
+FINANCIAL_SIGNALS    — HTML summarising financial health findings
+FINANCIAL_PLAIN_ENGLISH — 2–3 plain-language sentences explaining the financial picture
+FINANCIAL_SOURCES    — sources list
+
+LEADERSHIP_CURRENT   — HTML describing current C-suite
+LEADERSHIP_DEPARTURES — HTML listing recent departures
+LEADERSHIP_SOURCES   — sources list
+
+LEGAL_CONTENT        — HTML summarising legal/regulatory findings
+LEGAL_SOURCES        — sources list
+
+GLASSDOOR_RATINGS    — zero or more <div class="rating-row"><span>Label</span><span>Value</span></div>
+CULTURE_THEMES       — HTML summarising culture themes
+CULTURE_COMMUNITY    — HTML with notable quotes or community findings
+CULTURE_SOURCES      — sources list
+
+RTO_OFFICIAL         — HTML describing the official remote/hybrid policy
+RTO_CHANGES          — HTML listing recent policy changes
+RTO_SENTIMENT        — HTML summarising employee sentiment
+RTO_SOURCES          — sources list
+
+COMP_SALARY          — HTML describing salary signals
+COMP_EQUITY          — HTML describing equity / vesting
+COMP_BENEFITS        — HTML describing notable benefits
+COMP_SOURCES         — sources list
+
+INTERVIEW_CONTENT    — HTML summarising interview process findings
+INTERVIEW_SOURCES    — sources list
+
+VISA_CONTENT         — HTML summarising visa sponsorship findings
+VISA_SOURCES         — sources list
+
+PRODUCT_CONTENT      — HTML summarising product and market health
+PRODUCT_SOURCES      — sources list
+
+PROFILE_SUMMARY      — HTML with company overview and history
+PROFILE_MILESTONES   — HTML listing key milestones
+PROFILE_SOURCES      — sources list
+
+FOUNDER_CONTENT      — HTML summarising founder backgrounds
+FOUNDER_SOURCES      — sources list
+```
+
+**Rules:**
+- All HTML values must use `<p>`, `<ul><li>`, `<table>` — no markdown.
+- Escape double quotes inside JSON string values with `\"`.
+- If a section has no data, write `<p>No data found for this section.</p>` and set its badge to `grey` / `No data`.
+- Never invent URLs. Only include URLs you actually fetched or searched.
 
 ---
 
-## Step 5 — Fill In The Template
+## Step 5 — Render the HTML
 
-**Write all report content in `OUTPUT_LANG`.** This includes section headings, prose, badge labels, disclaimers, the plain-English financial box, and the footer. The only exceptions are:
-- Source link anchor text (keep the original page title)
-- HTML attributes, CSS class names, and JavaScript (always English)
-- The `<html lang="...">` attribute (set to the BCP 47 code for `OUTPUT_LANG`, e.g. `nl`, `de`, `fr`, `ja`, `zh`, `en`)
+After writing the JSON, run:
 
-If `OUTPUT_LANG` is not English, also translate the fixed UI strings in the template: section titles (e.g. "Recent Layoffs" → Dutch: "Recente ontslagen"), badge labels (e.g. "No concerns" → "Geen zorgen"), disclaimer text, footer text, and the "Toggle Dark Mode" button label.
+```bash
+node references/render.js {COMPANY}_KnowYourCompany_{YYYY-MM-DD}.report.json
+```
 
-Replace every `{{ }}` placeholder with your researched content:
-
-- For `{{ VERDICT_TEXT }}`: write 3–5 sentences in `OUTPUT_LANG` that directly answer "Is this a safe company to join right now?" Lead with the most important finding. Be specific — name the actual concern (e.g. "Sardine is well-funded and fully remote, but interview data is thin and equity terms are unclear."). Do not pad with hedges.
-- For `{{ VERDICT_FLAGS }}`: write one `<span class="verdict-flag {color}">{icon} {label}</span>` per notable finding. Use `red` for material concerns, `yellow` for mixed signals, `green` for clear positives. List red first. Examples: `<span class="verdict-flag red">🚨 Active regulatory action</span>`, `<span class="verdict-flag yellow">⚠️ Culture: mixed reviews</span>`, `<span class="verdict-flag green">✓ Series C funded, strong runway</span>`.
-- For each section's main content block: write clean HTML paragraphs (`<p>`), lists (`<ul><li>`), and tables (`<table>`) as appropriate. Do not use markdown inside the HTML.
-- For each `{{ BADGE_X }}` placeholder: use one of `green`, `yellow`, `red`, or `grey` (lowercase, no spaces).
-- For each `{{ BADGE_X_LABEL }}` placeholder: use the appropriate label in `OUTPUT_LANG` (e.g. English: `No concerns` / `Mixed signals` / `Concern found` / `No data`; Dutch: `Geen zorgen` / `Gemengde signalen` / `Zorgpunt` / `Geen data`; French: `Aucun problème` / `Signaux mitigés` / `Point d'attention` / `Données insuffisantes`).
-- For each sources block: write `<li><a href="URL" target="_blank">Page title or description</a></li>` for every URL you fetched. If a section had no sources, write `<li>No sources found</li>`.
-- For the funding timeline: write one `<div class="timeline-item">` per funding round, oldest first.
-- For the Glassdoor ratings: use the `<div class="rating-row">` pattern shown in the template comment.
-- For the plain-English financial box: write 2–3 sentences in everyday language in `OUTPUT_LANG`, as if explaining to a friend with no finance background.
-
-**Critical rules:**
-- Never invent URLs. Only link to pages you actually fetched or searched.
-- If a section has no data at all, write: `<p>No data found for this section.</p>` and assign a grey badge.
-- Do not leave any `{{ }}` placeholders in the final file — replace or remove all of them.
-- The final HTML file must be valid and render correctly in a browser with no internet connection.
+This script reads the JSON and `references/template.html`, substitutes every placeholder, inlines the CSS, and writes `{COMPANY}_KnowYourCompany_{YYYY-MM-DD}.html`. It will error if any placeholder is left unfilled.
 
 ---
 
 ## Step 6 — Confirm Output
 
-After writing the file, tell the user:
+After the script runs, tell the user:
 
 > "Report saved as `{filename}.html`. Open it in any browser — no internet connection needed.
 >

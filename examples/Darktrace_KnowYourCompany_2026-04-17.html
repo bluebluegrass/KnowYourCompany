@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<!--
+  ================================================================
+  KNOWYOURCOMPANY — REFERENCE TEMPLATE
+  ================================================================
+  HOW TO USE
+  ----------
+  1. Copy this file and rename it:  {COMPANY}_KnowYourCompany_{YYYY-MM-DD}.html
+     e.g.  Stripe_KnowYourCompany_2026-05-01.html
+
+  2. Replace every  with researched content.
+     • Never leave a placeholder in the final file.
+     • If a section has no data, write:
+         <p>No data found for this section.</p>
+       and set its badge to "grey" / "No data".
+
+  3. Paste the full contents of references/styles.css into the
+     <style> block below (keep the file self-contained — no CDN links).
+
+  4. Badge values
+     ┌──────────────┬─────────────────┬──────────────────────────────────────────┐
+     │ class suffix │ label           │ when to use                              │
+     ├──────────────┼─────────────────┼──────────────────────────────────────────┤
+     │ green        │ No concerns     │ nothing noteworthy found                 │
+     │ yellow       │ Mixed signals   │ some concerns or limited data            │
+     │ red          │ Concern found   │ material risk (layoffs >10%, active suit,│
+     │              │                 │ runway <6 mo, CEO fired, fraud, etc.)    │
+     │ grey         │ No data         │ could not find sufficient information    │
+     └──────────────┴─────────────────┴──────────────────────────────────────────┘
+
+  5. The JS at the bottom automatically opens all RED sections on load.
+
+  SECTION CHECKLIST
+  -----------------
+  1.  Layoffs
+  2.  Financial Health
+  3.  Leadership Stability
+  4.  Legal & Regulatory
+  5.  Company Culture
+  6.  Remote / Hybrid / RTO Policy
+  7.  Compensation & Benefits
+  8.  Interview Experience
+  9.  Visa & Immigration Sponsorship
+  10. Product & Market Health
+  11. Company Profile & History
+  12. Founder Background
+  ================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darktrace — KnowYourCompany Report</title>
+<style>
+/* ============================================================
+   Background Check Report — Shared Stylesheet
+   Editorial briefing aesthetic with interactive severity map.
+   ============================================================ */
+
+:root {
+  --bg: #f3efe6;
+  --bg-accent: #e6ddce;
+  --surface: rgba(255, 251, 245, 0.9);
+  --surface-strong: #fffdf8;
+  --surface-muted: rgba(248, 242, 231, 0.82);
+  --border: rgba(87, 70, 50, 0.16);
+  --border-strong: rgba(87, 70, 50, 0.28);
+  --text: #221d18;
+  --muted: #6f655a;
+  --accent: #7d2f24;
+  --accent-soft: #ead7cb;
+  --shadow: 0 22px 60px rgba(57, 41, 27, 0.12);
+  --green: #1d6a43;
+  --green-bg: rgba(29, 106, 67, 0.1);
+  --green-border: rgba(29, 106, 67, 0.25);
+  --yellow: #9a6a00;
+  --yellow-bg: rgba(154, 106, 0, 0.12);
+  --yellow-border: rgba(154, 106, 0, 0.28);
+  --red: #a13324;
+  --red-bg: rgba(161, 51, 36, 0.11);
+  --red-border: rgba(161, 51, 36, 0.3);
+  --grey: #6b6762;
+  --grey-bg: rgba(107, 103, 98, 0.12);
+  --grey-border: rgba(107, 103, 98, 0.24);
+}
+
+[data-theme="dark"] {
+  --bg: #161311;
+  --bg-accent: #201b18;
+  --surface: rgba(35, 29, 25, 0.9);
+  --surface-strong: #2b241f;
+  --surface-muted: rgba(45, 37, 32, 0.84);
+  --border: rgba(225, 210, 192, 0.12);
+  --border-strong: rgba(225, 210, 192, 0.22);
+  --text: #f3ece3;
+  --muted: #b7ab9f;
+  --accent: #d58b72;
+  --accent-soft: rgba(213, 139, 114, 0.18);
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  --green: #72d7a1;
+  --green-bg: rgba(114, 215, 161, 0.13);
+  --green-border: rgba(114, 215, 161, 0.28);
+  --yellow: #efbe55;
+  --yellow-bg: rgba(239, 190, 85, 0.14);
+  --yellow-border: rgba(239, 190, 85, 0.28);
+  --red: #f08d79;
+  --red-bg: rgba(240, 141, 121, 0.14);
+  --red-border: rgba(240, 141, 121, 0.3);
+  --grey: #beb5ae;
+  --grey-bg: rgba(190, 181, 174, 0.12);
+  --grey-border: rgba(190, 181, 174, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(125, 47, 36, 0.08), transparent 28rem),
+    radial-gradient(circle at top right, rgba(154, 106, 0, 0.08), transparent 22rem),
+    linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 82%, var(--bg-accent)) 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+.container {
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(1.2rem, 2vw, 2rem) 0 4rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  margin-bottom: 1.5rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-strong) 76%, var(--accent-soft)) 0%, var(--surface) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  inset: auto -8% -45% auto;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.header-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 52rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.8rem;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.header-title h1 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+  line-height: 0.95;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  max-width: 10ch;
+}
+
+.header-dek {
+  margin-top: 0.9rem;
+  max-width: 44rem;
+  color: color-mix(in srgb, var(--text) 82%, var(--muted));
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
+}
+
+.header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.48rem 0.72rem;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.meta-chip strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.header-lede {
+  margin-top: 1rem;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.header-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.theme-btn {
+  appearance: none;
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.theme-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 65%, var(--surface-strong));
+}
+
+.summary-shell {
+  margin-bottom: 1.5rem;
+}
+
+.summary-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.summary-intro h2 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  letter-spacing: -0.03em;
+}
+
+.summary-intro p {
+  max-width: 36rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.summary-item {
+  grid-column: span 3;
+  min-height: 7.25rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 78%, transparent), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 1.2rem 1rem 0.95rem;
+  box-shadow: 0 10px 24px rgba(57, 41, 27, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-item::before {
+  content: "";
+  position: absolute;
+  inset: 0.55rem 0.85rem auto;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--border-strong);
+}
+
+.summary-item.is-clickable {
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.summary-item.is-clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 38px rgba(57, 41, 27, 0.12);
+  border-color: var(--border-strong);
+}
+
+.summary-item.is-clickable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.summary-item:has(.badge-red)::before {
+  background: linear-gradient(90deg, var(--red), color-mix(in srgb, var(--red) 45%, transparent));
+}
+
+.summary-item:has(.badge-yellow)::before {
+  background: linear-gradient(90deg, var(--yellow), color-mix(in srgb, var(--yellow) 45%, transparent));
+}
+
+.summary-item:has(.badge-green)::before {
+  background: linear-gradient(90deg, var(--green), color-mix(in srgb, var(--green) 45%, transparent));
+}
+
+.summary-item:has(.badge-grey)::before {
+  background: linear-gradient(90deg, var(--grey), color-mix(in srgb, var(--grey) 45%, transparent));
+}
+
+.summary-item .label {
+  max-width: 10ch;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.summary-item .badge {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.badge-green {
+  color: var(--green);
+}
+
+.badge-yellow {
+  color: var(--yellow);
+}
+
+.badge-red {
+  color: var(--red);
+}
+
+.badge-grey {
+  color: var(--grey);
+}
+
+.section {
+  margin-bottom: 1rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 74%, transparent), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 18px 44px rgba(57, 41, 27, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  cursor: pointer;
+  user-select: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-muted) 72%, transparent), transparent);
+}
+
+.section-header:hover {
+  background: color-mix(in srgb, var(--accent-soft) 26%, var(--surface-muted));
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 1rem;
+}
+
+.section-title span:first-child {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badge-green-pill {
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+}
+
+.badge-yellow-pill {
+  background: var(--yellow-bg);
+  color: var(--yellow);
+  border: 1px solid var(--yellow-border);
+}
+
+.badge-red-pill {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red-border);
+}
+
+.badge-grey-pill {
+  background: var(--grey-bg);
+  color: var(--grey);
+  border: 1px solid var(--grey-border);
+}
+
+.chevron {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  transition: transform 0.22s ease, background 0.22s ease, color 0.22s ease;
+}
+
+.section-header:hover .chevron {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 72%, var(--surface-muted));
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.section-body {
+  padding: 0 1.35rem 1.35rem;
+  border-top: 1px solid var(--border);
+}
+
+.section-body.hidden {
+  display: none;
+}
+
+.section-body h3 {
+  margin: 1.2rem 0 0.55rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.section-body p,
+.section-body li {
+  font-size: 0.98rem;
+}
+
+.section-body p {
+  margin-bottom: 0.75rem;
+}
+
+.section-body ul {
+  padding-left: 1.15rem;
+}
+
+.section-body ul li + li {
+  margin-top: 0.45rem;
+}
+
+.plain-english {
+  margin: 1rem 0;
+  padding: 1rem 1.05rem;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 78%, var(--surface-strong)), color-mix(in srgb, var(--surface-strong) 80%, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: 20px;
+  color: color-mix(in srgb, var(--text) 88%, var(--accent));
+}
+
+[data-theme="dark"] .plain-english {
+  color: color-mix(in srgb, var(--text) 92%, var(--accent));
+}
+
+.plain-english strong {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.disclaimer {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--yellow-border);
+  border-radius: 18px;
+  background: var(--yellow-bg);
+  color: color-mix(in srgb, var(--yellow) 78%, var(--text));
+  font-size: 0.86rem;
+}
+
+.rating-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.5rem 0;
+  padding: 0.8rem 0.95rem;
+  border-radius: 16px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+}
+
+.stars {
+  color: #c78d19;
+  letter-spacing: -0.08em;
+}
+
+.rating-label {
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+
+.timeline {
+  position: relative;
+  margin: 0.8rem 0 0.2rem;
+  padding-left: 1.4rem;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-soft), color-mix(in srgb, var(--accent) 28%, transparent));
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1rem;
+  padding: 0.1rem 0 0.1rem 0.35rem;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -1.18rem;
+  top: 0.42rem;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 2px solid var(--accent);
+}
+
+.timeline-item .round {
+  display: block;
+  font-weight: 700;
+}
+
+.timeline-item .round-meta {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.sources {
+  margin-top: 1rem;
+  padding-top: 0.95rem;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.sources p {
+  margin-bottom: 0.5rem;
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.sources ul {
+  padding-left: 1rem;
+}
+
+.sources li {
+  font-size: 0.86rem;
+}
+
+.verdict {
+  margin-bottom: 1.5rem;
+  padding: clamp(1.1rem, 2vw, 1.5rem) clamp(1.2rem, 2vw, 1.75rem);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--surface-strong) 80%, var(--accent-soft)) 0%,
+    var(--surface) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 26px;
+  box-shadow: 0 14px 36px rgba(57, 41, 27, 0.09);
+}
+
+.verdict-label {
+  margin-bottom: 0.6rem;
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.verdict-text {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--text) 90%, var(--muted));
+  max-width: 72ch;
+}
+
+.verdict-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.verdict-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.72rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.verdict-flag.red    { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-border); }
+.verdict-flag.yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+.verdict-flag.green  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
+
+.footer {
+  margin-top: 2rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: linear-gradient(180deg, var(--surface), var(--surface-muted));
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.75;
+  box-shadow: 0 16px 36px rgba(57, 41, 27, 0.08);
+}
+
+@media print {
+  .theme-btn {
+    display: none;
+  }
+
+  .section-body.hidden {
+    display: block !important;
+  }
+
+  .section-header {
+    cursor: default;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+}
+
+@media (max-width: 900px) {
+  .summary-item {
+    grid-column: span 4;
+  }
+}
+
+@media (max-width: 680px) {
+  .container {
+    width: min(100% - 1rem, 100%);
+  }
+
+  .header {
+    grid-template-columns: 1fr;
+    border-radius: 22px;
+  }
+
+  .header-title h1 {
+    max-width: none;
+  }
+
+  .summary-intro {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-item {
+    grid-column: span 1;
+    min-height: 6.5rem;
+  }
+
+  .section-header,
+  .section-body,
+  .footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+/* ============================================================
+   KnowYourCompany — Shared Stylesheet
+   Editorial briefing aesthetic with interactive severity map.
+   ============================================================ */
+
+:root {
+  --bg: #f3efe6;
+  --bg-accent: #e6ddce;
+  --surface: rgba(255, 251, 245, 0.9);
+  --surface-strong: #fffdf8;
+  --surface-muted: rgba(248, 242, 231, 0.82);
+  --border: rgba(87, 70, 50, 0.16);
+  --border-strong: rgba(87, 70, 50, 0.28);
+  --text: #221d18;
+  --muted: #6f655a;
+  --accent: #7d2f24;
+  --accent-soft: #ead7cb;
+  --shadow: 0 22px 60px rgba(57, 41, 27, 0.12);
+  --green: #1d6a43;
+  --green-bg: rgba(29, 106, 67, 0.1);
+  --green-border: rgba(29, 106, 67, 0.25);
+  --yellow: #9a6a00;
+  --yellow-bg: rgba(154, 106, 0, 0.12);
+  --yellow-border: rgba(154, 106, 0, 0.28);
+  --red: #a13324;
+  --red-bg: rgba(161, 51, 36, 0.11);
+  --red-border: rgba(161, 51, 36, 0.3);
+  --grey: #6b6762;
+  --grey-bg: rgba(107, 103, 98, 0.12);
+  --grey-border: rgba(107, 103, 98, 0.24);
+}
+
+[data-theme="dark"] {
+  --bg: #161311;
+  --bg-accent: #201b18;
+  --surface: rgba(35, 29, 25, 0.9);
+  --surface-strong: #2b241f;
+  --surface-muted: rgba(45, 37, 32, 0.84);
+  --border: rgba(225, 210, 192, 0.12);
+  --border-strong: rgba(225, 210, 192, 0.22);
+  --text: #f3ece3;
+  --muted: #b7ab9f;
+  --accent: #d58b72;
+  --accent-soft: rgba(213, 139, 114, 0.18);
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  --green: #72d7a1;
+  --green-bg: rgba(114, 215, 161, 0.13);
+  --green-border: rgba(114, 215, 161, 0.28);
+  --yellow: #efbe55;
+  --yellow-bg: rgba(239, 190, 85, 0.14);
+  --yellow-border: rgba(239, 190, 85, 0.28);
+  --red: #f08d79;
+  --red-bg: rgba(240, 141, 121, 0.14);
+  --red-border: rgba(240, 141, 121, 0.3);
+  --grey: #beb5ae;
+  --grey-bg: rgba(190, 181, 174, 0.12);
+  --grey-border: rgba(190, 181, 174, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(125, 47, 36, 0.08), transparent 28rem),
+    radial-gradient(circle at top right, rgba(154, 106, 0, 0.08), transparent 22rem),
+    linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 82%, var(--bg-accent)) 100%);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+.container {
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(1.2rem, 2vw, 2rem) 0 4rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  margin-bottom: 1.5rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-strong) 76%, var(--accent-soft)) 0%, var(--surface) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  inset: auto -8% -45% auto;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.header-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 52rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.8rem;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.header-title h1 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+  line-height: 0.95;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  max-width: 10ch;
+}
+
+.header-dek {
+  margin-top: 0.9rem;
+  max-width: 44rem;
+  color: color-mix(in srgb, var(--text) 82%, var(--muted));
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
+}
+
+.header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.48rem 0.72rem;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.meta-chip strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.header-lede {
+  margin-top: 1rem;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.header-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.theme-btn {
+  appearance: none;
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.theme-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 65%, var(--surface-strong));
+}
+
+.summary-shell {
+  margin-bottom: 1.5rem;
+}
+
+.summary-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.summary-intro h2 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  letter-spacing: -0.03em;
+}
+
+.summary-intro p {
+  max-width: 36rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.summary-item {
+  grid-column: span 3;
+  min-height: 7.25rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 78%, transparent), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 1.2rem 1rem 0.95rem;
+  box-shadow: 0 10px 24px rgba(57, 41, 27, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-item::before {
+  content: "";
+  position: absolute;
+  inset: 0.55rem 0.85rem auto;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--border-strong);
+}
+
+.summary-item.is-clickable {
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.summary-item.is-clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 38px rgba(57, 41, 27, 0.12);
+  border-color: var(--border-strong);
+}
+
+.summary-item.is-clickable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.summary-item:has(.badge-red)::before {
+  background: linear-gradient(90deg, var(--red), color-mix(in srgb, var(--red) 45%, transparent));
+}
+
+.summary-item:has(.badge-yellow)::before {
+  background: linear-gradient(90deg, var(--yellow), color-mix(in srgb, var(--yellow) 45%, transparent));
+}
+
+.summary-item:has(.badge-green)::before {
+  background: linear-gradient(90deg, var(--green), color-mix(in srgb, var(--green) 45%, transparent));
+}
+
+.summary-item:has(.badge-grey)::before {
+  background: linear-gradient(90deg, var(--grey), color-mix(in srgb, var(--grey) 45%, transparent));
+}
+
+.summary-item .label {
+  max-width: 10ch;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.summary-item .badge {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.badge-green {
+  color: var(--green);
+}
+
+.badge-yellow {
+  color: var(--yellow);
+}
+
+.badge-red {
+  color: var(--red);
+}
+
+.badge-grey {
+  color: var(--grey);
+}
+
+.section {
+  margin-bottom: 1rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 74%, transparent), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 18px 44px rgba(57, 41, 27, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  cursor: pointer;
+  user-select: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-muted) 72%, transparent), transparent);
+}
+
+.section-header:hover {
+  background: color-mix(in srgb, var(--accent-soft) 26%, var(--surface-muted));
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 1rem;
+}
+
+.section-title span:first-child {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badge-green-pill {
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+}
+
+.badge-yellow-pill {
+  background: var(--yellow-bg);
+  color: var(--yellow);
+  border: 1px solid var(--yellow-border);
+}
+
+.badge-red-pill {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red-border);
+}
+
+.badge-grey-pill {
+  background: var(--grey-bg);
+  color: var(--grey);
+  border: 1px solid var(--grey-border);
+}
+
+.chevron {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  transition: transform 0.22s ease, background 0.22s ease, color 0.22s ease;
+}
+
+.section-header:hover .chevron {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 72%, var(--surface-muted));
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.section-body {
+  padding: 0 1.35rem 1.35rem;
+  border-top: 1px solid var(--border);
+}
+
+.section-body.hidden {
+  display: none;
+}
+
+.section-body h3 {
+  margin: 1.2rem 0 0.55rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.section-body p,
+.section-body li {
+  font-size: 0.98rem;
+}
+
+.section-body p {
+  margin-bottom: 0.75rem;
+}
+
+.section-body ul {
+  padding-left: 1.15rem;
+}
+
+.section-body ul li + li {
+  margin-top: 0.45rem;
+}
+
+.plain-english {
+  margin: 1rem 0;
+  padding: 1rem 1.05rem;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 78%, var(--surface-strong)), color-mix(in srgb, var(--surface-strong) 80%, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: 20px;
+  color: color-mix(in srgb, var(--text) 88%, var(--accent));
+}
+
+[data-theme="dark"] .plain-english {
+  color: color-mix(in srgb, var(--text) 92%, var(--accent));
+}
+
+.plain-english strong {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.disclaimer {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--yellow-border);
+  border-radius: 18px;
+  background: var(--yellow-bg);
+  color: color-mix(in srgb, var(--yellow) 78%, var(--text));
+  font-size: 0.86rem;
+}
+
+.rating-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.5rem 0;
+  padding: 0.8rem 0.95rem;
+  border-radius: 16px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+}
+
+.stars {
+  color: #c78d19;
+  letter-spacing: -0.08em;
+}
+
+.rating-label {
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+
+.timeline {
+  position: relative;
+  margin: 0.8rem 0 0.2rem;
+  padding-left: 1.4rem;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-soft), color-mix(in srgb, var(--accent) 28%, transparent));
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1rem;
+  padding: 0.1rem 0 0.1rem 0.35rem;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -1.18rem;
+  top: 0.42rem;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 2px solid var(--accent);
+}
+
+.timeline-item .round {
+  display: block;
+  font-weight: 700;
+}
+
+.timeline-item .round-meta {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.sources {
+  margin-top: 1rem;
+  padding-top: 0.95rem;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.sources p {
+  margin-bottom: 0.5rem;
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.sources ul {
+  padding-left: 1rem;
+}
+
+.sources li {
+  font-size: 0.86rem;
+}
+
+.footer {
+  margin-top: 2rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: linear-gradient(180deg, var(--surface), var(--surface-muted));
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.75;
+  box-shadow: 0 16px 36px rgba(57, 41, 27, 0.08);
+}
+
+@media print {
+  .theme-btn {
+    display: none;
+  }
+
+  .section-body.hidden {
+    display: block !important;
+  }
+
+  .section-header {
+    cursor: default;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+}
+
+@media (max-width: 900px) {
+  .summary-item {
+    grid-column: span 4;
+  }
+}
+
+@media (max-width: 680px) {
+  .container {
+    width: min(100% - 1rem, 100%);
+  }
+
+  .header {
+    grid-template-columns: 1fr;
+    border-radius: 22px;
+  }
+
+  .header-title h1 {
+    max-width: none;
+  }
+
+  .summary-intro {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-item {
+    grid-column: span 1;
+    min-height: 6.5rem;
+  }
+
+  .section-header,
+  .section-body,
+  .footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── Header ────────────────────────────────────────────── -->
+  <div class="header">
+    <div class="header-copy">
+      <p class="eyebrow">KnowYourCompany</p>
+      <div class="header-title">
+        <h1>Darktrace</h1>
+      </div>
+      <p class="header-dek">A public-signal briefing across operations, leadership, legal exposure, compensation, and market health.</p>
+      <div class="header-meta">
+        <span class="meta-chip"><strong>Generated</strong> 2026-04-17</span>
+        <!-- Optional:
+          <span class="meta-chip"><strong>Office</strong> Netherlands</span>
+          <span class="meta-chip"><strong>Role</strong> Data Engineer</span>
+        -->
+      </div>
+      <p class="header-lede">Use the severity map to jump straight to the highest-risk areas. Red items surface material concerns first, followed by mixed signals and lower-risk findings.</p>
+    </div>
+    <div class="header-actions">
+      <button class="theme-btn" onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
+  </div>
+
+  <!-- ── Verdict / narrative summary ─────────────────────────── -->
+  <!--
+    Darktrace is financially strong — taken private by Thoma Bravo for $5.3B in October 2024, with ~$782M revenue and 89% gross margins — but the company culture is the most significant concern. Glassdoor shows only a 49% recommend rate, a 3.0/5 culture score, and repeated accounts of toxic management and poor HR practices. Leadership instability is also a real flag: the company has had three CEOs since September 2024, with Ed Jennings only stepping in as CEO in March 2026. The Amsterdam office is active and hybrid (2 days/week in office), but IND Kennismigrant sponsorship status could not be confirmed from public records — verify directly with HR before progressing.: 3–5 sentence plain-language summary of the overall picture.
+      Answer: "Is this a safe company to join right now?" Lead with the most important
+      finding. Be direct — do not hedge every sentence.
+    <span class="verdict-flag red">🚨 Culture: 49% recommend rate, toxic management reports</span>
+<span class="verdict-flag yellow">⚠️ Leadership: 3 CEOs since Sep 2024</span>
+<span class="verdict-flag yellow">⚠️ Visa: IND Kennismigrant status unconfirmed</span>
+<span class="verdict-flag green">✓ Financials: $5.3B PE-backed, $782M revenue, 89% gross margin</span>
+<span class="verdict-flag green">✓ Product: 4.3–4.5/5 on G2 and Capterra</span>: one .verdict-flag per notable finding (red/yellow/green).
+      Pattern: <span class="verdict-flag red">🚨 Platform shut down</span>
+               <span class="verdict-flag yellow">⚠️ Culture: mixed reviews</span>
+               <span class="verdict-flag green">✓ Strong financials</span>
+      List red flags first, then yellow, then green highlights.
+  -->
+  <div class="verdict">
+    <p class="verdict-label">Bottom Line</p>
+    <p class="verdict-text">Darktrace is financially strong — taken private by Thoma Bravo for $5.3B in October 2024, with ~$782M revenue and 89% gross margins — but the company culture is the most significant concern. Glassdoor shows only a 49% recommend rate, a 3.0/5 culture score, and repeated accounts of toxic management and poor HR practices. Leadership instability is also a real flag: the company has had three CEOs since September 2024, with Ed Jennings only stepping in as CEO in March 2026. The Amsterdam office is active and hybrid (2 days/week in office), but IND Kennismigrant sponsorship status could not be confirmed from public records — verify directly with HR before progressing.</p>
+    <div class="verdict-flags">
+      <span class="verdict-flag red">🚨 Culture: 49% recommend rate, toxic management reports</span>
+<span class="verdict-flag yellow">⚠️ Leadership: 3 CEOs since Sep 2024</span>
+<span class="verdict-flag yellow">⚠️ Visa: IND Kennismigrant status unconfirmed</span>
+<span class="verdict-flag green">✓ Financials: $5.3B PE-backed, $782M revenue, 89% gross margin</span>
+<span class="verdict-flag green">✓ Product: 4.3–4.5/5 on G2 and Capterra</span>
+    </div>
+  </div>
+
+  <!-- ── Summary snapshot grid ─────────────────────────────── -->
+  <!--
+    Replace badge- with one of: badge-green / badge-yellow / badge-red / badge-grey
+    Replace  with one of: No concerns / Mixed signals / Concern found / No data
+  -->
+  <div class="summary-shell">
+    <div class="summary-intro">
+      <h2>Severity Map</h2>
+      <p>Each card is clickable. The report automatically reorders itself by severity so the most urgent issues rise to the top.</p>
+    </div>
+    <div class="summary">
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-1"><div class="label">Layoffs</div>          <div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-2"><div class="label">Financial Health</div>  <div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-3"><div class="label">Leadership</div>        <div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-4"><div class="label">Legal</div>             <div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-5"><div class="label">Culture</div>           <div class="badge badge-red">Concern found</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-6"><div class="label">RTO Policy</div>        <div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-7"><div class="label">Compensation</div>      <div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-8"><div class="label">Interview</div>         <div class="badge badge-yellow">Mixed signals</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-9"><div class="label">Visa Sponsorship</div>  <div class="badge badge-grey">No data</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-10"><div class="label">Product Health</div>    <div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-11"><div class="label">Company Profile</div>   <div class="badge badge-green">No concerns</div></div>
+      <div class="summary-item is-clickable" role="button" tabindex="0" data-target="section-12"><div class="label">Founder</div>           <div class="badge badge-yellow">Mixed signals</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 1 — LAYOFFS
+       Badge guidance: RED if >10% reduction in past 6 months
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-1">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>1. Recent Layoffs</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <!--
+        List each layoff event:
+          - Date
+          - Headcount reduction (absolute and %)
+          - Teams / offices affected
+          - Source link
+        If LOCATION is set, explicitly note whether that office was affected.
+        If no layoffs: <p>No layoffs found in the past 24 months.</p>
+      -->
+      <p>Thoma Bravo stated at the time of the October 2024 acquisition that it did not plan any material restructuring or material headcount reduction, and would focus only on reducing non-critical administrative costs.</p><p>However, multiple employee reviews from late 2024 and early 2025 on Glassdoor describe layoffs following the acquisition — with accounts of sudden terminations conducted in 5-minute calls. Headcount data from Unify shows approximately 324 recent departures alongside ~200 new hires, suggesting meaningful attrition. No entry was found on layoffs.fyi for Darktrace.</p><p>The Netherlands office was not specifically mentioned in layoff reports.</p>
+      <div class="sources"><p>Sources</p><ul>
+        <li><a href="https://www.glassdoor.com/Reviews/Darktrace-layoff-Reviews-EI_IE1059406.0,9_KH10,16.htm" target="_blank">Darktrace layoff reviews — Glassdoor</a></li><li><a href="https://www.thomabravo.com/press-releases/thoma-bravo-completes-acquisition-of-darktrace" target="_blank">Thoma Bravo completes acquisition of Darktrace — Thoma Bravo</a></li><li><a href="https://www.unifygtm.com/insights-headcount/darktrace" target="_blank">Employee headcount data — Unify</a></li>
+        <!-- Pattern: <li><a href="URL" target="_blank">Page title</a></li> -->
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 2 — FINANCIAL HEALTH
+       Badge guidance: RED if runway <6 mo, down round, or active restructuring
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-2">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>2. Financial Health</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>Funding History</h3>
+      <div class="timeline">
+        <!--
+          One .timeline-item per round, oldest first.
+          Example:
+          <div class="timeline-item">
+            <span class="round">Series B — $50M</span>
+            <div class="round-meta">Jan 2023 · Lead: Sequoia · Post-money: $400M</div>
+          </div>
+        -->
+        <div class="timeline-item"><strong>Series E</strong><span>2020 · $50M · Vitruvian Partners, KKR, 1011 Ventures · Valuation $1.65B</span></div><div class="timeline-item"><strong>IPO — London Stock Exchange</strong><span>April 2021 · £165M raised · Valuation ~£2.5B</span></div><div class="timeline-item"><strong>Take-Private by Thoma Bravo</strong><span>October 2024 · $5.3B · Delisted from FTSE100/LSE</span></div>
+      </div>
+
+      <h3>Financial Signals</h3>
+      <p>Darktrace reported revenue of approximately £625M (~$782M) for FY2024 (year ending June 2024), with gross margins of ~89% and positive EBITDA. Net ARR retention rose to 106.6% and the customer base grew 10.6% year-on-year to 9,735 customers. Operating cash flow was $110M (TTM).</p><p>The company is now wholly owned by Thoma Bravo following the $5.3B take-private in October 2024. No public financial reporting is required going forward. Prior to delisting, FY2023 showed net income of $59M on $545M revenue.</p><p>In January 2023, short seller Quintessential Capital Management published a report alleging accounting irregularities and channel-stuffing. An independent review by EY (July 2023) found only a small number of immaterial errors — no evidence of fraud.</p>
+
+      <div class="plain-english">
+        <strong>Plain English</strong>
+        <!--
+          2–3 sentences for someone with no finance background.
+          Explain what the numbers mean and what questions to ask.
+        -->
+        Darktrace makes money selling AI cybersecurity software, and it's genuinely profitable with nearly 90 cents of gross profit on every dollar of revenue. It was bought outright by a large US private equity firm (Thoma Bravo) for $5.3 billion in late 2024, so it's no longer on the stock market. A short seller accused it of cooking the books in 2023, but an independent audit found nothing material — that chapter appears closed.
+      </div>
+
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.investegate.co.uk/index.php/announcement/rns/darktrace--dark/final-results/7737654" target="_blank">Darktrace Final Results — Investegate</a></li><li><a href="https://www.crunchbase.com/organization/darktrace/company_financials" target="_blank">Darktrace funding and financials — Crunchbase</a></li><li><a href="https://www.thomabravo.com/press-releases/thoma-bravo-completes-acquisition-of-darktrace" target="_blank">Thoma Bravo acquisition completion</a></li><li><a href="https://www.uktech.news/cybersecurity/darktrace-review-ey-fraud-20230719" target="_blank">EY review finds no evidence of fraud — UK Tech News</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 3 — LEADERSHIP STABILITY
+       Badge guidance: RED if CEO/CTO fired abruptly or multiple exits in <6 mo
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-3">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>3. Leadership Stability</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>Current Leadership</h3>
+      <!--
+        List current C-suite with name, title, and whether they are a founder.
+        Example: <ul><li><strong>Jane Doe</strong> — CEO (founder, since 2015)</li></ul>
+      -->
+      <p>As of April 2026, the executive leadership team is:</p><ul><li><strong>Ed Jennings</strong> — President &amp; CEO (appointed March 2026)</li><li><strong>Jack Stockdale OBE FREng</strong> — Chief Technology Officer (co-founder)</li><li><strong>Suman Raju</strong> — Chief Financial Officer</li><li><strong>Hein Hellemons</strong> — Chief Revenue Officer</li><li><strong>David Smith</strong> — Chief People Officer</li><li><strong>Nicole Eagan</strong> — Co-founder and Strategic Advisor</li><li><strong>Phil Pearson</strong> — Chief Strategy Officer</li><li><strong>Matthew North</strong> — EVP, EMEA and APJ Sales</li></ul>
+
+      <h3>Recent Departures</h3>
+      <!--
+        List departures in past 24 months: name, role, date, stated reason.
+        If none: <p>No notable leadership departures found in the past 24 months.</p>
+      -->
+      <ul><li><strong>Poppy Gustafsson (CEO, co-founder)</strong> — stepped down September 2024, weeks before Thoma Bravo acquisition completed. Now UK Minister of State for Investment.</li><li><strong>Jill Popelka (CEO)</strong> — appointed September 2024, stepped down January 2026, reportedly under pressure from Thoma Bravo. Charles Goodman (board chairman) served as interim CEO.</li><li><strong>Ed Jennings</strong> — installed as permanent CEO March 2026.</li></ul><p>Three CEOs in approximately 18 months is a material red flag for stability at the top.</p>
+
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.darktrace.com/company/leadership" target="_blank">Current leadership team — Darktrace</a></li><li><a href="https://fortune.com/europe/2024/09/06/darktrace-ceo-poppy-gustafsson-steps-down/" target="_blank">Poppy Gustafsson steps down — Fortune</a></li><li><a href="https://www.thomabravo.com/press-releases/jill-popelka-to-step-down-as-ceo-of-darktrace-board-chairman-charles-goodman-named-interim-ceo" target="_blank">Jill Popelka steps down — Thoma Bravo</a></li><li><a href="https://businesscloud.co.uk/news/private-equity-owner-forces-out-darktrace-ceo/" target="_blank">PE owner forces out Darktrace CEO — BusinessCloud</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 4 — LEGAL & REGULATORY
+       Badge guidance: RED if active class action, SEC enforcement, or fraud
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-4">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>4. Legal &amp; Regulatory Exposure</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ The following is sourced from public records and news. It is not legal advice. Always verify via official sources.</div>
+      <!--
+        List cases: name, date, status, outcome, pattern notes.
+        If nothing found: <p>No lawsuits, regulatory actions, or legal complaints found.</p>
+      -->
+      <p>No active lawsuits, class actions, FTC, SEC, or EEOC enforcement actions were found against Darktrace as of April 2026. No Dutch regulatory actions (AP, ACM, or court proceedings) were identified.</p><p><strong>Short-seller controversy (2023):</strong> Quintessential Capital Management published a report in January 2023 alleging accounting irregularities, channel-stuffing, and connections to individuals linked to fraud. Darktrace commissioned an independent review by EY, which in July 2023 found only a small number of immaterial errors — no evidence of fraud. The matter was referred to the UK FCA and FRC, and no further action has been reported.</p><p><strong>Mike Lynch connection:</strong> Darktrace's founding investor Mike Lynch faced US fraud charges related to the Autonomy/HP sale (a separate legal matter). Lynch was acquitted in June 2024 and died in August 2024. This has no direct bearing on Darktrace's operations or legal standing.</p>
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.cnbc.com/2023/02/06/why-uk-cybersecurity-firm-darktrace-is-under-attack-from-short-sellers.html" target="_blank">Darktrace under attack from short sellers — CNBC</a></li><li><a href="https://www.uktech.news/cybersecurity/darktrace-review-ey-fraud-20230719" target="_blank">EY review finds no fraud — UK Tech News</a></li><li><a href="https://www.accountingweb.co.uk/tech/tech-pulse/darktrace-cleared-by-ey-following-short-seller-attack" target="_blank">Darktrace cleared by EY — AccountingWEB</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 5 — CULTURE
+       Badge guidance: RED if Glassdoor <3.0 or persistent toxic/harassment reports
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-5">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>5. Company Culture</span>
+        <span class="section-badge badge-red-pill">Concern found</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ All culture data below is sourced from public community posts and is unverified. Individual experiences may vary significantly.</div>
+
+      <h3>Glassdoor Snapshot</h3>
+      <!--
+        Use rating-row pattern for each metric. Examples:
+        <div class="rating-row"><span class="stars">★★★★☆</span><strong>4.1</strong><span class="rating-label">Overall (1,240 reviews)</span></div>
+        <div class="rating-row"><span class="stars">★★★★☆</span><strong>78%</strong><span class="rating-label">CEO Approval</span></div>
+        <div class="rating-row"><span class="stars">★★★★☆</span><strong>72%</strong><span class="rating-label">Recommend to a Friend</span></div>
+        If no data: <p>No Glassdoor data found.</p>
+      -->
+      <div class="rating-row"><span>Overall rating</span><span>3.3 / 5 (1,298 reviews)</span></div><div class="rating-row"><span>Recommend to a friend</span><span>49%</span></div><div class="rating-row"><span>Work-life balance</span><span>3.5 / 5</span></div><div class="rating-row"><span>Culture &amp; values</span><span>3.0 / 5</span></div><div class="rating-row"><span>Career opportunities</span><span>3.1 / 5</span></div><div class="rating-row"><span>Compensation &amp; benefits</span><span>3.1 / 5</span></div>
+
+      <h3>Recurring Themes</h3>
+      <p><strong>Positives:</strong> Reviewers consistently praise innovative technology, strong product, good colleagues at the individual contributor level, and exposure to cutting-edge AI cybersecurity.</p><p><strong>Negatives:</strong> Recurring and consistent themes across hundreds of reviews include: toxic management culture, inexperienced and unqualified managers, no performance review process, no salary increases, high pressure and unrealistic targets, and very high turnover (average tenure reportedly less than one year). Multiple reviews mention that the company hires recent graduates at low base salaries.</p><p>Post-Thoma Bravo acquisition reviews describe increased pressure and a sense of instability, with 3 CEO changes in 18 months amplifying concerns.</p>
+
+      <h3>Community Posts</h3>
+      <ul><li>"Toxic culture. Avoid at all costs." — Glassdoor review</li><li>"3 CEOs in 3 years, no performance reviews, no salary increases, multiple resignations in GTM teams." — Glassdoor review (2025)</li><li>"Since Thoma Bravo acquired, there have been mass layoffs and additional pressure." — Glassdoor review</li><li>"Layoffs are done in 5-minute calls." — Glassdoor review</li><li>"A luxurious brand but employees are treated as slaves." — Glassdoor review</li></ul>
+
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.glassdoor.com/Reviews/Darktrace-Reviews-E1059406.htm" target="_blank">Darktrace reviews — Glassdoor (1,298 reviews)</a></li><li><a href="https://www.indeed.com/cmp/Darktrace/reviews" target="_blank">Darktrace employee reviews — Indeed</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 6 — RTO POLICY
+       Badge guidance: RED if surprise 5-day RTO with no flexibility
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-6">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>6. Remote / Hybrid / RTO Policy</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ Official policy statements may differ from actual practice. Community reports are unverified.</div>
+
+      <h3>Official Policy</h3>
+      <p>Darktrace's Amsterdam office operates on a <strong>hybrid model with a minimum of 2 days per week in office</strong>. The company also maintains a European R&amp;D centre in The Hague (from its acquisition of Cybersprint in 2022). FlexJobs lists Darktrace as offering hybrid and fully remote positions, though engineering roles are more likely to require office attendance.</p>
+
+      <h3>Recent Changes</h3>
+      <p>No formal RTO policy announcement or change was found specific to Darktrace in 2024 or 2025. The hybrid-minimum policy for Amsterdam appears to have been consistent.</p>
+
+      <h3>Employee Sentiment</h3>
+      <p>Employee reviews do not flag the work location policy as a major concern. The more pressing issues cited are management quality and culture rather than office attendance requirements.</p>
+
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.flexjobs.com/remote-jobs/company/darktrace" target="_blank">Darktrace remote/hybrid jobs — FlexJobs</a></li><li><a href="https://www.linkedin.com/jobs/view/sales-account-executive-dutch-speaking-at-darktrace-3324472779" target="_blank">Amsterdam job listing noting hybrid policy — LinkedIn</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 7 — COMPENSATION & BENEFITS
+       Badge guidance: YELLOW if salary undisclosed; RED if systematic pay violations
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-7">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>7. Compensation &amp; Benefits</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ Salary and equity data from community sources is self-reported and unverified. Use as a benchmark only.</div>
+
+      <h3>Salary Ranges</h3>
+      <p>No specific salary data was found for a Data Engineer role at Darktrace in the Netherlands. As a benchmark, software engineering roles in the Netherlands at Darktrace's peer companies typically range from €69,000–€121,000 per year (Levels.fyi Netherlands data). Glassdoor rates Darktrace's compensation at 3.1/5, suggesting it may track below market.</p><p>Amsterdam sales roles at Darktrace were found at €40,000–€45,000 base with uncapped commission — consistent with reviews noting the company recruits graduates at low base salaries.</p>
+
+      <h3>Equity</h3>
+      <p>No equity or stock option information specific to Netherlands-based Darktrace roles was found. As a private company (since October 2024), any equity would be in the form of options or profit-sharing rather than publicly traded shares — the liquidity timeline and terms are unclear.</p>
+
+      <h3>Benefits Highlights</h3>
+      <p>Reviews mention standard benefits including health insurance and pension contributions, but no standout benefits programme was identified. The 3.1/5 compensation and benefits score on Glassdoor is below average for a company of this size and maturity.</p>
+
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.levels.fyi/companies/darktrace/salaries" target="_blank">Darktrace salaries — Levels.fyi</a></li><li><a href="https://www.glassdoor.com/Salary/Darktrace-Salaries-E1059406.htm" target="_blank">Darktrace salary data — Glassdoor</a></li><li><a href="https://www.payscale.com/research/US/Employer=Darktrace/Salary" target="_blank">Darktrace salary — PayScale</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 8 — INTERVIEW EXPERIENCE
+       Badge guidance: RED if systematic ghosting or offer rescissions reported
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-8">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>8. Interview Experience</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <div class="disclaimer">⚠️ All interview reports are self-reported by candidates and unverified.</div>
+      <!--
+        Cover: number of rounds, format (take-home, live coding, case study),
+        average timeline, ghosting/bait-and-switch reports.
+      -->
+      <p>Based on 196 Glassdoor submissions, the Darktrace interview process takes an average of <strong>23 days</strong> end-to-end. Difficulty is rated 2.69/5 (moderate). Only <strong>48.5% of candidates rate the experience positively</strong> — below average for a tech company.</p><p>The typical structure involves: recruiter screening, technical discussion, scenario or case-based assessment, culture fit, and a final manager interview. For technical roles this may include a take-home or live coding component.</p><p>Negative feedback highlights poor communication, ghosting after later rounds, and disorganised scheduling. No Data Engineer-specific interview reports were found.</p>
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.glassdoor.com/Interview/Darktrace-Interview-Questions-E1059406.htm" target="_blank">Darktrace interview questions and experience — Glassdoor</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 9 — VISA SPONSORSHIP
+       Badge guidance: RED if company is not a registered sponsor and role needs it
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-9">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>9. Visa &amp; Immigration Sponsorship</span>
+        <span class="section-badge badge-grey-pill">No data</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <!--
+        For Netherlands roles: check IND public register.
+        For US roles: check myvisajobs.com (H-1B petition count + approval rate).
+        Note any recent policy changes.
+      -->
+      <p>The relevant Dutch immigration route for a Data Engineer role is the <strong>IND Kennismigrant (Highly Skilled Migrant)</strong> permit. To use this route, Darktrace must be registered as an <em>erkend referent</em> (recognised sponsor) with the Dutch IND. Recognised sponsors can process Kennismigrant applications in as little as 2 weeks.</p><p>Darktrace has an active Amsterdam office and posts roles there, which suggests they may hold this status — however, <strong>Darktrace's presence on the IND public register of recognised sponsors could not be confirmed</strong> during this research. The IND register requires a direct search at ind.nl.</p><p><strong>Recommendation:</strong> Before progressing, confirm directly with Darktrace's HR team whether they are an IND-recognised sponsor and whether they actively support Kennismigrant applications for Data Engineer roles.</p>
+      <div class="sources"><p>Sources</p><ul><li><a href="https://ind.nl/en/public-register-recognised-sponsors" target="_blank">IND public register of recognised sponsors</a></li><li><a href="https://www.government.nl/topics/immigration-to-the-netherlands/question-and-answer/hire-a-highly-skilled-migrant" target="_blank">Hiring a highly skilled migrant — Government.nl</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 10 — PRODUCT & MARKET HEALTH
+       Badge guidance: RED if product rating <3.0 or major public outage/scandal
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-10">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>10. Product &amp; Market Health</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <!--
+        B2B: G2 / Capterra ratings + themes.
+        Consumer: App Store / Google Play / Trustpilot rating + themes.
+        Include key strengths, common complaints, market position.
+      -->
+      <p>Darktrace's core product is an AI-powered cybersecurity platform that uses unsupervised machine learning to detect threats across network, email, cloud, and OT environments. Key modules include Darktrace/Detect, Darktrace/Respond (Antigena), Darktrace/Email, and Darktrace/OT.</p><p><strong>G2:</strong> 4.3/5 from 59 verified reviews. Praised for autonomous response, self-learning AI, and ease of deployment. Critiques: alert fatigue, tuning complexity, and pricing.</p><p><strong>Capterra:</strong> 4.5/5 from 19 reviews. Customers highlight the EMAIL module as best-in-class and praise customer support. Concerns: cost and multi-site deployment complexity.</p><p>Customer base grew 10.6% YoY to 9,735 customers as of FY2024. January 2025 acquisition of Cado Security adds cloud forensics capabilities.</p>
+      <div class="sources"><p>Sources</p><ul><li><a href="https://www.g2.com/sellers/darktrace" target="_blank">Darktrace product reviews — G2</a></li><li><a href="https://www.capterra.com/p/168955/Darktrace/reviews/" target="_blank">Darktrace reviews — Capterra</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 11 — COMPANY PROFILE & HISTORY
+       Badge guidance: GREEN unless founding story raises red flags
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-11">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>11. Company Profile &amp; History</span>
+        <span class="section-badge badge-green-pill">No concerns</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <h3>What They Do</h3>
+      <p>Darktrace is a British AI cybersecurity company founded in 2013 in Cambridge, UK, by mathematicians and intelligence experts including Poppy Gustafsson, Jack Stockdale, Nicole Eagan, Dave Palmer, and Emily Orton. It was backed from inception by Invoke Capital, Mike Lynch's venture fund.</p><p>The company applies unsupervised machine learning to detect and autonomously respond to cyber threats in real time. It operates across network, email, cloud, endpoint, and operational technology (OT) security. As of 2023 it had approximately 2,269 employees across 100+ countries.</p><p>In the Netherlands, Darktrace has an Amsterdam office (sales/go-to-market) and a The Hague R&amp;D centre, the latter inherited from its €47.5M acquisition of Dutch company Cybersprint in 2022.</p>
+
+      <h3>Key Milestones</h3>
+      <ul><li><strong>2013</strong> — Founded in Cambridge, UK, backed by Invoke Capital (Mike Lynch)</li><li><strong>2018</strong> — Achieved unicorn status</li><li><strong>2019</strong> — CEO Poppy Gustafsson and CTO Jack Stockdale awarded OBEs</li><li><strong>2021</strong> — IPO on London Stock Exchange, valuation ~£2.5B</li><li><strong>2022</strong> — Acquired Dutch company Cybersprint for €47.5M</li><li><strong>2023</strong> — Short-seller attack by Quintessential Capital; EY review clears company</li><li><strong>October 2024</strong> — Taken private by Thoma Bravo for $5.3B; delisted from LSE</li><li><strong>January 2025</strong> — Acquired Cado Security (cloud forensics)</li><li><strong>March 2026</strong> — Ed Jennings appointed CEO</li></ul>
+
+      <div class="sources"><p>Sources</p><ul><li><a href="https://en.wikipedia.org/wiki/Darktrace" target="_blank">Darktrace — Wikipedia</a></li><li><a href="https://www.darktrace.com/news/darktrace-announces-formal-completion-of-its-acquisition-by-thoma-bravo" target="_blank">Thoma Bravo acquisition complete — Darktrace</a></li><li><a href="https://www.crunchbase.com/organization/darktrace" target="_blank">Darktrace company profile — Crunchbase</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 12 — FOUNDER BACKGROUND
+       Badge guidance: RED if active fraud/lawsuit against founders personally
+       ═══════════════════════════════════════════════════════ -->
+  <div class="section" id="section-12">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-title">
+        <span>12. Founder Background</span>
+        <span class="section-badge badge-yellow-pill">Mixed signals</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body hidden">
+      <!--
+        For each founder: prior companies, education, notable achievements,
+        controversies (sourced only — no editorialising).
+      -->
+      <p><strong>Poppy Gustafsson</strong> (co-founder, former CEO) — studied mathematics at Sheffield, qualified as a chartered accountant at Deloitte, then worked as corporate controller at Mike Lynch's Autonomy before co-founding Darktrace in 2013. She served as CFO, then COO, then CEO from 2016 to September 2024. Awarded an OBE in 2019. In October 2024, she was appointed UK Minister of State for Investment and elevated to the House of Lords. No personal legal controversies.</p><p><strong>Jack Stockdale OBE FREng</strong> (co-founder, CTO) — still in role. Awarded OBE in 2019. No controversies found.</p><p><strong>Mike Lynch</strong> (founding investor via Invoke Capital) — known as the "British Bill Gates." Faced long-running US fraud charges related to the $11.7B sale of Autonomy to Hewlett-Packard. Was acquitted in June 2024. Died in August 2024 when his superyacht sank off Sicily. His legal history was separate from Darktrace operations and Darktrace was never charged.</p><p><strong>Nicole Eagan</strong> (co-founder) — now Strategic Advisor at Darktrace. No controversies.</p>
+      <div class="sources"><p>Sources</p><ul><li><a href="https://fortune.com/europe/2024/09/06/darktrace-ceo-poppy-gustafsson-steps-down/" target="_blank">Poppy Gustafsson steps down — Fortune</a></li><li><a href="https://www.enterprisenation.com/learn-something/darktrace-co-founder-poppy-gustafsson-appointed-government-s-new-investment-minister/" target="_blank">Gustafsson appointed Investment Minister — Enterprise Nation</a></li><li><a href="https://fortune.com/2024/08/23/darktrace-thoma-bravo-mergers-cybersecurity-a-i-fraud-autonomy/" target="_blank">Mike Lynch background and death — Fortune</a></li><li><a href="https://www.darktrace.com/news/darktrace-founders-awarded-obe-in-birthday-honours" target="_blank">Founders awarded OBE — Darktrace</a></li></ul></div>
+    </div>
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <div class="footer">
+    <strong>Disclaimer</strong><br>
+    This report is for informational purposes only. It is not financial, legal, or career advice.
+    Culture and interview data is sourced from unverified community posts. Financial data may be
+    incomplete or outdated. Legal summaries are not a substitute for consulting a qualified attorney.
+    Always conduct your own due diligence.<br><br>
+    Generated by Claude Code &nbsp;·&nbsp; 2026-04-17
+  </div>
+
+</div><!-- /.container -->
+
+<script>
+  function toggle(header) {
+    const body   = header.nextElementSibling;
+    const chevron = header.querySelector('.chevron');
+    body.classList.toggle('hidden');
+    chevron.classList.toggle('open');
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.dataset.theme = html.dataset.theme === 'dark' ? '' : 'dark';
+    localStorage.setItem('theme', html.dataset.theme);
+  }
+
+  function openSection(section) {
+    if (!section) return;
+    const header = section.querySelector('.section-header');
+    const body = header ? header.nextElementSibling : null;
+    const chevron = header ? header.querySelector('.chevron') : null;
+    if (body && body.classList.contains('hidden')) body.classList.remove('hidden');
+    if (chevron) chevron.classList.add('open');
+  }
+
+  function jumpToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    openSection(section);
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function getSeverityRank(element) {
+    if (!element) return 99;
+    if (element.querySelector('.badge-red, .badge-red-pill')) return 0;
+    if (element.querySelector('.badge-yellow, .badge-yellow-pill')) return 1;
+    if (element.querySelector('.badge-green, .badge-green-pill')) return 2;
+    if (element.querySelector('.badge-grey, .badge-grey-pill')) return 3;
+    return 99;
+  }
+
+  function renumberSections() {
+    document.querySelectorAll('.section').forEach((section, index) => {
+      const titleText = section.querySelector('.section-title span:first-child');
+      if (!titleText) return;
+      const cleanTitle = titleText.textContent.replace(/^\d+\.\s*/, '');
+      titleText.textContent = `${index + 1}. ${cleanTitle}`;
+    });
+  }
+
+  function sortBySeverity() {
+    const summary = document.querySelector('.summary');
+    const sections = Array.from(document.querySelectorAll('.section'));
+    const footer = document.querySelector('.footer');
+
+    if (summary) {
+      Array.from(summary.children)
+        .sort((a, b) => getSeverityRank(a) - getSeverityRank(b))
+        .forEach(item => summary.appendChild(item));
+    }
+
+    sections
+      .sort((a, b) => getSeverityRank(a) - getSeverityRank(b))
+      .forEach(section => {
+        if (footer) {
+          footer.before(section);
+        } else {
+          section.parentNode.appendChild(section);
+        }
+      });
+
+    renumberSections();
+  }
+
+  // Restore saved theme preference
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+  sortBySeverity();
+
+  // Auto-expand all RED sections on load
+  document.querySelectorAll('.badge-red-pill').forEach(badge => {
+    const header = badge.closest('.section-header');
+    if (header) {
+      header.nextElementSibling.classList.remove('hidden');
+      header.querySelector('.chevron').classList.add('open');
+    }
+  });
+
+  document.querySelectorAll('.summary-item[data-target]').forEach(item => {
+    item.addEventListener('click', () => jumpToSection(item.dataset.target));
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        jumpToSection(item.dataset.target);
+      }
+    });
+  });
+</script>
+</body>
+</html>
