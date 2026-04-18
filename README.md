@@ -72,7 +72,7 @@ A single HTML file that opens in any browser — no login, no internet required 
 2. Open Claude Code
 3. Type `/KnowYourCompany`
 
-**Or, just give this link to Claude Code or Codex, say "Install this" 🙌🏻**
+**Or, just give this link (https://github.com/bluebluegrass/KnowYourCompany/) to Claude Code or Codex, say "Install this" 🙌🏻**
 
 Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
 
