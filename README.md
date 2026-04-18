@@ -66,15 +66,13 @@ A single HTML file that opens in any browser — no login, no internet required 
 - [Claude Code](https://claude.ai/code)
 - Claude Code authenticated via `claude auth login`
 
-No `ANTHROPIC_API_KEY` is required for the local runtime path in this repo.
-
 ### Setup
 
 1. Copy this folder into `~/.claude/commands/`
 2. Open Claude Code
 3. Type `/KnowYourCompany`
 
-Or, just give this link to Claude Code or Codex, say "Install this" 🙌🏻
+**Or, just give this link to Claude Code or Codex, say "Install this" 🙌🏻**
 
 Claude will ask for the company name, office location (optional), and your target role (optional), then run the research and produce the report.
 
