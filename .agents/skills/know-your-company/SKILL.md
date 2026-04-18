@@ -1,3 +1,8 @@
+---
+name: know-your-company
+description: Research a company for a job candidate, write a structured KnowYourCompany .report.json, then render a self-contained HTML report using the local renderer.
+---
+
 # KnowYourCompany
 
 You are conducting a comprehensive company background check and will produce a self-contained HTML report.
@@ -27,7 +32,7 @@ Tell the user: "Researching **{COMPANY}**. This will take 2–3 minutes — I'll
 
 ## Step 2 — Research
 
-Use WebSearch and WebFetch to gather data across all 12 tracks below. Run as many searches in parallel as possible. For every piece of information you include in the report, you MUST record the source URL. Never include a claim without a traceable URL — if you cannot find a source, say "No data found."
+Use available web research and page retrieval tools to gather data across all 12 tracks below. Run as many searches in parallel as possible. For every piece of information you include in the report, you MUST record the source URL. Never include a claim without a traceable URL — if you cannot find a source, say "No data found."
 
 ### Local-language search rule (applies to ALL tracks)
 If `LOCAL_LANG ≠ en`, run an additional local-language version of every search query in that track — in parallel with the English searches. Translate key terms into the local language (e.g. "ontslagen" for layoffs in Dutch, "procès" for lawsuit in French). When you find results, read the content and incorporate it into the report. If `OUTPUT_LANG` differs from the source language, translate into `OUTPUT_LANG` and mark with `[translated from {language}]` so the source is transparent. Local-language sources that are trustworthy (national newspapers, company filings, government registers, local job platforms) often surface information that English searches miss entirely — treat them as equally valid.
@@ -258,18 +263,3 @@ After writing the JSON, run:
 ```bash
 node references/render.js {COMPANY}_KnowYourCompany_{YYYY-MM-DD}.report.json
 ```
-
-This script reads the JSON and `references/template.html`, substitutes every placeholder, inlines the CSS, and writes `{COMPANY}_KnowYourCompany_{YYYY-MM-DD}.html`. It will error if any placeholder is left unfilled.
-
----
-
-## Step 6 — Confirm Output
-
-After the script runs, tell the user:
-
-> "Report saved as `{filename}.html`. Open it in any browser — no internet connection needed.
->
-> **Risk snapshot:**
-> - 🔴 Red flags: [list section names with red badges, or "none"]
-> - 🟡 Worth investigating: [list yellow sections, or "none"]
-> - ⚪ No data: [list grey sections, or "none"]"
