@@ -61,7 +61,7 @@ A single HTML file that opens in any browser — no login or internet connection
 
 ## How it works
 
-The AI does the research and judgment. It writes a compact V2 `.report.json`; the local renderer deterministically turns that artifact into a self-contained `.html` file. This means report design can be improved and re-rendered without paying for another research run.
+The AI does the research and judgment. It writes a compact `.report.json`; the local renderer deterministically turns that artifact into a self-contained `.html` file. This means report design can be improved and re-rendered without paying for another research run.
 
 ## Use with any tool-capable AI
 
@@ -70,7 +70,7 @@ The canonical workflow lives in [`.agents/skills/know-your-company/SKILL.md`](./
 ```text
 Use the know-your-company skill to research Marktlink Capital for an Analytics Engineer role in Amsterdam.
 I need visa sponsorship and prefer a hybrid role. Write the report in English,
-save a V2 JSON artifact, then render the final HTML report.
+save a JSON artifact, then render the final HTML report.
 ```
 
 The skill works with the agent's own research tools; it does not require a particular AI vendor, SDK or authentication setup. An agent without web-search or page-fetch capability can still work from source links you provide, but it cannot independently produce a verified research report.
@@ -83,26 +83,26 @@ Install dependencies once:
 npm install
 ```
 
-Then render any V2 JSON artifact:
+Then render any saved JSON artifact:
 
 ```bash
-npm run report -- --render examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.report.json
+npm run report -- --render examples/Marktlink_Capital_KnowYourCompany_2026-09-08.report.json
 ```
 
 The HTML is written beside the JSON by default. To choose another directory:
 
 ```bash
-npm run report -- --render path/to/report.v2.report.json --output-dir path/to/output
+npm run report -- --render path/to/report.report.json --output-dir path/to/output
 ```
 
 ---
 
 ## Example
 
-The repository includes a full V2 example for a Netherlands-based Analytics Engineer opportunity:
+The repository includes a full example for a Netherlands-based Analytics Engineer opportunity:
 
-- [Marktlink report (HTML)](./examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.html)
-- [Marktlink report data (JSON)](./examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.report.json)
+- [Marktlink report (HTML)](./examples/Marktlink_Capital_KnowYourCompany_2026-09-08.html)
+- [Marktlink report data (JSON)](./examples/Marktlink_Capital_KnowYourCompany_2026-09-08.report.json)
 
 ## Project structure
 
@@ -110,7 +110,7 @@ The repository includes a full V2 example for a Netherlands-based Analytics Engi
 KnowYourCompany/
 ├── .agents/skills/know-your-company/  # Portable research workflow
 ├── src/                               # TypeScript report pipeline and renderer
-├── tests/                             # Schema, evidence, renderer and V2 tests
+├── tests/                             # Schema, evidence, and renderer tests
 ├── examples/                          # Curated report fixtures
 ├── docs/                              # Architecture and implementation notes
 ├── scripts/                           # Test and preview helpers

@@ -11,8 +11,7 @@ test("parseArgs supports render and full modes", () => {
     full: "true",
     company: "Acme"
   });
-  assert.deepEqual(parseArgs(["--v2", "--work-mode", "remote_only", "--priority", "visa,stability"]), {
-    v2: "true",
+  assert.deepEqual(parseArgs(["--work-mode", "remote_only", "--priority", "visa,stability"]), {
     "work-mode": "remote_only",
     priority: "visa,stability"
   });

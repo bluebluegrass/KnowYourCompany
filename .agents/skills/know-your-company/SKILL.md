@@ -29,12 +29,12 @@ Write a plain-language explanation of what the evidence may mean for job stabili
 
 ### Artifact contract
 
-Before writing the report, read `src/types/index.ts` and a current `examples/*.v2.report.json`. Write a source-backed `{Company}_KnowYourCompany_{YYYY-MM-DD}.v2.report.json` using that V2 contract. Preserve a source registry and reference only registered source IDs from claims and financial metrics. Keep red/yellow section summaries concise and lead with the decisive risk or uncertainty.
+Before writing the report, read `src/types/index.ts` and a current `examples/*.report.json`. Write a source-backed `{Company}_KnowYourCompany_{YYYY-MM-DD}.report.json` using the current report contract. Preserve a source registry and reference only registered source IDs from claims and financial metrics. Keep red/yellow section summaries concise and lead with the decisive risk or uncertainty.
 
 Render the finished artifact with:
 
 ```bash
-npm run build && node dist/src/cli.js --render path/to/report.v2.report.json
+npm run build && node dist/src/cli.js --render path/to/report.report.json
 ```
 
 If shell access is unavailable, return the JSON artifact and state that rendering remains to be run locally. Do not hand-write standard report HTML.

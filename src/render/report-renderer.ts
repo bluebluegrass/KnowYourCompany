@@ -2,7 +2,7 @@ import path from "node:path";
 import { readFile, writeFile } from "node:fs/promises";
 import { SECTION_DEFINITIONS } from "../config/sections.js";
 import { validateFinalSummary, validateReportV2, validateSectionAnalysis } from "../model/schema.js";
-import { buildHtmlPath, buildV2HtmlPath } from "../report/artifact-paths.js";
+import { buildHtmlPath } from "../report/artifact-paths.js";
 import type { ReportModel, ReportV2, SectionAnalysis } from "../types/index.js";
 import { disclaimersBlock, escapeHtml, findingsList, paragraphsFromText, ratingsBlock, sourcesList, timelineBlock } from "./html-fragments.js";
 import { loadTemplate } from "./template-loader.js";
@@ -104,7 +104,7 @@ export async function renderFromJson(jsonPath: string, outputDir?: string): Prom
   const report = parseReport(raw, jsonPath);
   if (isReportV2(report)) {
     const html = renderReportV2(report);
-    const outputPath = buildV2HtmlPath(outputDir || path.dirname(jsonPath), report.target.company, report.generatedAt.slice(0, 10));
+    const outputPath = buildHtmlPath(outputDir || path.dirname(jsonPath), report.target.company, report.generatedAt.slice(0, 10));
     await writeFile(outputPath, html, "utf8");
     return { report, html, outputPath };
   }

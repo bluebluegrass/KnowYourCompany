@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { stdin as input, stdout as output } from "node:process";
 import { readFile, writeFile } from "node:fs/promises";
-import { runReport, runReportV2 } from "./report/orchestrator.js";
+import { runReportV2 } from "./report/orchestrator.js";
 import { renderFromJson } from "./render/report-renderer.js";
 import { compareReports } from "./report/snapshot-diff.js";
 import type { CandidateProfile, ReportV2 } from "./types/index.js";
@@ -17,7 +17,6 @@ interface CliArgs {
   outputDir?: string;
   render?: string;
   role?: string;
-  v2?: string;
   compare?: string;
   seniority?: string;
   "work-authorization"?: string;
@@ -87,25 +86,14 @@ async function runResearchMode(args: CliArgs, inputContext: { company: string; l
     localLanguage: inferLocalLanguage(inputContext.location),
     outputDir: args.outputDir || process.cwd()
   };
-  if (args.v2 === "true") {
-    const reportResult = await runReportV2(reportInput);
-    if (args.compare) {
-      reportResult.report.comparison = compareReports(reportResult.report, await readV2Report(args.compare));
-      await writeFile(reportResult.jsonPath, `${JSON.stringify(reportResult.report, null, 2)}\n`, "utf8");
-    }
-    console.log(`Report JSON saved as ${path.basename(reportResult.jsonPath)}.`);
-    console.log(JSON.stringify(reportResult.logger.metrics, null, 2));
-    if (args.full === "true") await runRenderMode(reportResult.jsonPath, args.outputDir);
-    return;
+  const reportResult = await runReportV2(reportInput);
+  if (args.compare) {
+    reportResult.report.comparison = compareReports(reportResult.report, await readCurrentReport(args.compare));
+    await writeFile(reportResult.jsonPath, `${JSON.stringify(reportResult.report, null, 2)}\n`, "utf8");
   }
-  const reportResult = await runReport(reportInput);
-
   console.log(`Report JSON saved as ${path.basename(reportResult.jsonPath)}.`);
   console.log(JSON.stringify(reportResult.logger.metrics, null, 2));
-
-  if (args.full === "true") {
-    await runRenderMode(reportResult.jsonPath, args.outputDir);
-  }
+  if (args.full === "true") await runRenderMode(reportResult.jsonPath, args.outputDir);
 }
 
 function candidateProfileFromArgs(args: CliArgs): CandidateProfile | undefined {
@@ -123,9 +111,9 @@ function candidateProfileFromArgs(args: CliArgs): CandidateProfile | undefined {
   return Object.keys(profile).length ? profile : undefined;
 }
 
-async function readV2Report(jsonPath: string): Promise<ReportV2> {
+async function readCurrentReport(jsonPath: string): Promise<ReportV2> {
   const parsed: unknown = JSON.parse(await readFile(jsonPath, "utf8"));
-  if (!parsed || typeof parsed !== "object" || (parsed as { reportVersion?: unknown }).reportVersion !== 2) throw new Error("--compare requires a ReportV2 JSON artifact.");
+  if (!parsed || typeof parsed !== "object" || (parsed as { reportVersion?: unknown }).reportVersion !== 2) throw new Error("--compare requires a current report JSON artifact.");
   return parsed as ReportV2;
 }
 

@@ -10,7 +10,7 @@ import { SectionAnalyzer } from "../model/section-analyzer.js";
 import { ClaudeCodeFetcher, ClaudeCodeSearchClient } from "../retrieval/claude-code-web.js";
 import { buildQueryPlan } from "../retrieval/query-planner.js";
 import type { InputContext, QueryPlan, ReportModel, ReportV2, SearchResult, SourceDocument } from "../types/index.js";
-import { buildJsonPath, buildV2JsonPath } from "./artifact-paths.js";
+import { buildJsonPath } from "./artifact-paths.js";
 import { createReportV2 } from "./v2-report.js";
 
 export interface SearchService {
@@ -104,7 +104,7 @@ export async function runReportV2(
   const legacyResult = await runReport(input, dependencies);
   const context: InputContext = { ...input, now: input.now || new Date().toISOString() };
   const report = createReportV2(legacyResult.report, context);
-  const jsonPath = buildV2JsonPath(context.outputDir, report.target.company, report.generatedAt.slice(0, 10));
+  const jsonPath = buildJsonPath(context.outputDir, report.target.company, report.generatedAt.slice(0, 10));
   await writeFile(jsonPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
   return { report, jsonPath, logger: legacyResult.logger };
 }

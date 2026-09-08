@@ -88,12 +88,13 @@ test("v2 renderer provides a section table of contents for the visible research 
   assert.doesNotMatch(html, /Open research|appendix\.open|<details class="all-research"/);
 });
 
-test("renderFromJson routes an explicit v2 artifact to the v2 renderer", async () => {
-  const tempDir = await mkdtemp(path.join(tmpdir(), "bg-check-v2-render-"));
-  const jsonPath = path.join(tempDir, "Example_KnowYourCompany_2026-09-06.v2.report.json");
+test("renderFromJson routes the current JSON artifact to the current renderer", async () => {
+  const tempDir = await mkdtemp(path.join(tmpdir(), "bg-check-render-"));
+  const jsonPath = path.join(tempDir, "Example_KnowYourCompany_2026-09-06.report.json");
   await writeFile(jsonPath, `${JSON.stringify(makeReport("current"))}\n`, "utf8");
   const result = await renderFromJson(jsonPath);
-  assert.match(result.outputPath, /\.v2\.html$/);
+  assert.match(result.outputPath, /\.html$/);
+  assert.doesNotMatch(result.outputPath, /\.v2\.html$/);
   assert.equal(await readFile(result.outputPath, "utf8"), result.html);
   assert.match(result.html, /continue/);
 });
