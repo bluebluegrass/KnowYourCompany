@@ -47,129 +47,78 @@ Each report analyzes 12 areas, automatically ranked by severity:
 
 ## What you get
 
-A single HTML file that opens in any browser — no login, no internet required after download.
+A single HTML file that opens in any browser — no login or internet connection required after it is generated.
 
-- Severity map at the top so the biggest concerns are immediately visible
-- Red / yellow / green / grey badges per section
-- Collapsible sections with cited sources
-- Dark mode
-- Sections auto-sorted so red flags appear first
-
-![KnowYourCompany report sample](sample.png)
+- A compact **“Worth a first call?”** answer tailored to the candidate profile
+- The few signals that deserve attention now
+- A focused **“Confirm during the first call”** checklist
+- Findings that are safe to deprioritize
+- A plain-language financial snapshot
+- An expandable evidence appendix with source links
+- A responsive table of contents: fixed on desktop and easy to use on mobile
 
 ---
 
 ## How it works
 
-This repo is designed as a **prompt bundle that generates `.report.json`**, plus a small script that turns that JSON into HTML.
-
-1. The AI researches the company and writes a `.report.json`
-2. `references/render.js` reads that JSON and renders a self-contained `.html`
-
-The AI does the research and judgment. The script only does deterministic HTML rendering.
-
----
+The AI does the research and judgment. It writes a compact V2 `.report.json`; the local renderer deterministically turns that artifact into a self-contained `.html` file. This means report design can be improved and re-rendered without paying for another research run.
 
 ## Use with any tool-capable AI
 
-Open the repository in your AI environment and ask it to use the portable [`know-your-company` skill](./.agents/skills/know-your-company/SKILL.md). The agent researches with its own available web tools, writes a V2 report JSON, and uses the local renderer. No particular vendor CLI, SDK, or authentication flow is part of the skill.
-
-An agent without web-search or page-fetch capability cannot produce a verified research report; provide it with sources instead.
-
-## Legacy manual use with Claude Code
-
-Claude Code uses the mirror skill at [`.claude/skills/know-your-company/SKILL.md`](./.claude/skills/know-your-company/SKILL.md).
-
-### Requirements
-
-- [Claude Code](https://claude.ai/code)
-- `claude auth login`
-- Node.js installed, so `node references/render.js ...` can run
-
-### Usage
-
-Open Claude Code in this repo and ask it to use the `know-your-company` skill to research a company and generate a report.
-
-Example:
+The canonical workflow lives in [`.agents/skills/know-your-company/SKILL.md`](./.agents/skills/know-your-company/SKILL.md). Open this repository in an AI environment that can search the web, read pages and create local files, then ask it to use the skill.
 
 ```text
-Use the know-your-company skill to research Darktrace for a Data Engineer role in Amsterdam, write the report in English, generate the .report.json in the current directory, then render the HTML.
+Use the know-your-company skill to research Marktlink Capital for an Analytics Engineer role in Amsterdam.
+I need visa sponsorship and prefer a hybrid role. Write the report in English,
+save a V2 JSON artifact, then render the final HTML report.
 ```
 
----
+The skill works with the agent's own research tools; it does not require a particular AI vendor, SDK or authentication setup. An agent without web-search or page-fetch capability can still work from source links you provide, but it cannot independently produce a verified research report.
 
-## Legacy manual use with Codex
+## Render a saved report locally
 
-Codex **does** automatically load [AGENTS.md](/Users/simona/Documents/Vibe Projects/bg_check/AGENTS.md:1) when run from this repo.
-
-### Requirements
-
-- [Codex CLI](https://developers.openai.com/codex/cli)
-- `codex login`
-- Node.js installed, so `node references/render.js ...` can run
-
-### Install
-
-No extra install step is required beyond cloning the repo.
+Install dependencies once:
 
 ```bash
-git clone https://github.com/bluebluegrass/KnowYourCompany
-cd KnowYourCompany
-codex
+npm install
 ```
 
-Or non-interactively:
+Then render any V2 JSON artifact:
 
 ```bash
-codex --search exec --ephemeral --skip-git-repo-check --sandbox workspace-write "Research Darktrace for a Data Engineer role in Amsterdam, write the report in English, generate the KnowYourCompany report JSON in the current directory, then render the HTML."
+npm run report -- --render examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.report.json
 ```
 
-### Important difference
+The HTML is written beside the JSON by default. To choose another directory:
 
-- **Codex** auto-loads `AGENTS.md` from the repo
-- **Claude Code** uses the mirror skill in `.claude/skills/know-your-company/`
-
----
-
-## Why JSON first
-
-In the [original skill](https://github.com/bluebluegrass/KnowYourCompany), the model writes the final HTML directly — reading `template.html`, inlining the CSS, and filling every placeholder itself. That means the full template flows through model context every run.
-
-This repo separates that step:
-
-1. The model writes a compact `.report.json`
-2. A local script renders the HTML with zero extra model tokens
-
-| Step | Original skill | This repo |
-|---|---|---|
-| Research + analysis | Claude / Codex | Claude / Codex |
-| Write findings | Model fills HTML directly | Model writes `.report.json` |
-| HTML rendering | Model writes file | `node references/render.js` |
-| Re-render after design change | Full rerun | Re-run script only |
+```bash
+npm run report -- --render path/to/report.v2.report.json --output-dir path/to/output
+```
 
 ---
 
-## Repo structure
+## Example
+
+The repository includes a full V2 example for a Netherlands-based Analytics Engineer opportunity:
+
+- [Marktlink report (HTML)](./examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.html)
+- [Marktlink report data (JSON)](./examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.report.json)
+
+## Project structure
 
 ```text
 KnowYourCompany/
-├── README.md
-├── AGENTS.md                 — Codex repo instructions
-├── .agents/
-│   └── skills/
-│       └── know-your-company/
-│           └── SKILL.md      — canonical Codex skill
-├── .claude/
-│   └── skills/
-│       └── know-your-company/
-│           └── SKILL.md      — Claude Code mirror skill
-├── references/
-│   ├── render.js             — .report.json -> .html
-│   ├── template.html         — HTML skeleton with {{ PLACEHOLDER }} slots
-│   └── styles.css            — inlined at render time
-└── examples/                 — sample rendered reports
-
-Generated in the repo root:
-- `*.report.json` — structured report data
-- `*.html` — rendered report artifacts
+├── .agents/skills/know-your-company/  # Portable research workflow
+├── src/                               # TypeScript report pipeline and renderer
+├── tests/                             # Schema, evidence, renderer and V2 tests
+├── examples/                          # Curated report fixtures
+├── docs/                              # Architecture and implementation notes
+├── scripts/                           # Test and preview helpers
+└── package.json
 ```
+
+## Quality boundaries
+
+KnowYourCompany summarizes public evidence; it does not establish undisputed facts about a company or individual. It distinguishes direct company or regulatory evidence from third-party reporting and community accounts, and treats uncertainty as a reason to ask a focused question rather than as proof of a problem.
+
+It is not legal, immigration, investment or financial advice.
