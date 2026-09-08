@@ -79,13 +79,13 @@ test("v2 renderer escapes claim text and blocks unsafe URLs", () => {
   assert.doesNotMatch(html, /href="javascript:/);
 });
 
-test("v2 renderer provides a section table of contents that opens the research appendix", () => {
+test("v2 renderer provides a section table of contents for the visible research section", () => {
   const html = renderReportV2(makeReport("current"));
   assert.match(html, /class="section-toc"/);
   assert.match(html, /aria-label="Research sections"/);
   assert.match(html, /href="#section-work_policy"/);
   assert.match(html, /id="all-research"/);
-  assert.match(html, /appendix\.open = true/);
+  assert.doesNotMatch(html, /Open research|appendix\.open|<details class="all-research"/);
 });
 
 test("renderFromJson routes an explicit v2 artifact to the v2 renderer", async () => {
