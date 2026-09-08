@@ -54,7 +54,7 @@ A single HTML file that opens in any browser — no login or internet connection
 - A focused **“Confirm during the first call”** checklist
 - Findings that are safe to deprioritize
 - A plain-language financial snapshot
-- An expandable evidence appendix with source links
+- Evidence and source links for every research area
 - A responsive table of contents: fixed on desktop and easy to use on mobile
 
 ---
@@ -75,28 +75,6 @@ save a JSON artifact, then render the final HTML report.
 
 The skill works with the agent's own research tools; it does not require a particular AI vendor, SDK or authentication setup. An agent without web-search or page-fetch capability can still work from source links you provide, but it cannot independently produce a verified research report.
 
-## Render a saved report locally
-
-Install dependencies once:
-
-```bash
-npm install
-```
-
-Then render any saved JSON artifact:
-
-```bash
-npm run report -- --render examples/Marktlink_Capital_KnowYourCompany_2026-09-08.report.json
-```
-
-The HTML is written beside the JSON by default. To choose another directory:
-
-```bash
-npm run report -- --render path/to/report.report.json --output-dir path/to/output
-```
-
----
-
 ## Example
 
 The repository includes a full example for a Netherlands-based Analytics Engineer opportunity:
@@ -112,7 +90,6 @@ KnowYourCompany/
 ├── src/                               # TypeScript report pipeline and renderer
 ├── tests/                             # Schema, evidence, and renderer tests
 ├── examples/                          # Curated report fixtures
-├── docs/                              # Architecture and implementation notes
 ├── scripts/                           # Test and preview helpers
 └── package.json
 ```
