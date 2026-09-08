@@ -2,7 +2,7 @@
 
 **Stop wasting interviews on companies that are quietly falling apart.**
 
-KnowYourCompany is a prompt bundle for **Claude Code** and **Codex** that researches a company and generates a structured offline HTML report so you know what you're walking into before you spend weeks in a hiring process.
+KnowYourCompany is a portable research skill for any AI agent with web-research and local-file capabilities. It generates a structured offline HTML report so you know what you're walking into before you spend weeks in a hiring process.
 
 ---
 
@@ -70,7 +70,13 @@ The AI does the research and judgment. The script only does deterministic HTML r
 
 ---
 
-## Use with Claude Code
+## Use with any tool-capable AI
+
+Open the repository in your AI environment and ask it to use the portable [`know-your-company` skill](./.agents/skills/know-your-company/SKILL.md). The agent researches with its own available web tools, writes a V2 report JSON, and uses the local renderer. No particular vendor CLI, SDK, or authentication flow is part of the skill.
+
+An agent without web-search or page-fetch capability cannot produce a verified research report; provide it with sources instead.
+
+## Legacy manual use with Claude Code
 
 Claude Code uses the mirror skill at [`.claude/skills/know-your-company/SKILL.md`](./.claude/skills/know-your-company/SKILL.md).
 
@@ -92,7 +98,7 @@ Use the know-your-company skill to research Darktrace for a Data Engineer role i
 
 ---
 
-## Use with Codex
+## Legacy manual use with Codex
 
 Codex **does** automatically load [AGENTS.md](/Users/simona/Documents/Vibe Projects/bg_check/AGENTS.md:1) when run from this repo.
 
@@ -161,11 +167,7 @@ KnowYourCompany/
 │   ├── render.js             — .report.json -> .html
 │   ├── template.html         — HTML skeleton with {{ PLACEHOLDER }} slots
 │   └── styles.css            — inlined at render time
-├── examples/                 — sample rendered reports
-├── sample.png                — screenshot used in the README
-├── PRD.md                    — product and workflow notes
-└── docs/                     — optional repo notes
-    ...
+└── examples/                 — sample rendered reports
 
 Generated in the repo root:
 - `*.report.json` — structured report data

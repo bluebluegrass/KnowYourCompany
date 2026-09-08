@@ -1,1 +1,19 @@
-PRD.md
+# Local build output and dependency caches
+/node_modules/
+/dist/
+/.cache/
+
+# Finder metadata
+/.DS_Store
+
+# Locally generated reports at the project root. Curated examples remain trackable.
+/*.report.json
+/*.v2.report.json
+/*.html
+/*.v2.html
+
+# Keep one reviewed V2 fixture in Git; leave locally generated visual drafts local.
+/examples/*.v2.report.json
+/examples/*.v2.html
+!/examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.report.json
+!/examples/Marktlink_Capital_KnowYourCompany_2026-09-08.v2.html

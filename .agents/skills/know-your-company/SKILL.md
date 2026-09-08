@@ -5,6 +5,42 @@ description: Research a company for a job candidate, write a structured KnowYour
 
 # KnowYourCompany
 
+## Portable workflow — takes precedence
+
+Use this skill with any AI agent that can search public webpages and read/write local files. Do not require a particular model, vendor SDK, CLI, login flow, or browser-tool name. Use the research and file tools available in the current environment.
+
+If the current agent cannot search or fetch public pages, say so before making research claims and ask the user to provide sources. Never present unsourced model knowledge as newly researched evidence.
+
+Collect the company, target location, role, report language, and any candidate constraints that could change the recommendation. Do not ask again for information the user already supplied. Important constraints include visa sponsorship, minimum compensation, work-mode requirements, and deal-breakers.
+
+Research the 12 areas below using public, source-backed evidence. For a normal candidate brief, prioritize: Financial health, Recent layoffs, Compensation & benefits, Work policy, and Product & market health. Move Visa sponsorship to first priority when the candidate needs it. Treat culture, interview, and salary-platform claims as self-reported signals rather than proof of material risk.
+
+For the Netherlands, visa research must verify the exact employing entity against the IND recognised-sponsor register and check the role’s highly skilled migrant eligibility. Do not claim sponsorship is available until the entity and role are verified.
+
+### Financial health
+
+Classify the company only from evidence: public, startup, private, subsidiary, or unknown.
+
+- **Public:** use the newest available quarterly or annual result; include sourced revenue, growth, profit/loss, cash, debt, or free-cash-flow metrics only.
+- **Startup:** include the latest confirmed funding round, date, amount, investors, and valuation only when explicitly reported. Label IPO information as confirmed, reported, or unknown.
+- **Private, subsidiary, or other:** look for parent ownership, private-equity ownership, acquisitions, public accounts, credit events, reported revenue/profitability, debt, or transaction value. Explain when financial filings are unavailable.
+
+Write a plain-language explanation of what the evidence may mean for job stability, hiring budget, growth investment, and compensation or equity. Include material gaps in a short “still unknown” list; never fill gaps with estimates.
+
+### Artifact contract
+
+Before writing the report, read `src/types/index.ts` and a current `examples/*.v2.report.json`. Write a source-backed `{Company}_KnowYourCompany_{YYYY-MM-DD}.v2.report.json` using that V2 contract. Preserve a source registry and reference only registered source IDs from claims and financial metrics. Keep red/yellow section summaries concise and lead with the decisive risk or uncertainty.
+
+Render the finished artifact with:
+
+```bash
+npm run build && node dist/src/cli.js --render path/to/report.v2.report.json
+```
+
+If shell access is unavailable, return the JSON artifact and state that rendering remains to be run locally. Do not hand-write standard report HTML.
+
+The legacy workflow below is retained as a detailed research-query checklist only. The portable workflow and V2 artifact contract above override its input sequence and old flat-JSON instructions.
+
 You are conducting a comprehensive company background check and will produce a self-contained HTML report.
 
 ## Step 1 — Collect Inputs

@@ -1,0 +1,453 @@
+{
+  "reportVersion": 2,
+  "reportId": "marktlink-capital-20260908-web-research",
+  "generatedAt": "2026-09-08T20:55:00.000Z",
+  "target": {
+    "company": "Marktlink Capital",
+    "role": "Analytics Engineer",
+    "location": "Netherlands"
+  },
+  "candidateProfile": {
+    "workAuthorization": "needs_employer_sponsorship",
+    "priorities": ["visa", "stability", "compensation"],
+    "dealBreakers": ["no_sponsorship"]
+  },
+  "sources": {
+    "job": {
+      "url": "https://careers.marktlinkcapital.com/o/analytics-engineer",
+      "normalizedUrl": "https://careers.marktlinkcapital.com/o/analytics-engineer",
+      "title": "Analytics Engineer — Marktlink Capital",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "en",
+      "html": "",
+      "text": "Amsterdam Analytics Engineer vacancy. The company says it manages over EUR 3.5 billion in capital commitments and says it provides IND sponsorship for senior highly skilled migrants.",
+      "sourceType": "official",
+      "sourceTier": "primary",
+      "publisher": "careers.marktlinkcapital.com",
+      "accessState": "fetched",
+      "trustScore": 0.95
+    },
+    "ind": {
+      "url": "https://ind.nl/nl/openbaar-register-erkende-referenten/openbaar-register-arbeid",
+      "normalizedUrl": "https://ind.nl/nl/openbaar-register-erkende-referenten/openbaar-register-arbeid",
+      "title": "IND public register of recognised sponsors for work",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "nl",
+      "html": "",
+      "text": "The register, updated 3 September 2026, lists Marktlink Capital Management Coöperatief U.A., KvK number 80340180.",
+      "sourceType": "government",
+      "sourceTier": "authoritative",
+      "publisher": "ind.nl",
+      "accessState": "fetched",
+      "trustScore": 1
+    },
+    "about": {
+      "url": "https://www.marktlinkcapital.com/en/about-us",
+      "normalizedUrl": "https://www.marktlinkcapital.com/en/about-us",
+      "title": "About Marktlink Capital",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "en",
+      "html": "",
+      "text": "Marktlink Capital says it was established in 2020, reached EUR 1 billion AUM in 2024, EUR 2 billion in 2025 and EUR 3 billion in 2026, and is part of Marktlink Group.",
+      "sourceType": "official",
+      "sourceTier": "primary",
+      "publisher": "marktlinkcapital.com",
+      "accessState": "fetched",
+      "trustScore": 0.95
+    },
+    "afm": {
+      "url": "https://careers.marktlinkcapital.com/disclaimer",
+      "normalizedUrl": "https://careers.marktlinkcapital.com/disclaimer",
+      "title": "Marktlink Capital regulatory disclaimer",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "nl",
+      "html": "",
+      "text": "The company states it holds an AFM licence under the Dutch Financial Supervision Act, is in the AFM public register, and is supervised by AFM and DNB. It gives KvK number 80340180.",
+      "sourceType": "official",
+      "sourceTier": "primary",
+      "publisher": "careers.marktlinkcapital.com",
+      "accessState": "fetched",
+      "trustScore": 0.95
+    },
+    "fsma": {
+      "url": "https://www.fsma.be/en/party/marktlink-capital-management-cooperatief-ua",
+      "normalizedUrl": "https://www.fsma.be/en/party/marktlink-capital-management-cooperatief-ua",
+      "title": "FSMA register entry for Marktlink Capital Management Coöperatief U.A.",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "en",
+      "html": "",
+      "text": "The Belgian regulator's register identifies the Dutch entity and lists its AIFM freedom-to-provide-services status from February 2026.",
+      "sourceType": "government",
+      "sourceTier": "authoritative",
+      "publisher": "fsma.be",
+      "accessState": "fetched",
+      "trustScore": 1
+    },
+    "hiring": {
+      "url": "https://careers.marktlinkcapital.com/how-we-hire",
+      "normalizedUrl": "https://careers.marktlinkcapital.com/how-we-hire",
+      "title": "Hiring process — Marktlink Capital",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "en",
+      "html": "",
+      "text": "The company describes first contact, conversations, a role deep dive, offer and onboarding. It says offers include salary and benefits details, and repeats that it sponsors senior highly skilled migrants.",
+      "sourceType": "official",
+      "sourceTier": "primary",
+      "publisher": "careers.marktlinkcapital.com",
+      "accessState": "fetched",
+      "trustScore": 0.95
+    },
+    "culture": {
+      "url": "https://careers.marktlinkcapital.com/discover-marktlink-capital",
+      "normalizedUrl": "https://careers.marktlinkcapital.com/discover-marktlink-capital",
+      "title": "Working at Marktlink Capital",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "en",
+      "html": "",
+      "text": "The employer describes an ownership-oriented, ambitious and performance-driven environment, and lists pension contributions, unlimited holidays, a bonus structure and favourable fund-investment terms.",
+      "sourceType": "official",
+      "sourceTier": "primary",
+      "publisher": "careers.marktlinkcapital.com",
+      "accessState": "fetched",
+      "trustScore": 0.95
+    },
+    "team": {
+      "url": "https://www.marktlinkcapital.com/en/our-team",
+      "normalizedUrl": "https://www.marktlinkcapital.com/en/our-team",
+      "title": "Marktlink Capital team",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "en",
+      "html": "",
+      "text": "The current public roster lists managing partners including Piet Hein Conijn, Hylke Hertoghs, Bouke Marsman, Bastiaan van Slobbe and Jaap Vriesendorp, as well as data and reporting staff.",
+      "sourceType": "official",
+      "sourceTier": "primary",
+      "publisher": "marktlinkcapital.com",
+      "accessState": "fetched",
+      "trustScore": 0.95
+    },
+    "jobleads": {
+      "url": "https://www.jobleads.com/nl/job/analytics-engineer-build-our-data-platform-dashboards--amsterdam--e2974ddefabf7b2f7a10a33ba521f313b",
+      "normalizedUrl": "https://www.jobleads.com/nl/job/analytics-engineer-build-our-data-platform-dashboards--amsterdam--e2974ddefabf7b2f7a10a33ba521f313b",
+      "title": "Analytics Engineer salary listing — JobLeads",
+      "fetchedAt": "2026-09-08T20:55:00.000Z",
+      "language": "en",
+      "html": "",
+      "text": "A third-party listing reproduces the role as Amsterdam on-site and reports EUR 90,000 to EUR 120,000. The employer's own vacancy does not display a salary range.",
+      "sourceType": "directory",
+      "sourceTier": "aggregator",
+      "publisher": "jobleads.com",
+      "accessState": "fetched",
+      "trustScore": 0.5
+    }
+  },
+  "sections": [
+    {
+      "sectionId": "visa_sponsorship",
+      "title": "Visa & Immigration Sponsorship",
+      "summary": "The public IND register lists the relevant Marktlink Capital entity as a recognised sponsor, and the employer says it sponsors senior highly skilled migrants; confirm that this exact offer and employing entity will sponsor you.",
+      "claims": [{
+        "claimId": "visa_sponsorship:ind-recognised-sponsor:1",
+        "sectionId": "visa_sponsorship",
+        "text": "IND's public register lists Marktlink Capital Management Coöperatief U.A. (KvK 80340180) as a recognised sponsor for work. The employer's vacancy and hiring FAQ say it provides IND sponsorship for senior highly skilled migrants.",
+        "impact": "watch",
+        "evidenceState": "corroborated",
+        "freshness": "current",
+        "sourceRefs": ["ind", "job", "hiring"],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "investigate",
+        "fitReason": "The public evidence is promising, but the offer must name the sponsoring entity and confirm that this role meets the highly skilled migrant conditions.",
+        "actionRefs": ["action-visa"]
+      }]
+    },
+    {
+      "sectionId": "financial_health",
+      "title": "Financial Health",
+      "summary": "Marktlink Capital reports rapid growth in investor capital and managed assets, but it is private and does not publish the revenue, profit, cash, or debt information needed to judge its operating financial health.",
+      "financePlainLanguage": "The firm appears to be growing: it says investors have committed more than €3.5 billion and its managed assets passed €3 billion. But this is not the same as company revenue or profit. Before joining, ask whether the data team and this hire are funded in the operating budget, not only supported by growing investor commitments.",
+      "financeProfile": {
+        "companyType": "subsidiary",
+        "confidence": "high",
+        "trend": "improving",
+        "sourceRefs": ["about", "job"],
+        "metrics": [
+          { "label": "Capital commitments", "value": "€3.5bn+", "period": "Current vacancy page", "trend": "improving", "sourceRefs": ["job"] },
+          { "label": "Managed assets milestone", "value": "€3bn", "period": "2026 company timeline", "trend": "improving", "sourceRefs": ["about"] },
+          { "label": "Public operating accounts", "value": "Not found in the reviewed public sources", "trend": "unknown", "sourceRefs": ["about"] }
+        ],
+        "events": [
+          { "kind": "other", "title": "2020 establishment", "detail": "The company says Marktlink Capital was established in 2020.", "date": "2020", "sourceRefs": ["about"] },
+          { "kind": "other", "title": "AUM growth milestones", "detail": "The company reports €1bn in 2024, €2bn in 2025 and €3bn in 2026.", "date": "2026", "sourceRefs": ["about"] }
+        ],
+        "jobSeekerImplications": [
+          "The business has a visible growth story, which can create scope for a new data platform and an ownership-heavy role.",
+          "Because operating revenue, profit, cash, and debt are not public here, you cannot assess job stability from asset or commitment figures alone.",
+          "Ask whether the Analytics Engineer position is a new approved headcount and what budget is committed for the first 12 months."
+        ],
+        "unknowns": [
+          "No reviewed public source disclosed revenue, profitability, cash runway, debt, or audited operating accounts for the employing entity.",
+          "The public figures are company-reported capital commitments and asset milestones, not a financial statement."
+        ]
+      },
+      "claims": [{
+        "claimId": "financial_health:private-financial-transparency:1",
+        "sectionId": "financial_health",
+        "text": "The company reports growing capital commitments and managed assets, but the reviewed public sources do not provide operating revenue, profitability, cash, or debt figures for the employing entity.",
+        "impact": "watch",
+        "evidenceState": "verified",
+        "freshness": "current",
+        "sourceRefs": ["about", "job"],
+        "scope": { "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "investigate",
+        "fitReason": "A growing investment platform is not automatically a fully funded employer; the hiring budget needs confirmation.",
+        "actionRefs": ["action-finance"]
+      }]
+    },
+    {
+      "sectionId": "compensation_benefits",
+      "title": "Compensation & Benefits",
+      "summary": "The employer describes salary benchmarking, bonus, pension contributions, unlimited holidays, and favourable fund-investment terms. A third-party listing gives a €90k–€120k range for this role, but the employer has not published that range.",
+      "claims": [{
+        "claimId": "compensation_benefits:unverified-range:1",
+        "sectionId": "compensation_benefits",
+        "text": "A third-party listing reports €90,000–€120,000 for the Analytics Engineer role. Treat it as an unverified indication: the employer's own posting does not list pay, while its careers page describes a bonus, pension contribution, unlimited holidays and favourable fund-investment terms.",
+        "impact": "watch",
+        "evidenceState": "limited",
+        "freshness": "current",
+        "sourceRefs": ["jobleads", "culture", "hiring"],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "investigate",
+        "fitReason": "Ask for base pay, target bonus, pension value and eligibility for the investment benefit before anchoring on the third-party range.",
+        "actionRefs": ["action-compensation"]
+      }]
+    },
+    {
+      "sectionId": "work_policy",
+      "title": "Remote / Hybrid / RTO Policy",
+      "summary": "The official Analytics Engineer posting labels the Amsterdam role as on-site and hybrid, rather than fully remote. It does not state the required number of office days.",
+      "claims": [{
+        "claimId": "work_policy:hybrid-unspecified:1",
+        "sectionId": "work_policy",
+        "text": "The official Analytics Engineer vacancy is labelled on-site and hybrid in Amsterdam. The reviewed posting does not specify the number of required office days or whether the arrangement can change.",
+        "impact": "watch",
+        "evidenceState": "verified",
+        "freshness": "current",
+        "sourceRefs": ["job"],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "investigate",
+        "fitReason": "Confirm the actual team cadence, expected office days, and whether hybrid work is a formal policy or manager discretion.",
+        "actionRefs": ["action-work-policy"]
+      }]
+    },
+    {
+      "sectionId": "product_market_health",
+      "title": "Product & Market Health",
+      "summary": "The firm operates regulated private-markets fund-of-funds and reports expansion in capital commitments and fund access. The available evidence supports business growth, but not an independent assessment of product performance or investor retention.",
+      "claims": [{
+        "claimId": "product_market_health:regulated-growth-platform:1",
+        "sectionId": "product_market_health",
+        "text": "Marktlink Capital says it offers private investors access to private equity, venture capital and private income through fund-of-funds and feeder funds. It reports more than 2,750 investors and 75 selected funds, while its regulatory materials describe AFM and DNB supervision.",
+        "impact": "informational",
+        "evidenceState": "corroborated",
+        "freshness": "current",
+        "sourceRefs": ["about", "afm"],
+        "scope": { "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "aligned",
+        "fitReason": "The role is connected to a regulated, data-intensive investment platform, but public sources do not show independent client-retention or performance data.",
+        "actionRefs": []
+      }]
+    },
+    {
+      "sectionId": "leadership_stability",
+      "title": "Leadership Stability",
+      "summary": "The current public team page shows multiple named managing partners and data/reporting leadership. No source reviewed here establishes a recent senior-leadership departure or disruption.",
+      "claims": [{
+        "claimId": "leadership_stability:current-team:1",
+        "sectionId": "leadership_stability",
+        "text": "The public team roster lists multiple managing partners, including founders Bastiaan van Slobbe and Jaap Vriesendorp, and names Mike Brom in Data & Reporting. This is current-roster evidence, not proof that there have been no departures.",
+        "impact": "informational",
+        "evidenceState": "verified",
+        "freshness": "current",
+        "sourceRefs": ["team"],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "aligned",
+        "fitReason": "Ask who owns the data roadmap and who will make architecture decisions after the role is hired.",
+        "actionRefs": []
+      }]
+    },
+    {
+      "sectionId": "legal_regulatory",
+      "title": "Legal & Regulatory",
+      "summary": "The company states it is AFM-licensed and supervised by AFM and DNB; an FSMA register also identifies the Dutch management entity as an AIFM operating across the EEA. This is regulatory-status evidence, not a clean legal-history finding.",
+      "claims": [{
+        "claimId": "legal_regulatory:regulated-aifm:1",
+        "sectionId": "legal_regulatory",
+        "text": "Marktlink Capital states it is in the AFM register under Dutch financial-supervision rules. The Belgian FSMA register identifies Marktlink Capital Management Coöperatief U.A. as a Netherlands-based AIFM with freedom-to-provide-services status from February 2026.",
+        "impact": "informational",
+        "evidenceState": "corroborated",
+        "freshness": "current",
+        "sourceRefs": ["afm", "fsma"],
+        "scope": { "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "aligned",
+        "fitReason": "Regulation increases operational requirements for a data platform; ask how compliance, access controls and audit needs shape the roadmap.",
+        "actionRefs": []
+      }]
+    },
+    {
+      "sectionId": "interview_experience",
+      "title": "Interview Experience",
+      "summary": "The employer describes first contact, conversations, a role deep dive, offer, and onboarding, and says successful candidates undergo pre-employment screening. It does not publish the number of interviews or technical-assessment format for this role.",
+      "claims": [{
+        "claimId": "interview_experience:official-process:1",
+        "sectionId": "interview_experience",
+        "text": "The official process outlines application review, conversations, a role-specific deep dive, offer and onboarding. The Analytics Engineer vacancy also states that pre-employment screening is part of the process for successful candidates.",
+        "impact": "informational",
+        "evidenceState": "verified",
+        "freshness": "current",
+        "sourceRefs": ["hiring", "job"],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "aligned",
+        "fitReason": "Ask whether the deep dive includes a take-home case, live SQL/dbt exercise, or system-design interview.",
+        "actionRefs": []
+      }]
+    },
+    {
+      "sectionId": "company_culture",
+      "title": "Company Culture",
+      "summary": "The employer presents an entrepreneurial, ownership-heavy, performance-driven culture with early responsibility. The reviewed sources are employer materials, so independent employee sentiment remains unclear.",
+      "claims": [{
+        "claimId": "company_culture:ownership-heavy:1",
+        "sectionId": "company_culture",
+        "text": "Employer materials describe a lean, fast-moving culture where employees are expected to act like owners, take responsibility early and work in a performance-driven environment. No independent review source was retained in this research pass.",
+        "impact": "watch",
+        "evidenceState": "limited",
+        "freshness": "current",
+        "sourceRefs": ["culture"],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "investigate",
+        "fitReason": "For a greenfield data role, clarify decision rights, expected hours, and how success is measured in the first six months.",
+        "actionRefs": ["action-culture"]
+      }]
+    },
+    {
+      "sectionId": "company_profile_history",
+      "title": "Company Profile & History",
+      "summary": "Marktlink Capital was established in 2020 and is part of Marktlink Group. It runs private-markets fund-of-funds and feeder funds for private investors, with Amsterdam as the listed location for this role.",
+      "claims": [{
+        "claimId": "company_profile_history:fund-of-funds-platform:1",
+        "sectionId": "company_profile_history",
+        "text": "The company says it was established in 2020, later combined with Welt Ventures, and now gives private investors access to private equity, venture capital and private-income strategies through fund-of-funds and feeder funds.",
+        "impact": "informational",
+        "evidenceState": "verified",
+        "freshness": "current",
+        "sourceRefs": ["about"],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "aligned",
+        "fitReason": "The job is a greenfield data-platform role in a regulated investment-management setting.",
+        "actionRefs": []
+      }]
+    },
+    {
+      "sectionId": "founder_background",
+      "title": "Founder Background",
+      "summary": "The company identifies Bastiaan van Slobbe as a founder and the public team page lists several managing partners. This review found no sourced current controversy requiring a candidate decision.",
+      "claims": [{
+        "claimId": "founder_background:current-founder-role:1",
+        "sectionId": "founder_background",
+        "text": "A company profile identifies Bastiaan van Slobbe as a founder, and the current team page lists him alongside other managing partners. This is a limited role-background check, not an exhaustive personal due-diligence review.",
+        "impact": "informational",
+        "evidenceState": "verified",
+        "freshness": "current",
+        "sourceRefs": ["team"],
+        "scope": { "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "not_applicable",
+        "fitReason": "No founder-specific issue surfaced that should displace the role, visa or financial questions.",
+        "actionRefs": []
+      }]
+    },
+    {
+      "sectionId": "layoffs",
+      "title": "Recent Layoffs",
+      "summary": "No credible public layoff report was retained in this research pass. That is insufficient evidence, not confirmation that there have been no reductions.",
+      "claims": [{
+        "claimId": "layoffs:insufficient-public-evidence:1",
+        "sectionId": "layoffs",
+        "text": "No credible public layoff source was retained for Marktlink Capital in this research pass. Ask whether this Analytics Engineer role is newly approved headcount, replacement hiring, or part of a broader expansion plan.",
+        "impact": "informational",
+        "evidenceState": "insufficient",
+        "freshness": "unknown",
+        "sourceRefs": [],
+        "scope": { "role": "Analytics Engineer", "location": "Netherlands", "employmentType": "employee" },
+        "candidateFit": "investigate",
+        "fitReason": "The public vacancy alone cannot establish team-level headcount stability.",
+        "actionRefs": ["action-headcount"]
+      }]
+    }
+  ],
+  "decision": {
+    "recommendation": "continue_after_verification",
+    "rationale": "Worth a first call: confirm the sponsoring entity, hiring budget, pay and office setup before you invest more time.",
+    "blockingClaimIds": [],
+    "topActionIds": ["action-visa", "action-finance", "action-compensation", "action-work-policy", "action-headcount"]
+  },
+  "actions": [
+    {
+      "actionId": "action-visa",
+      "claimId": "visa_sponsorship:ind-recognised-sponsor:1",
+      "priority": 1,
+      "owner": "hr_or_immigration",
+      "question": "Will the employment contract be issued by Marktlink Capital Management Coöperatief U.A., and will you sponsor this Analytics Engineer under the Dutch highly skilled migrant route?",
+      "rationale": "The IND register and employer FAQ are promising, but sponsorship must apply to the exact legal employer and offer.",
+      "resolutionCriteria": "Written confirmation of the employing entity, sponsorship commitment, and immigration process owner."
+    },
+    {
+      "actionId": "action-finance",
+      "claimId": "financial_health:private-financial-transparency:1",
+      "priority": 1,
+      "owner": "hiring_manager",
+      "question": "Is this a newly approved role, what budget is committed for the data platform, and what business milestone protects the plan over the next 12 months?",
+      "rationale": "Public commitment and AUM figures do not show operating revenue, profit or hiring budget.",
+      "resolutionCriteria": "A clear answer on approved headcount, tools budget and the role's 12-month mandate."
+    },
+    {
+      "actionId": "action-compensation",
+      "claimId": "compensation_benefits:unverified-range:1",
+      "priority": 2,
+      "owner": "recruiter",
+      "question": "What are the base-salary range, target bonus, pension contribution and any eligibility conditions for the investment benefit?",
+      "rationale": "The public salary range comes from a third party rather than the employer.",
+      "resolutionCriteria": "A written total-compensation breakdown for this level and Amsterdam location."
+    },
+    {
+      "actionId": "action-work-policy",
+      "claimId": "work_policy:hybrid-unspecified:1",
+      "priority": 2,
+      "owner": "hiring_manager",
+      "question": "How many days is the data team expected in the Amsterdam office, and is that arrangement likely to change?",
+      "rationale": "The role is labelled both on-site and hybrid without a stated cadence.",
+      "resolutionCriteria": "A concrete weekly office expectation and the decision-maker for exceptions."
+    },
+    {
+      "actionId": "action-headcount",
+      "claimId": "layoffs:insufficient-public-evidence:1",
+      "priority": 3,
+      "owner": "recruiter",
+      "question": "Is this a net-new Analytics Engineer headcount, and how has the Data & Technology team changed in the last year?",
+      "rationale": "No reliable public headcount-reduction evidence was available.",
+      "resolutionCriteria": "Confirmation that the position and team plan are approved rather than contingent."
+    },
+    {
+      "actionId": "action-culture",
+      "claimId": "company_culture:ownership-heavy:1",
+      "priority": 3,
+      "owner": "future_teammate",
+      "question": "What decisions can this role make independently, and what workload or delivery pressure was typical for the team in the last quarter?",
+      "rationale": "The company describes a fast, ownership-heavy environment, but independent employee evidence was not available.",
+      "resolutionCriteria": "Concrete examples from a future teammate about decision rights, pace and support."
+    }
+  ],
+  "validationWarnings": [
+    "This provider-neutral report was assembled from directly reviewed public webpages. It is not a company financial statement, legal clearance, or immigration advice.",
+    "No independent employee-review source was retained in this pass; employer culture and benefits claims should be verified in interviews.",
+    "The reported salary range comes from a third-party listing and should not be treated as an offer."
+  ]
+}
