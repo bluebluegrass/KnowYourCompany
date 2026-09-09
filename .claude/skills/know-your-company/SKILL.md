@@ -29,17 +29,17 @@ Write a plain-language explanation of what the evidence may mean for job stabili
 
 ### Artifact contract
 
-Before writing the report, read `src/types/index.ts` and a current `examples/*.v2.report.json`. Write a source-backed `{Company}_KnowYourCompany_{YYYY-MM-DD}.v2.report.json` using that V2 contract. Preserve a source registry and reference only registered source IDs from claims and financial metrics. Keep red/yellow section summaries concise and lead with the decisive risk or uncertainty.
+Before writing the report, read `src/types/index.ts` and a current `examples/*.report.json`. Write a source-backed `{Company}_KnowYourCompany_{YYYY-MM-DD}.report.json` using the current report contract. Preserve a source registry and reference only registered source IDs from claims and financial metrics. Keep red/yellow section summaries concise and lead with the decisive risk or uncertainty.
 
 Render the finished artifact with:
 
 ```bash
-npm run build && node dist/src/cli.js --render path/to/report.v2.report.json
+npm run build && node dist/src/cli.js --render path/to/report.report.json
 ```
 
 If shell access is unavailable, return the JSON artifact and state that rendering remains to be run locally. Do not hand-write standard report HTML.
 
-The legacy workflow below is retained as a detailed research-query checklist only. The portable workflow and V2 artifact contract above override its input sequence and old flat-JSON instructions.
+The research checklist below is retained for source discovery. This artifact contract overrides all older flat-JSON or template instructions.
 
 You are conducting a comprehensive company background check and will produce a self-contained HTML report.
 
@@ -203,99 +203,3 @@ If `LOCAL_LANG ≠ en`, run an additional local-language version of every search
 - Record: prior companies, education, notable achievements, controversies (sourced only, no editorialising).
 
 ---
-
-## Step 3 — Assess Severity Per Section
-
-For each of the 12 sections, assign a badge:
-- **RED** — material concern (examples: layoffs >10% in past 6 months, runway <6 months, active class action, CEO fired abruptly, multiple fraud allegations, product rating <3.0)
-- **YELLOW** — mixed signals or limited data worth investigating
-- **GREEN** — no significant concerns found
-- **GREY** — insufficient data to assess
-
----
-
-## Step 4 — Write the report JSON
-
-Write a file named `{COMPANY}_KnowYourCompany_{YYYY-MM-DD}.report.json` (use today's date, replace spaces in company name with underscores) in the current working directory.
-
-The file is a flat JSON object. Every key maps directly to one `{{ PLACEHOLDER }}` in `references/template.html`. Write all prose values in `OUTPUT_LANG`.
-
-**Required keys and what to write for each:**
-
-```
-COMPANY          — company name (plain text)
-DATE             — today's date as YYYY-MM-DD
-LOCATION         — office location, or empty string
-ROLE             — role, or empty string
-VERDICT_TEXT     — 3–5 sentences directly answering "Is this a safe company to join right now?"
-                   Lead with the most important finding. Be specific, no hedging.
-VERDICT_FLAGS    — one <span class="verdict-flag {color}">{icon} {label}</span> per notable finding.
-                   Use red/yellow/green. List red first.
-                   e.g. "<span class=\"verdict-flag green\">✓ Series C funded</span>"
-
-B1 … B12         — badge color for each section: green | yellow | red | grey
-B1_LABEL … B12_LABEL — badge label in OUTPUT_LANG:
-                   English: No concerns / Mixed signals / Concern found / No data
-
-LAYOFFS_CONTENT      — HTML (<p>, <ul><li>) summarising layoff findings
-LAYOFFS_SOURCES      — <li><a href="URL" target="_blank">Title</a></li> for each source
-
-FUNDING_TIMELINE     — one <div class="timeline-item"><strong>Round</strong><span>Date · Amount · Investors</span></div> per round, oldest first
-FINANCIAL_SIGNALS    — HTML summarising financial health findings
-FINANCIAL_PLAIN_ENGLISH — 2–3 plain-language sentences explaining the financial picture
-FINANCIAL_SOURCES    — sources list
-
-LEADERSHIP_CURRENT   — HTML describing current C-suite
-LEADERSHIP_DEPARTURES — HTML listing recent departures
-LEADERSHIP_SOURCES   — sources list
-
-LEGAL_CONTENT        — HTML summarising legal/regulatory findings
-LEGAL_SOURCES        — sources list
-
-GLASSDOOR_RATINGS    — zero or more <div class="rating-row"><span>Label</span><span>Value</span></div>
-CULTURE_THEMES       — HTML summarising culture themes
-CULTURE_COMMUNITY    — HTML with notable quotes or community findings
-CULTURE_SOURCES      — sources list
-
-RTO_OFFICIAL         — HTML describing the official remote/hybrid policy
-RTO_CHANGES          — HTML listing recent policy changes
-RTO_SENTIMENT        — HTML summarising employee sentiment
-RTO_SOURCES          — sources list
-
-COMP_SALARY          — HTML describing salary signals
-COMP_EQUITY          — HTML describing equity / vesting
-COMP_BENEFITS        — HTML describing notable benefits
-COMP_SOURCES         — sources list
-
-INTERVIEW_CONTENT    — HTML summarising interview process findings
-INTERVIEW_SOURCES    — sources list
-
-VISA_CONTENT         — HTML summarising visa sponsorship findings
-VISA_SOURCES         — sources list
-
-PRODUCT_CONTENT      — HTML summarising product and market health
-PRODUCT_SOURCES      — sources list
-
-PROFILE_SUMMARY      — HTML with company overview and history
-PROFILE_MILESTONES   — HTML listing key milestones
-PROFILE_SOURCES      — sources list
-
-FOUNDER_CONTENT      — HTML summarising founder backgrounds
-FOUNDER_SOURCES      — sources list
-```
-
-**Rules:**
-- All HTML values must use `<p>`, `<ul><li>`, `<table>` — no markdown.
-- Escape double quotes inside JSON string values with `\"`.
-- If a section has no data, write `<p>No data found for this section.</p>` and set its badge to `grey` / `No data`.
-- Never invent URLs. Only include URLs you actually fetched or searched.
-
----
-
-## Step 5 — Render the HTML
-
-After writing the JSON, run:
-
-```bash
-node references/render.js {COMPANY}_KnowYourCompany_{YYYY-MM-DD}.report.json
-```

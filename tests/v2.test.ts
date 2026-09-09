@@ -100,23 +100,18 @@ test("renderFromJson routes the current JSON artifact to the current renderer", 
 });
 
 test("v2 report uses model-native claims when they are available", () => {
-  const legacy = {
+  const analysis = {
     company: "Example",
-    date: "2026-09-06",
-    verdict: { verdictText: "", verdictFlags: [] },
     sources: { official: source("official", "primary") },
     sections: [{
       sectionId: "work_policy" as const,
       title: "Work policy",
-      severity: "yellow" as const,
-      badgeLabelKey: "mixed_signals" as const,
       summaryText: "Summary",
-      keyFindings: [],
       claims: [{ text: "Model claim", sourceRefs: ["official"], impact: "material" as const }],
-      disclaimers: [], ratings: [], timelineItems: [], sourceRefs: ["official"]
+      sourceRefs: ["official"]
     }]
   };
-  const report = createReportV2(legacy, { company: "Example", localLanguage: "en", outputDir: "/tmp", now: "2026-09-06T00:00:00.000Z" });
+  const report = createReportV2(analysis, { company: "Example", localLanguage: "en", outputDir: "/tmp", now: "2026-09-06T00:00:00.000Z" });
   assert.equal(report.sections[0]!.claims[0]!.text, "Model claim");
 });
 

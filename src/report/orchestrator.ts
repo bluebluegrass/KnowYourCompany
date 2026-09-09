@@ -9,7 +9,7 @@ import { type ModelClient } from "../model/anthropic-client.js";
 import { SectionAnalyzer } from "../model/section-analyzer.js";
 import { ClaudeCodeFetcher, ClaudeCodeSearchClient } from "../retrieval/claude-code-web.js";
 import { buildQueryPlan } from "../retrieval/query-planner.js";
-import type { InputContext, QueryPlan, ReportModel, ReportV2, SearchResult, SourceDocument } from "../types/index.js";
+import type { InputContext, QueryPlan, ReportV2, SearchResult, SourceDocument } from "../types/index.js";
 import { buildJsonPath } from "./artifact-paths.js";
 import { createReportV2 } from "./v2-report.js";
 
@@ -31,7 +31,7 @@ export interface Dependencies {
 export async function runReport(
   input: Omit<InputContext, "now"> & { now?: string },
   dependencies: Dependencies = {}
-): Promise<{ report: ReportModel; jsonPath: string; logger: RunLogger }> {
+): Promise<{ report: ReportV2; jsonPath: string; logger: RunLogger }> {
   const logger = dependencies.logger || new RunLogger();
   const cache = new FileCache(path.join(process.cwd(), ".cache"), logger);
   const model = dependencies.model || new ClaudeCodeModelClient(logger);
@@ -81,45 +81,17 @@ export async function runReport(
     registerSources(sourceRegistry, documentsBySection.get(section.id) || []);
   }
 
-  const verdict = await analyzer.summarize(context.company, sections);
-  const report: ReportModel = {
+  const report = createReportV2({
     company: context.company,
-    date: context.now.slice(0, 10),
     ...(context.location ? { location: context.location } : {}),
     ...(context.role ? { role: context.role } : {}),
-    verdict,
-    sections: sections.sort((left, right) => severityOrder(left.severity) - severityOrder(right.severity)),
+    sections,
     sources: sourceRegistry
-  };
+  }, context);
 
-  const jsonPath = buildJsonPath(context.outputDir, report.company, report.date);
-  await writeFile(jsonPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  return { report, jsonPath, logger };
-}
-
-export async function runReportV2(
-  input: Omit<InputContext, "now"> & { now?: string },
-  dependencies: Dependencies = {}
-): Promise<{ report: ReportV2; jsonPath: string; logger: RunLogger }> {
-  const legacyResult = await runReport(input, dependencies);
-  const context: InputContext = { ...input, now: input.now || new Date().toISOString() };
-  const report = createReportV2(legacyResult.report, context);
   const jsonPath = buildJsonPath(context.outputDir, report.target.company, report.generatedAt.slice(0, 10));
   await writeFile(jsonPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  return { report, jsonPath, logger: legacyResult.logger };
-}
-
-function severityOrder(severity: string): number {
-  switch (severity) {
-    case "red":
-      return 0;
-    case "yellow":
-      return 1;
-    case "green":
-      return 2;
-    default:
-      return 3;
-  }
+  return { report, jsonPath, logger };
 }
 
 function selectSectionQueries(queries: QueryPlan[], sectionId: string, maxQueries: number): QueryPlan[] {

@@ -7,7 +7,7 @@ import path from "node:path";
 import { SECTION_DEFINITIONS } from "../src/config/sections.js";
 import { RunLogger } from "../src/logging/run-logger.js";
 import { runReport } from "../src/report/orchestrator.js";
-import type { FinalSummary, QueryPlan, SearchResult, SectionAnalysis, SourceDocument } from "../src/types/index.js";
+import type { QueryPlan, SearchResult, SectionAnalysis, SourceDocument } from "../src/types/index.js";
 
 test("runReport writes report json and does not write html in research-only mode", async () => {
   const tempDir = await mkdtemp(path.join(tmpdir(), "bg-check-orchestrator-"));
@@ -33,26 +33,13 @@ test("runReport writes report json and does not write html in research-only mode
 
   const model = {
     async completeJson<T>(_prompt: { system: string; user: string }, label?: string): Promise<T> {
-      if (label === "summary") {
-        const summary: FinalSummary = {
-          verdictText: "Research completed.",
-          verdictFlags: []
-        };
-        return summary as T;
-      }
-
       const sectionDef = SECTION_DEFINITIONS.find((section) => section.id === label);
       assert.ok(sectionDef, `Unexpected label: ${String(label)}`);
       const section: SectionAnalysis = {
         sectionId: sectionDef.id,
-        severity: "grey",
-        badgeLabelKey: "no_data",
         title: sectionDef.title,
         summaryText: "No data found for this section.",
-        keyFindings: [],
-        disclaimers: [],
-        ratings: [],
-        timelineItems: [],
+        claims: [],
         sourceRefs: []
       };
       return section as T;
@@ -75,11 +62,12 @@ test("runReport writes report json and does not write html in research-only mode
 
     const htmlPath = path.join(tempDir, "Acme_Research_KnowYourCompany_2026-04-17.html");
     const jsonRaw = await readFile(result.jsonPath, "utf8");
-    const report = JSON.parse(jsonRaw) as { company: string; date: string; sections: unknown[] };
+    const report = JSON.parse(jsonRaw) as { reportVersion: number; target: { company: string }; generatedAt: string; sections: unknown[] };
 
     assert.equal(result.jsonPath, path.join(tempDir, "Acme_Research_KnowYourCompany_2026-04-17.report.json"));
-    assert.equal(report.company, "Acme Research");
-    assert.equal(report.date, "2026-04-17");
+    assert.equal(report.reportVersion, 2);
+    assert.equal(report.target.company, "Acme Research");
+    assert.equal(report.generatedAt, "2026-04-17T12:00:00.000Z");
     assert.equal(report.sections.length, SECTION_DEFINITIONS.length);
     await assert.rejects(access(htmlPath, fsConstants.F_OK));
     assert.equal(searchCalls > 0, true);

@@ -26,7 +26,7 @@ This is built for one thing: **helping you decide where to spend your time**.
 
 ## What it covers
 
-Each report analyzes 12 areas, automatically ranked by severity:
+Each report analyzes 12 areas:
 
 | Area | What it looks for |
 |---|---|

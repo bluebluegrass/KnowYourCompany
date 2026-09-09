@@ -4,7 +4,7 @@ import { validateSectionAnalysis } from "../src/model/schema.js";
 import { createReportV2 } from "../src/report/v2-report.js";
 import { buildQueryPlan } from "../src/retrieval/query-planner.js";
 import { renderReportV2 } from "../src/render/v2-renderer.js";
-import type { ReportModel, SourceDocument } from "../src/types/index.js";
+import type { SectionAnalysis, SourceDocument } from "../src/types/index.js";
 
 const source: SourceDocument = {
   url: "https://investors.example.com/results",
@@ -42,14 +42,12 @@ test("financial analysis requires source-backed metrics and events", () => {
 });
 
 test("v2 financial section preserves a plain-language explanation and decision signals", () => {
-  const legacy: ReportModel = {
+  const analysis = {
     company: "Example",
-    date: "2026-09-08",
-    verdict: { verdictText: "Verify the newest results.", verdictFlags: [] },
     sources: { official: source },
     sections: [financialSection()]
   };
-  const report = createReportV2(legacy, { company: "Example", localLanguage: "en", outputDir: ".", now: "2026-09-08T00:00:00.000Z" });
+  const report = createReportV2(analysis, { company: "Example", localLanguage: "en", outputDir: ".", now: "2026-09-08T00:00:00.000Z" });
   const finance = report.sections[0]!;
   assert.equal(finance.financePlainLanguage, "Sales grew, but the company is still losing money. That can mean room to invest, but ask how long the current budget is expected to last.");
   assert.equal(finance.financeProfile?.metrics[0]?.value, "$10m");
@@ -59,16 +57,12 @@ test("v2 financial section preserves a plain-language explanation and decision s
   assert.match(html, /Still unknown/);
 });
 
-function financialSection(): ReportModel["sections"][number] {
+function financialSection(): SectionAnalysis {
   return {
     sectionId: "financial_health",
-    severity: "yellow",
-    badgeLabelKey: "mixed_signals",
     title: "Financial Health",
     summaryText: "The latest reported sales grew, but the company remained loss-making and its next funding needs are unclear.",
-    keyFindings: [{ text: "Revenue reached $10m in Q2, while the company reported a net loss.", sourceRefs: ["official"] }],
     claims: [{ text: "Revenue reached $10m in Q2, while the company reported a net loss.", sourceRefs: ["official"], impact: "watch", evidenceState: "verified" }],
-    disclaimers: [],
     plainEnglishFinanceText: "Sales grew, but the company is still losing money. That can mean room to invest, but ask how long the current budget is expected to last.",
     financeProfile: {
       companyType: "public",
@@ -80,8 +74,6 @@ function financialSection(): ReportModel["sections"][number] {
       jobSeekerImplications: ["Ask whether this team has approved hiring budget for the next 12 months."],
       unknowns: ["The public results do not explain when the company expects to become profitable."]
     },
-    ratings: [],
-    timelineItems: [],
     sourceRefs: ["official"]
   };
 }

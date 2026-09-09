@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { stdin as input, stdout as output } from "node:process";
 import { readFile, writeFile } from "node:fs/promises";
-import { runReportV2 } from "./report/orchestrator.js";
+import { runReport } from "./report/orchestrator.js";
 import { renderFromJson } from "./render/report-renderer.js";
 import { compareReports } from "./report/snapshot-diff.js";
 import type { CandidateProfile, ReportV2 } from "./types/index.js";
@@ -86,7 +86,7 @@ async function runResearchMode(args: CliArgs, inputContext: { company: string; l
     localLanguage: inferLocalLanguage(inputContext.location),
     outputDir: args.outputDir || process.cwd()
   };
-  const reportResult = await runReportV2(reportInput);
+  const reportResult = await runReport(reportInput);
   if (args.compare) {
     reportResult.report.comparison = compareReports(reportResult.report, await readCurrentReport(args.compare));
     await writeFile(reportResult.jsonPath, `${JSON.stringify(reportResult.report, null, 2)}\n`, "utf8");

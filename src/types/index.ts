@@ -12,7 +12,6 @@ export type SectionId =
   | "company_profile_history"
   | "founder_background";
 
-export type Severity = "green" | "yellow" | "red" | "grey";
 export type SourceTier = "primary" | "authoritative" | "reputable" | "community" | "aggregator";
 export type Impact = "blocking" | "material" | "watch" | "informational";
 export type EvidenceState = "verified" | "corroborated" | "limited" | "conflicting" | "insufficient";
@@ -108,28 +107,12 @@ export interface EvidencePacket {
   };
 }
 
-export interface Finding {
-  text: string;
-  sourceRefs: string[];
-}
-
 export interface ModelClaim {
   text: string;
   sourceRefs: string[];
   scope?: ClaimScope;
   impact?: Impact;
   evidenceState?: EvidenceState;
-}
-
-export interface RatingRow {
-  label: string;
-  value: string;
-  stars?: string;
-}
-
-export interface TimelineItem {
-  title: string;
-  meta: string;
 }
 
 export type FinanceCompanyType = "public" | "startup" | "private" | "subsidiary" | "unknown";
@@ -166,38 +149,12 @@ export interface FinanceProfile {
 
 export interface SectionAnalysis {
   sectionId: SectionId;
-  severity: Severity;
-  badgeLabelKey: "no_concerns" | "mixed_signals" | "concern_found" | "no_data";
   title: string;
   summaryText: string;
-  keyFindings: Finding[];
-  disclaimers: string[];
+  claims: ModelClaim[];
   plainEnglishFinanceText?: string;
   financeProfile?: FinanceProfile;
-  ratings: RatingRow[];
-  timelineItems: TimelineItem[];
   sourceRefs: string[];
-  claims?: ModelClaim[];
-}
-
-export interface VerdictFlag {
-  tone: Severity;
-  text: string;
-}
-
-export interface FinalSummary {
-  verdictText: string;
-  verdictFlags: VerdictFlag[];
-}
-
-export interface ReportModel {
-  company: string;
-  date: string;
-  location?: string;
-  role?: string;
-  verdict: FinalSummary;
-  sections: SectionAnalysis[];
-  sources: Record<string, SourceDocument>;
 }
 
 export interface CandidateProfile {

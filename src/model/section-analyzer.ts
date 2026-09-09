@@ -1,9 +1,9 @@
 import { CACHE_VERSIONS } from "../config/constants.js";
 import { FileCache } from "../cache/file-cache.js";
-import { validateFinalSummary, validateSectionAnalysis } from "./schema.js";
-import type { EvidencePacket, FinalSummary, SectionAnalysis, SectionId } from "../types/index.js";
+import { validateSectionAnalysis } from "./schema.js";
+import type { EvidencePacket, SectionAnalysis, SectionId } from "../types/index.js";
 import type { ModelClient } from "./anthropic-client.js";
-import { buildFinalSummaryPrompt, buildSectionPrompt } from "../prompts/sections.js";
+import { buildSectionPrompt } from "../prompts/sections.js";
 
 export class SectionAnalyzer {
   constructor(
@@ -22,19 +22,6 @@ export class SectionAnalyzer {
     validateSectionAnalysis(section);
     await this.cache.set("section-analysis", cacheKey, CACHE_VERSIONS.sectionAnalysis, section);
     return section;
-  }
-
-  async summarize(company: string, sections: SectionAnalysis[]): Promise<FinalSummary> {
-    const cacheKey = this.cache.createKey([company, JSON.stringify(sections)]);
-    const cached = await this.cache.get<FinalSummary>("summary", cacheKey, CACHE_VERSIONS.summary);
-    if (cached) {
-      return cached;
-    }
-    const prompt = buildFinalSummaryPrompt(company, sections);
-    const summary = await this.model.completeJson<FinalSummary>(prompt, "summary");
-    validateFinalSummary(summary);
-    await this.cache.set("summary", cacheKey, CACHE_VERSIONS.summary, summary);
-    return summary;
   }
 }
 
