@@ -63,17 +63,27 @@ A single HTML file that opens in any browser — no login or internet connection
 
 The AI does the research and judgment. It writes a compact `.report.json`; the local renderer deterministically turns that artifact into a self-contained `.html` file. This means report design can be improved and re-rendered without paying for another research run.
 
-## Use with any tool-capable AI
+## Install and use in Codex
 
-The canonical workflow lives in [`.agents/skills/know-your-company/SKILL.md`](./.agents/skills/know-your-company/SKILL.md). Open this repository in an AI environment that can search the web, read pages and create local files, then ask it to use the skill.
+Tell Codex:
 
 ```text
-Use the know-your-company skill to research Marktlink Capital for an Analytics Engineer role in Amsterdam.
-I need visa sponsorship and prefer a hybrid role. Write the report in English,
-save a JSON artifact, then render the final HTML report.
+Install the skill from https://github.com/bluebluegrass/KnowYourCompany/tree/main/.agents/skills/know-your-company
 ```
 
-The skill works with the agent's own research tools; it does not require a particular AI vendor, SDK or authentication setup. An agent without web-search or page-fetch capability can still work from source links you provide, but it cannot independently produce a verified research report.
+Then, in a new message, write naturally:
+
+```text
+查 Marktlink Capital，Analytics Engineer，Amsterdam；我需要签证支持，倾向 hybrid。输出英文报告。
+```
+
+Or in English:
+
+```text
+Research Marktlink Capital for an Analytics Engineer role in Amsterdam. I need visa sponsorship and prefer hybrid work.
+```
+
+The skill asks only for essential missing details, saves the JSON artifact, and renders the final HTML. It needs an AI environment that can search public webpages and create local files.
 
 ## Example
 

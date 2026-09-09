@@ -1,0 +1,4 @@
+interface:
+  display_name: "KnowYourCompany"
+  short_description: "Research a company before accepting a job"
+  default_prompt: "Use $know-your-company to research a company I am considering for a role."

@@ -1,6 +1,6 @@
 ---
 name: know-your-company
-description: Research a company for a job candidate, write a structured KnowYourCompany .report.json, then render a self-contained HTML report using the local renderer.
+description: Research a company and role for a job candidate, then create a source-backed JSON and self-contained HTML report.
 ---
 
 # KnowYourCompany
@@ -11,7 +11,7 @@ Use this skill with any AI agent that can search public webpages and read/write 
 
 If the current agent cannot search or fetch public pages, say so before making research claims and ask the user to provide sources. Never present unsourced model knowledge as newly researched evidence.
 
-Collect the company, target location, role, report language, and any candidate constraints that could change the recommendation. Do not ask again for information the user already supplied. Important constraints include visa sponsorship, minimum compensation, work-mode requirements, and deal-breakers.
+Use the company, target location, role, report language, and any candidate constraints supplied in the request. Ask only for a missing company name or a genuinely decision-changing detail; location, role, and candidate constraints are optional. Important optional constraints include visa sponsorship, minimum compensation, work-mode requirements, and deal-breakers.
 
 Research the 12 areas below using public, source-backed evidence. For a normal candidate brief, prioritize: Financial health, Recent layoffs, Compensation & benefits, Work policy, and Product & market health. Move Visa sponsorship to first priority when the candidate needs it. Treat culture, interview, and salary-platform claims as self-reported signals rather than proof of material risk.
 
@@ -45,14 +45,7 @@ You are conducting a comprehensive company background check and will produce a s
 
 ## Step 1 — Collect Inputs
 
-Ask the user the following questions one at a time, then proceed once you have the answers:
-
-1. **Company name** (required): "What company would you like to research?"
-2. **Office location** (optional): "Which office location are you considering? (city, state, or country — type 'any' to skip)"
-3. **Job role** (optional): "What role are you considering? (e.g. Software Engineer, Product Manager — type 'any' to skip)"
-4. **Report language**: "What language should the report be written in? (e.g. English, Dutch, French, Japanese, Chinese — type 'English' if unsure)"
-
-Store these as:
+Use the supplied details. If the company name is missing, ask for it; otherwise begin research. Store the inputs as:
 - `COMPANY` = company name
 - `LOCATION` = office location (may be empty)
 - `ROLE` = job role (may be empty)
@@ -62,7 +55,7 @@ Store these as:
 
 Note: `LOCAL_LANG` controls the language used for *searching* (so you find local sources). `OUTPUT_LANG` controls the language used for *writing the report*. They are independent — a user can research a Dutch company and want the report in English, or research a US company and want the report in French.
 
-Tell the user: "Researching **{COMPANY}**. This will take 2–3 minutes — I'll run 12 research tracks in parallel."
+Tell the user that research is starting and that the report will cover 12 areas.
 
 ---
 
